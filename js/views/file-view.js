@@ -1,26 +1,20 @@
-import { repo, StorageFullError } from '../storage/repo.js';
-import { navigate } from '../router.js';
 import { extractText, ExtractError, MAX_FILE_MB, fileKind } from '../extract.js';
-import { $, icon, announce, toast, plural } from '../ui.js';
-import { MAX_CHARS } from './text-view.js';
+import { MAX_CHARS, createAndOpen, takePendingFile } from '../importers.js';
+import { $, icon, announce, plural } from '../ui.js';
 
 export function render(main) {
   main.innerHTML = `
   <div class="page page--narrow">
-    <header class="page-head center">
-      <h1>File to Speech</h1>
-      <p>Upload a PDF or TXT file. The text is read on your device and never uploaded anywhere.</p>
+    <header class="page-head">
+      <h1>Upload a file</h1>
+      <p>PDF or TXT. Your file is read right here on your device and never uploaded anywhere.</p>
     </header>
 
-    <div class="dropzone card" id="dropzone">
-      <div class="dropzone-icon">${icon('upload')}</div>
-      <p class="dropzone-title">Drag and drop a file here, or</p>
-      <button type="button" class="btn btn--primary btn--lg" id="pick">
-        ${icon('file')}
-        Choose a file
-      </button>
+    <div class="dropzone" id="dropzone">
+      <div class="dropzone-icon">${icon('folder')}</div>
+      <p class="dropzone-title">Drop a file here, or</p>
+      <button type="button" class="btn btn--primary btn--lg" id="pick">${icon('file')}Choose a file</button>
       <p class="hint" id="file-hint">PDF or TXT, up to ${MAX_FILE_MB} MB</p>
-      <input type="file" id="file-input" accept=".pdf,.txt,application/pdf,text/plain" hidden />
     </div>
 
     <div class="file-status" id="file-status" hidden>
@@ -30,28 +24,26 @@ export function render(main) {
 
     <p class="field-error field-error--block" id="file-error" role="alert" hidden>${icon('x')}<span></span></p>
 
-    <form class="compose card" id="review" hidden novalidate>
-      <h2 class="review-heading" id="review-heading" tabindex="-1">Check the text</h2>
-      <p class="hint" id="review-meta"></p>
-      <div class="field">
-        <label for="review-title">Title</label>
-        <input id="review-title" type="text" autocomplete="off" maxlength="120" />
-      </div>
-      <div class="field">
-        <label for="review-text">Extracted text</label>
+    <form class="compose review" id="review" hidden novalidate>
+      <h2 id="review-heading" tabindex="-1">Looks good? Give it a quick check</h2>
+      <p class="review-meta" id="review-meta"></p>
+      <label class="sr-only" for="review-title">Title</label>
+      <input id="review-title" class="compose-title" type="text" autocomplete="off" maxlength="120" />
+      <div class="compose-box">
+        <label class="sr-only" for="review-text">Extracted text</label>
         <textarea id="review-text" rows="12" aria-describedby="review-hint review-error"></textarea>
-        <p class="hint" id="review-hint">You can fix or remove anything before listening, such as page numbers or headers.</p>
       </div>
+      <p class="hint" id="review-hint">Tidy anything you don’t want read out, like page numbers or headers.</p>
       <p class="field-error" id="review-error" hidden>${icon('x')}<span></span></p>
       <div class="compose-foot">
         <button type="button" class="btn btn--ghost" id="pick-again">Choose another file</button>
-        <button type="submit" class="btn btn--primary btn--lg">${icon('volume')}Generate Speech</button>
+        <button type="submit" class="btn btn--primary btn--lg">${icon('play')}Generate Speech</button>
       </div>
     </form>
   </div>`;
 
   const dz = $('#dropzone', main);
-  const input = $('#file-input', main);
+  const input = document.getElementById('global-file');
   const status = $('#file-status', main);
   const statusText = $('#file-status-text', main);
   const progress = $('#file-progress', main);
@@ -65,9 +57,14 @@ export function render(main) {
     error.hidden = !msg;
   };
 
+  // The shared file picker hands its file over through the importers module.
   $('#pick', main).addEventListener('click', () => input.click());
   $('#pick-again', main).addEventListener('click', () => input.click());
-  input.addEventListener('change', () => input.files[0] && handle(input.files[0]));
+  const onFile = () => {
+    const f = takePendingFile();
+    if (f) handle(f);
+  };
+  document.addEventListener('odeo:file', onFile);
 
   // Drag and drop (the "Choose a file" button does the same without dragging).
   ['dragenter', 'dragover'].forEach((t) =>
@@ -86,7 +83,6 @@ export function render(main) {
   async function handle(file) {
     showError('');
     review.hidden = true;
-    input.value = '';
     if (!fileKind(file)) {
       showError('This file type isn’t supported. Choose a PDF or TXT file.');
       return;
@@ -141,22 +137,17 @@ export function render(main) {
     if (!text) return setErr('There’s no text to read. Choose another file or paste text instead.');
     if (text.length > MAX_CHARS) return setErr(`This text is too long. Keep it under ${MAX_CHARS.toLocaleString()} characters.`);
     setErr('');
-    try {
-      const doc = await repo.createDocument({
-        title: $('#review-title', main).value.trim() || current.fileName,
-        text,
-        source: { type: current.kind, fileName: current.fileName, pages: current.pages },
-      });
-      navigate(`session/${doc.id}`);
-    } catch (e2) {
-      if (e2 instanceof StorageFullError) {
-        toast('Your library is full. Delete some items in My library, then try again.', { type: 'error' });
-      } else throw e2;
-    }
+    await createAndOpen({
+      title: $('#review-title', main).value.trim() || current.fileName,
+      text,
+      source: { type: current.kind, fileName: current.fileName, pages: current.pages },
+    });
   });
 
+  onFile();
   return () => {
     cancelled = true;
+    document.removeEventListener('odeo:file', onFile);
   };
 }
 

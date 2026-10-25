@@ -1,6 +1,20 @@
-/* Design tokens. Colours meet WCAG 2.2 AA: 4.5:1 for text, 3:1 for
-   borders, icons and focus rings, in both themes. */
+/* Design tokens. Text 4.5:1 or better, borders, icons and focus 3:1 or
+   better, in every theme. */
 
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('../fonts/ComicNeue-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('../fonts/ComicNeue-Bold.woff2') format('woff2');
+  font-weight: 600 800;
+  font-style: normal;
+  font-display: swap;
+}
 @font-face {
   font-family: 'OpenDyslexic';
   src: url('../fonts/OpenDyslexic-Regular.woff2') format('woff2');
@@ -11,7 +25,7 @@
 @font-face {
   font-family: 'OpenDyslexic';
   src: url('../fonts/OpenDyslexic-Bold.woff2') format('woff2');
-  font-weight: 600 700;
+  font-weight: 600 800;
   font-style: normal;
   font-display: swap;
 }
@@ -19,123 +33,217 @@
 :root {
   color-scheme: light;
 
-  --font-opendyslexic: 'OpenDyslexic', 'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', sans-serif;
-  --font-comic: 'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', 'Comic Sans', sans-serif;
-  --font-system: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --app-font: var(--font-opendyslexic);
+  --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-opendyslexic: 'OpenDyslexic', 'Comic Neue', 'Comic Sans MS', sans-serif;
+  --font-comic: 'Comic Neue', 'Comic Sans MS', sans-serif;
+  --font-serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Noto Serif', 'Times New Roman', serif;
+  --font-system: var(--font-ui);
+  --read-font: var(--font-opendyslexic);
+  --chrome-font: var(--font-ui);
 
-  /* Reading preferences (set from Settings) */
+  /* Reading preferences, set from Appearance */
   --read-size: 20px;
   --read-line: 1.8;
   --read-letter: 0.05em;
   --read-word: 0.16em;
+  --read-weight: 400;
 
-  --radius-sm: 8px;
-  --radius: 12px;
-  --radius-lg: 18px;
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-
-  --sidebar-w: 280px;
-  --rail-w: 96px;
-  --topbar-h: 60px;
+  --r-sm: 10px;
+  --r: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
   --target: 44px;
+  --appbar-h: 64px;
+  --tabbar-h: 72px;
+  --measure: 68ch;
 
-  /* Light theme */
-  --bg: #fbf8ff;
-  --surface: #ffffff;
-  --surface-2: #f3edff;
-  --surface-3: #e9dfff;
-  --border: #ddd1f3;
-  --border-strong: #7c6a9e;
-  --text: #1e1631;
-  --text-muted: #4f4566;
-  --primary: #6d28d9;
-  --primary-hover: #5b21b6;
-  --on-primary: #ffffff;
-  --primary-soft: #ede4ff;
-  --link: #5b21b6;
-  --focus: #6d28d9;
+  /* Light */
+  --bg: #ffffff;
+  --bg-soft: #f6f4fb;
+  --bg-sunk: #eeebf6;
+  --line: #e6e2f0;
+  --line-strong: #857e9f;
+  --ink: #17122b;
+  --ink-2: #4a4462;
+  --ink-3: #635d7c;
+  --violet: #5b2ee6;
+  --violet-hover: #4a1fd0;
+  --on-violet: #ffffff;
+  --violet-soft: #efeaff;
+  --violet-text: #4a1fd0;
+  --focus: #5b2ee6;
   --focus-gap: #ffffff;
-  --highlight-bg: #ffe066;
-  --highlight-text: #1e1631;
-  --highlight-line: #6d28d9;
-  --note-bg: #e6d9ff;
   --danger: #b42318;
   --on-danger: #ffffff;
   --danger-soft: #fdecea;
-  --success: #067647;
-  --shadow: 0 1px 2px rgb(30 22 49 / 0.06), 0 4px 16px rgb(30 22 49 / 0.06);
-  --shadow-lg: 0 12px 40px rgb(30 22 49 / 0.18);
-  --backdrop: rgb(18 14 28 / 0.5);
+  --shadow-sm: 0 1px 2px rgb(23 18 43 / 0.06), 0 2px 8px rgb(23 18 43 / 0.05);
+  --shadow: 0 2px 6px rgb(23 18 43 / 0.06), 0 12px 32px rgb(23 18 43 / 0.1);
+  --shadow-lg: 0 8px 20px rgb(23 18 43 / 0.08), 0 24px 64px rgb(23 18 43 / 0.16);
+  --backdrop: rgb(23 18 43 / 0.36);
+  --shadow-raise: 0 4px 10px rgb(23 18 43 / 0.2);
+
+  /* Cover tints for library items */
+  --cover-1: #3d4766;
+  --cover-2: #2e5a5f;
+  --cover-3: #6a3d63;
+  --cover-4: #4f5530;
+  --cover-5: #6e4636;
+
+  /* Reading page: Basic */
+  --page: #ffffff;
+  --page-ink: #17122b;
+  --sentence: #e2d8ff;
+  --word: #c7b5ff;
+  --word-ink: #17122b;
+  --word-line: #5b2ee6;
+  --note-mark: #fff3c4;
 }
 
+:root[data-reading='warm'] {
+  --page: #f8eedd;
+  --page-ink: #2e2316;
+  --sentence: #edd5aa;
+  --word: #e2bd80;
+  --word-ink: #2e2316;
+  --word-line: #6b3f06;
+  --note-mark: #f3dc9c;
+}
+:root[data-reading='paper'] {
+  --page: #ececef;
+  --page-ink: #1d1d22;
+  --sentence: #d3cdf0;
+  --word: #bfb3f5;
+  --word-ink: #1d1d22;
+  --word-line: #4a1fd0;
+  --note-mark: #f2e4a6;
+}
+
+/* Dark: the device asks for it and the person hasn't chosen light */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
     color-scheme: dark;
-    --bg: #120e1c;
-    --surface: #1c1629;
-    --surface-2: #241c36;
-    --surface-3: #2f2546;
-    --border: #3a2f52;
-    --border-strong: #8e80ad;
-    --text: #f1ecfa;
-    --text-muted: #c2b8d6;
-    --primary: #b79cff;
-    --primary-hover: #cbb8ff;
-    --on-primary: #160f24;
-    --primary-soft: #2f2546;
-    --link: #cbb8ff;
-    --focus: #d4c2ff;
-    --focus-gap: #120e1c;
-    --highlight-bg: #ffd43b;
-    --highlight-text: #120e1c;
-    --highlight-line: #120e1c;
-    --note-bg: #45346b;
+    --bg: #121019;
+    --bg-soft: #1b1825;
+    --bg-sunk: #252134;
+    --line: #322d44;
+    --line-strong: #8d86a8;
+    --ink: #f2effa;
+    --ink-2: #c5bfd8;
+    --ink-3: #aaa3c0;
+    --violet: #a98bff;
+    --violet-hover: #bda6ff;
+    --on-violet: #140e26;
+    --violet-soft: #2a2242;
+    --violet-text: #c3b0ff;
+    --focus: #c3b0ff;
+    --focus-gap: #121019;
     --danger: #ff9b91;
     --on-danger: #1c0f12;
     --danger-soft: #3a1d22;
-    --success: #6ce9a6;
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.3);
-    --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.6);
-    --backdrop: rgb(0 0 0 / 0.65);
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow: 0 2px 6px rgb(0 0 0 / 0.35), 0 12px 32px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 8px 20px rgb(0 0 0 / 0.4), 0 24px 64px rgb(0 0 0 / 0.55);
+    --backdrop: rgb(0 0 0 / 0.6);
+    --shadow-raise: 0 4px 12px rgb(0 0 0 / 0.5);
+    --cover-1: #3d4766;
+    --cover-2: #2e5a5f;
+    --cover-3: #6a3d63;
+    --cover-4: #4f5530;
+    --cover-5: #6e4636;
+    --page: #121019;
+    --page-ink: #f2effa;
+    --sentence: #2b2347;
+    --word: #6a4fd6;
+    --word-ink: #ffffff;
+    --word-line: #ffffff;
+    --note-mark: #4a3d12;
+  }
+  :root:not([data-theme='light'])[data-reading='warm'] {
+    --page: #1e1912;
+    --page-ink: #efe4d2;
+    --sentence: #3a2e1d;
+    --word: #8a6224;
+    --word-ink: #ffffff;
+    --word-line: #ffffff;
+    --note-mark: #4d3b12;
+  }
+  :root:not([data-theme='light'])[data-reading='paper'] {
+    --page: #1c1c21;
+    --page-ink: #e8e8ee;
+    --sentence: #2e2c40;
+    --word: #5d52b8;
+    --word-ink: #ffffff;
+    --word-line: #ffffff;
+    --note-mark: #4a4114;
   }
 }
 
 :root[data-theme='dark'] {
   color-scheme: dark;
-  --bg: #120e1c;
-  --surface: #1c1629;
-  --surface-2: #241c36;
-  --surface-3: #2f2546;
-  --border: #3a2f52;
-  --border-strong: #8e80ad;
-  --text: #f1ecfa;
-  --text-muted: #c2b8d6;
-  --primary: #b79cff;
-  --primary-hover: #cbb8ff;
-  --on-primary: #160f24;
-  --primary-soft: #2f2546;
-  --link: #cbb8ff;
-  --focus: #d4c2ff;
-  --focus-gap: #120e1c;
-  --highlight-bg: #ffd43b;
-  --highlight-text: #120e1c;
-  --highlight-line: #120e1c;
-  --note-bg: #45346b;
+  --bg: #121019;
+  --bg-soft: #1b1825;
+  --bg-sunk: #252134;
+  --line: #322d44;
+  --line-strong: #8d86a8;
+  --ink: #f2effa;
+  --ink-2: #c5bfd8;
+  --ink-3: #aaa3c0;
+  --violet: #a98bff;
+  --violet-hover: #bda6ff;
+  --on-violet: #140e26;
+  --violet-soft: #2a2242;
+  --violet-text: #c3b0ff;
+  --focus: #c3b0ff;
+  --focus-gap: #121019;
   --danger: #ff9b91;
   --on-danger: #1c0f12;
   --danger-soft: #3a1d22;
-  --success: #6ce9a6;
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.3);
-  --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.6);
-  --backdrop: rgb(0 0 0 / 0.65);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow: 0 2px 6px rgb(0 0 0 / 0.35), 0 12px 32px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 8px 20px rgb(0 0 0 / 0.4), 0 24px 64px rgb(0 0 0 / 0.55);
+  --backdrop: rgb(0 0 0 / 0.6);
+  --shadow-raise: 0 4px 12px rgb(0 0 0 / 0.5);
+  --cover-1: #3d4766;
+  --cover-2: #2e5a5f;
+  --cover-3: #6a3d63;
+  --cover-4: #4f5530;
+  --cover-5: #6e4636;
+  --page: #121019;
+  --page-ink: #f2effa;
+  --sentence: #2b2347;
+  --word: #6a4fd6;
+  --word-ink: #ffffff;
+  --word-line: #ffffff;
+  --note-mark: #4a3d12;
+}
+:root[data-theme='dark'][data-reading='warm'] {
+  --page: #1e1912;
+  --page-ink: #efe4d2;
+  --sentence: #3a2e1d;
+  --word: #8a6224;
+  --word-ink: #ffffff;
+  --word-line: #ffffff;
+  --note-mark: #4d3b12;
+}
+:root[data-theme='dark'][data-reading='paper'] {
+  --page: #1c1c21;
+  --page-ink: #e8e8ee;
+  --sentence: #2e2c40;
+  --word: #5d52b8;
+  --word-ink: #ffffff;
+  --word-line: #ffffff;
+  --note-mark: #4a4114;
 }
 
-:root[data-font='comic'] { --app-font: var(--font-comic); }
-:root[data-font='system'] { --app-font: var(--font-system); }
+:root[data-font='comic'] { --read-font: var(--font-comic); }
+:root[data-font='serif'] { --read-font: var(--font-serif); }
+:root[data-font='system'] { --read-font: var(--font-system); }
+:root[data-font-everywhere='true'] { --chrome-font: var(--read-font); }

@@ -142,6 +142,13 @@ class SpeechEngine extends EventTarget {
     this.seek(target);
   }
 
+  // Move back or forward by roughly this many seconds of speech.
+  skipSeconds(seconds) {
+    if (!this.words.length) return;
+    const words = Math.round((seconds * 165 * this.rate) / 60);
+    this.seek(this.index + words);
+  }
+
   setRate(rate) {
     this.rate = rate;
     if (this.state === 'playing') this.play(this.index);

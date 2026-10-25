@@ -1,4 +1,4 @@
-// Hash router: #/text, #/file, #/library, #/session/<id>
+// Hash router: #/home, #/text, #/file, #/library, #/notes, #/session/<id>[/<word>]
 // Hash routes work on any static host with no server rules.
 
 import { $$ } from './ui.js';
@@ -7,6 +7,11 @@ const routes = new Map();
 let cleanup = null;
 let firstRender = true;
 let navToken = 0;
+let lastHash = null;
+let prevHash = null;
+
+// Where the person was before this page, for in-app Back buttons.
+export const previousHash = () => prevHash;
 
 export function route(name, loader) {
   routes.set(name, loader);
@@ -22,12 +27,16 @@ export function navigate(path, { replace = false } = {}) {
 }
 
 export function currentRoute() {
-  const [name = 'text', ...rest] = location.hash.replace(/^#\/?/, '').split('/');
-  return { name: routes.has(name) ? name : 'text', params: rest.map(decodeURIComponent) };
+  const [name = 'home', ...rest] = location.hash.replace(/^#\/?/, '').split('/');
+  return { name: routes.has(name) ? name : 'home', params: rest.map(decodeURIComponent) };
 }
 
 async function render() {
   const token = ++navToken;
+  if (location.hash !== lastHash) {
+    prevHash = lastHash;
+    lastHash = location.hash;
+  }
   const { name, params } = currentRoute();
   const main = document.getElementById('main');
 
@@ -42,20 +51,17 @@ async function render() {
   const view = await routes.get(name)();
   if (token !== navToken) return;
 
+  document.body.dataset.view = name;
   main.innerHTML = '';
   const result = await view.render(main, params);
   cleanup = typeof result === 'function' ? result : null;
 
   // Navigation state
-  $$('.nav a').forEach((a) => {
-    const active = a.dataset.route === name || (name === 'session' && a.dataset.route === 'library');
-    if (a.dataset.route === name) a.setAttribute('aria-current', 'page');
+  $$('[data-route]').forEach((a) => {
+    const r = a.dataset.route;
+    if (r === name) a.setAttribute('aria-current', 'page');
     else a.removeAttribute('aria-current');
-    a.classList.toggle('is-section', active && a.dataset.route !== name);
-  });
-  $$('.recents a').forEach((a) => {
-    if (name === 'session' && a.dataset.id === params[0]) a.setAttribute('aria-current', 'page');
-    else a.removeAttribute('aria-current');
+    a.classList.toggle('is-section', r === 'library' && name === 'session');
   });
 
   // Move focus to the new page's heading so screen reader and keyboard users

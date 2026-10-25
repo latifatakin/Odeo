@@ -1,14 +1,15 @@
-// Reading settings: font, spacing, theme, voice and speed.
+// Reading preferences and the Appearance sheet.
 
 import { repo, DEFAULT_SETTINGS } from './storage/repo.js';
 import { speech } from './speech.js';
-import { $, $$, esc, debounce, closeOnBackdrop, announce } from './ui.js';
+import { $, $$, debounce, closeOnBackdrop, announce } from './ui.js';
 
 let current = { ...DEFAULT_SETTINGS };
 export const settingsEvents = new EventTarget();
 export const getSettings = () => current;
 
 const save = debounce((values) => repo.saveSettings(values).catch(() => {}), 400);
+const SIZES = [14, 16, 18, 20, 22, 24, 27, 30, 34, 38];
 
 export async function initSettings() {
   current = await repo.getSettings();
@@ -16,8 +17,6 @@ export async function initSettings() {
   speech.rate = current.rate;
   speech.voiceURI = current.voiceURI;
   bindDialog();
-  speech.addEventListener('voices', fillVoices);
-  fillVoices();
 
   repo.addEventListener('change', async (e) => {
     if (e.detail.collection === 'settings' && e.detail.origin === 'remote') {
@@ -27,7 +26,6 @@ export async function initSettings() {
       settingsEvents.dispatchEvent(new CustomEvent('change', { detail: current }));
     }
   });
-
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', apply);
 }
 
@@ -44,83 +42,65 @@ export function updateSettings(patch) {
 function apply() {
   const root = document.documentElement;
   root.dataset.font = current.font;
+  root.dataset.reading = current.readingTheme;
+  if (current.fontEverywhere) root.dataset.fontEverywhere = 'true';
+  else delete root.dataset.fontEverywhere;
   if (current.theme === 'system') root.removeAttribute('data-theme');
   else root.dataset.theme = current.theme;
   root.style.setProperty('--read-size', `${current.fontSize}px`);
   root.style.setProperty('--read-line', String(current.lineHeight));
   root.style.setProperty('--read-letter', `${current.letterSpacing}em`);
-  root.style.setProperty('--read-word', `${(current.letterSpacing * 2 + 0.06).toFixed(2)}em`);
+  // Word gaps grow much faster than letter gaps so words stay clearly separate.
+  root.style.setProperty('--read-word', `${(0.16 + current.letterSpacing * 3.5).toFixed(2)}em`);
+  root.style.setProperty('--read-weight', current.bold ? '700' : '400');
 
   const dark =
     current.theme === 'dark' ||
     (current.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  $$('meta[name="theme-color"]').forEach((m) => (m.content = dark ? '#241c36' : '#f3edff'));
+  $$('meta[name="theme-color"]').forEach((m) => (m.content = dark ? '#121019' : '#ffffff'));
 }
 
-// ---------- Dialog ----------
+// ---------- Appearance sheet ----------
 
+const sizePct = (px) => `${Math.round((px / 20) * 100)}%`;
 const outputs = {
-  fontSize: (v) => `${v}px`,
   lineHeight: (v) => `${Number(v).toFixed(1)}×`,
-  letterSpacing: (v) => (Number(v) === 0 ? 'none' : `${Number(v).toFixed(2)} em`),
-  rate: (v) => `${Number(v).toFixed(1)}×`,
+  letterSpacing: (v) => (Number(v) === 0 ? 'none' : Number(v) <= 0.05 ? 'a little' : Number(v) <= 0.1 ? 'roomy' : 'extra roomy'),
 };
-const outputIds = { fontSize: 'set-size-out', lineHeight: 'set-line-out', letterSpacing: 'set-letter-out', rate: 'set-rate-out' };
+const outputIds = { lineHeight: 'set-line-out', letterSpacing: 'set-letter-out' };
 
 function syncForm() {
-  const form = $('#settings-form');
+  const form = $('#appearance-form');
   for (const el of form.elements) {
     if (!el.name || !(el.name in current)) continue;
     if (el.type === 'radio') el.checked = el.value === String(current[el.name]);
     else if (el.type === 'checkbox') el.checked = !!current[el.name];
-    else if (el.tagName === 'SELECT') el.value = current[el.name] ?? '';
     else el.value = current[el.name];
   }
   for (const [name, id] of Object.entries(outputIds)) {
     $('#' + id).textContent = outputs[name](current[name]);
-    const input = form.elements[name];
-    input.setAttribute('aria-valuetext', outputs[name](current[name]));
+    form.elements[name].setAttribute('aria-valuetext', outputs[name](current[name]));
   }
-}
-
-function fillVoices() {
-  const select = $('#set-voice');
-  if (!speech.supported) {
-    select.innerHTML = '<option value="">Speech isn’t available in this browser</option>';
-    select.disabled = true;
-    return;
-  }
-  const voices = speech.voices;
-  if (!voices.length) {
-    select.innerHTML = '<option value="">Default voice</option>';
-    return;
-  }
-  const local = voices.filter((v) => v.localService);
-  const online = voices.filter((v) => !v.localService);
-  const opt = (v) =>
-    `<option value="${esc(v.voiceURI)}">${esc(v.name)} — ${esc(v.lang)}${v.localService ? '' : ' (online)'}</option>`;
-  select.innerHTML =
-    (local.length ? `<optgroup label="On this device">${local.map(opt).join('')}</optgroup>` : '') +
-    (online.length ? `<optgroup label="Online">${online.map(opt).join('')}</optgroup>` : '');
-  select.value = current.voiceURI || speech.currentVoice()?.voiceURI || '';
+  $('#size-out').textContent = sizePct(current.fontSize);
 }
 
 let opener = null;
 
-export function openSettings() {
-  const dlg = $('#settings-dialog');
+export function openAppearance() {
+  const dlg = $('#appearance-dialog');
   opener = document.activeElement;
   syncForm();
-  fillVoices();
   dlg.showModal();
 }
 
 function bindDialog() {
-  const dlg = $('#settings-dialog');
-  const form = $('#settings-form');
+  const dlg = $('#appearance-dialog');
+  const form = $('#appearance-form');
   closeOnBackdrop(dlg);
 
-  $$('.settings-open').forEach((b) => b.addEventListener('click', openSettings));
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.appearance-open')) openAppearance();
+  });
 
   form.addEventListener('input', (e) => {
     const el = e.target;
@@ -136,13 +116,24 @@ function bindDialog() {
     updateSettings({ [el.name]: value });
   });
 
-  $('#voice-test').addEventListener('click', () => speech.sample('Hello! This is how I sound when I read to you.'));
+  form.querySelectorAll('[data-step="fontSize"]').forEach((btn) =>
+    btn.addEventListener('click', () => {
+      const dir = Number(btn.dataset.dir);
+      const i = SIZES.reduce(
+        (best, s, k) => (Math.abs(s - current.fontSize) < Math.abs(SIZES[best] - current.fontSize) ? k : best),
+        0
+      );
+      const next = SIZES[Math.max(0, Math.min(SIZES.length - 1, i + dir))];
+      updateSettings({ fontSize: next });
+      $('#size-out').textContent = sizePct(next);
+    })
+  );
 
   $('#settings-reset').addEventListener('click', () => {
-    updateSettings({ ...DEFAULT_SETTINGS });
+    const { voiceURI, recentVoices, rate, autoSpeed } = current;
+    updateSettings({ ...DEFAULT_SETTINGS, voiceURI, recentVoices, rate, autoSpeed });
     syncForm();
-    fillVoices();
-    announce('Settings reset to defaults');
+    announce('Appearance reset');
   });
 
   dlg.addEventListener('close', () => {

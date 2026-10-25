@@ -38,14 +38,18 @@ const uuid = () =>
       });
 
 export const DEFAULT_SETTINGS = {
-  font: 'opendyslexic', // 'opendyslexic' | 'comic' | 'system'
+  font: 'opendyslexic', // 'opendyslexic' | 'comic' | 'serif' | 'system'
   fontSize: 20, // px, reading text
   lineHeight: 1.8,
   letterSpacing: 0.05, // em
-  wordSpacing: 0.16, // em
+  bold: false,
+  fontEverywhere: false, // use the reading font for menus and buttons too
   theme: 'system', // 'system' | 'light' | 'dark'
+  readingTheme: 'basic', // 'basic' | 'warm' | 'paper'
   rate: 1,
+  autoSpeed: false, // speed up gradually while listening
   voiceURI: null,
+  recentVoices: [],
   autoScroll: true,
 };
 
@@ -207,6 +211,10 @@ class Repository extends EventTarget {
   }
 
   // ---------- Notes ----------
+
+  async listAllNotes() {
+    return this.#live('notes');
+  }
 
   async listNotes(documentId) {
     const notes = await this.#live('notes');

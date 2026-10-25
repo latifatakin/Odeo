@@ -6,14 +6,17 @@ Everything runs in the browser. There are no accounts and no server, and text ne
 
 ## Features
 
-- **Text to Speech:** paste or type text, or try a sample.
-- **File to Speech:** PDF (via pdf.js) or TXT, up to 20 MB. You can review and edit the extracted text before listening.
-- **Word-by-word highlighting:** colour plus a thick underline, so it doesn't rely on colour alone. Click any word to read from there.
-- **Player:** play, pause, stop, previous and next sentence, a position slider (it works with the keyboard and by clicking, not only dragging), speed from 0.5× to 2×, and the estimated time left.
-- **Reading settings:** OpenDyslexic, Comic Sans or Standard font; text size; line and letter spacing; System, Light or Dark theme; voice; speed. Settings are remembered.
-- **Notes:** select text and choose "Save as note", or use "Add note from current sentence", which works with the keyboard alone. You can add your own comments, play from any note, or delete it.
-- **My library:** titles, dates, search across titles and text, sorting, rename, delete, and resume from where you stopped.
-- **Offline:** after the first visit, the app and every saved item work with no connection. This uses a service worker.
+- **Home:** Continue listening covers with progress, Import & listen tiles (Type or paste, Upload a file, From clipboard, Surprise me), samples, and a words-listened count.
+- **Reader:** the text is the page. The current sentence gets a soft wash and the current word a stronger chip with an underline, so the highlight doesn't rely on colour alone. Tap any word to listen from there.
+- **Floating player:** voice, back 10s, play/pause, forward 10s, and speed, plus a progress line with elapsed and remaining time.
+  - **Speed sheet:** − / + stepper, presets from 0.8× to 2.5×, and "Speed up gradually", which adds 0.1× every 600 words.
+  - **Voice sheet:** search, a "Works offline" filter, language choice, and recent voices.
+- **Appearance (Aa):** text size; Basic, Warm or Paper page colour; light, dark or match device; OpenDyslexic, Comic Sans, Georgia or Standard font; bold text; line and letter spacing; the reading font for menus too; and follow-along scrolling.
+- **Notes:** select text and choose "Save as note", or "Save the sentence being read", which works with the keyboard. There's a notes panel in the reader, plus a Notes page with search and "Play from here".
+- **Library:** search, filters (In progress, Not started, Finished), sorting, rename, delete and resume.
+- **Upload:** PDF (via pdf.js) or TXT, up to 20 MB, with a check-the-text step before listening.
+- **Phones:** a bottom tab bar with Home, Library, a central +, Notes and Display (Appearance).
+- **Offline:** after the first visit, the app and every saved item work with no connection.
 
 ## Run it locally
 
@@ -42,29 +45,32 @@ Offline support is switched off on `localhost` so your edits show up straight aw
 ## Files
 
 ```
-index.html              App shell, icon sprite, settings and confirm dialogs
-sw.js                   Offline caching
+index.html              App shell: top bar, phone tab bar, icon sprite, Add / Appearance / Confirm sheets
+sw.js                   Offline caching (bump VERSION on each deploy)
 netlify.toml            Netlify config and security headers (CSP)
 manifest.webmanifest    Lets people install it as an app
+PRODUCT.md              Who it's for and what it must do (design context)
 css/
-  tokens.css            Colours (light and dark), fonts, spacing
-  base.css              Reset, focus styles, reduced motion, forced colours
-  layout.css            Sidebar (desktop), rail (tablet), drawer (phone)
-  components.css        Buttons, player, notes, library, dialogs
+  tokens.css            Colours (light/dark × Basic/Warm/Paper), fonts, spacing
+  base.css              Reset, focus, selection, reduced motion, forced colours
+  layout.css            Top bar, tabs, phone tab bar
+  components.css        Buttons, tiles, covers, library, notes, sheets, Appearance
+  reader.css            Reader page, two-level highlight, notes panel, floating player, speed and voice sheets
 js/
-  main.js               Startup, mobile drawer, Recents, offline banner
+  main.js               Startup and routes
   router.js             Hash routes; moves focus to each page's heading
-  speech.js             Web Speech engine: chunking, word events, timing fallback
+  settings.js           Reading preferences and the Appearance sheet
+  importers.js          Type / Upload / Clipboard / Sample actions and the + sheet
+  player-sheets.js      Speed and Voice sheets
+  covers.js             Generated covers, voice avatars, language names
+  speech.js             Web Speech engine: chunking, word events, timing fallback, 10s skips
   text.js               Splits text into words and sentences
-  reader.js             Word spans, highlighting, text selection for notes
+  reader.js             Word spans, sentence and word highlight, selection for notes
   extract.js            PDF and TXT text extraction
-  settings.js           Reading settings dialog
   ui.js                 Announcements, toasts, confirm dialog, formatting
-  theme-boot.js         Applies the saved theme before the first paint
-  storage/
-    repo.js             The only code that reads or writes saved data
-    local-adapter.js    localStorage implementation
-  views/                text, file, session, library pages
+  theme-boot.js         Applies saved theme, page colour and font before first paint
+  storage/              repo.js (the only data access) and local-adapter.js
+  views/                home, text, file, session (reader), library, notes
 fonts/                  OpenDyslexic (SIL Open Font License, see OFL.txt)
 vendor/pdfjs/           pdf.js 4.10.38, legacy build (Apache 2.0)
 ```

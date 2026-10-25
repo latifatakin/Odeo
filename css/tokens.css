@@ -1,0 +1,141 @@
+/* Design tokens. Colours meet WCAG 2.2 AA: 4.5:1 for text, 3:1 for
+   borders, icons and focus rings, in both themes. */
+
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('../fonts/OpenDyslexic-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('../fonts/OpenDyslexic-Bold.woff2') format('woff2');
+  font-weight: 600 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+
+  --font-opendyslexic: 'OpenDyslexic', 'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', sans-serif;
+  --font-comic: 'Comic Sans MS', 'Comic Neue', 'Chalkboard SE', 'Comic Sans', sans-serif;
+  --font-system: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --app-font: var(--font-opendyslexic);
+
+  /* Reading preferences (set from Settings) */
+  --read-size: 20px;
+  --read-line: 1.8;
+  --read-letter: 0.05em;
+  --read-word: 0.16em;
+
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+
+  --sidebar-w: 280px;
+  --rail-w: 96px;
+  --topbar-h: 60px;
+  --target: 44px;
+
+  /* Light theme */
+  --bg: #fbf8ff;
+  --surface: #ffffff;
+  --surface-2: #f3edff;
+  --surface-3: #e9dfff;
+  --border: #ddd1f3;
+  --border-strong: #7c6a9e;
+  --text: #1e1631;
+  --text-muted: #4f4566;
+  --primary: #6d28d9;
+  --primary-hover: #5b21b6;
+  --on-primary: #ffffff;
+  --primary-soft: #ede4ff;
+  --link: #5b21b6;
+  --focus: #6d28d9;
+  --focus-gap: #ffffff;
+  --highlight-bg: #ffe066;
+  --highlight-text: #1e1631;
+  --highlight-line: #6d28d9;
+  --note-bg: #e6d9ff;
+  --danger: #b42318;
+  --on-danger: #ffffff;
+  --danger-soft: #fdecea;
+  --success: #067647;
+  --shadow: 0 1px 2px rgb(30 22 49 / 0.06), 0 4px 16px rgb(30 22 49 / 0.06);
+  --shadow-lg: 0 12px 40px rgb(30 22 49 / 0.18);
+  --backdrop: rgb(18 14 28 / 0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #120e1c;
+    --surface: #1c1629;
+    --surface-2: #241c36;
+    --surface-3: #2f2546;
+    --border: #3a2f52;
+    --border-strong: #8e80ad;
+    --text: #f1ecfa;
+    --text-muted: #c2b8d6;
+    --primary: #b79cff;
+    --primary-hover: #cbb8ff;
+    --on-primary: #160f24;
+    --primary-soft: #2f2546;
+    --link: #cbb8ff;
+    --focus: #d4c2ff;
+    --focus-gap: #120e1c;
+    --highlight-bg: #ffd43b;
+    --highlight-text: #120e1c;
+    --highlight-line: #120e1c;
+    --note-bg: #45346b;
+    --danger: #ff9b91;
+    --on-danger: #1c0f12;
+    --danger-soft: #3a1d22;
+    --success: #6ce9a6;
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.3);
+    --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.6);
+    --backdrop: rgb(0 0 0 / 0.65);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #120e1c;
+  --surface: #1c1629;
+  --surface-2: #241c36;
+  --surface-3: #2f2546;
+  --border: #3a2f52;
+  --border-strong: #8e80ad;
+  --text: #f1ecfa;
+  --text-muted: #c2b8d6;
+  --primary: #b79cff;
+  --primary-hover: #cbb8ff;
+  --on-primary: #160f24;
+  --primary-soft: #2f2546;
+  --link: #cbb8ff;
+  --focus: #d4c2ff;
+  --focus-gap: #120e1c;
+  --highlight-bg: #ffd43b;
+  --highlight-text: #120e1c;
+  --highlight-line: #120e1c;
+  --note-bg: #45346b;
+  --danger: #ff9b91;
+  --on-danger: #1c0f12;
+  --danger-soft: #3a1d22;
+  --success: #6ce9a6;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 4px 16px rgb(0 0 0 / 0.3);
+  --shadow-lg: 0 12px 40px rgb(0 0 0 / 0.6);
+  --backdrop: rgb(0 0 0 / 0.65);
+}
+
+:root[data-font='comic'] { --app-font: var(--font-comic); }
+:root[data-font='system'] { --app-font: var(--font-system); }

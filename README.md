@@ -6,16 +6,16 @@ Everything runs in the browser. There are no accounts and no server, and text ne
 
 ## Features
 
-- **Home:** Continue listening covers with progress, Import & listen tiles (Type or paste, Upload a file, From clipboard, Surprise me), samples, and a words-listened count.
-- **Reader:** the text is the page. The current sentence gets a soft wash and the current word a stronger chip with an underline, so the highlight doesn't rely on colour alone. Tap any word to listen from there.
-- **Floating player:** voice, back 10s, play/pause, forward 10s, and speed, plus a progress line with elapsed and remaining time.
-  - **Speed sheet:** − / + stepper, presets from 0.8× to 2.5×, and "Speed up gradually", which adds 0.1× every 600 words.
-  - **Voice sheet:** search, a "Works offline" filter, language choice, and recent voices.
-- **Appearance (Aa):** text size; Basic, Warm or Paper page colour; light, dark or match device; OpenDyslexic, Comic Sans, Georgia or Standard font; bold text; line and letter spacing; the reading font for menus too; and follow-along scrolling.
-- **Notes:** select text and choose "Save as note", or "Save the sentence being read", which works with the keyboard. There's a notes panel in the reader, plus a Notes page with search and "Play from here".
-- **Library:** search, filters (In progress, Not started, Finished), sorting, rename, delete and resume.
-- **Upload:** PDF (via pdf.js) or TXT, up to 20 MB, with a check-the-text step before listening.
-- **Phones:** a bottom tab bar with Home, Library, a central +, Notes and Display (Appearance).
+The look follows the Odeo brand guide. See [DESIGN.md](DESIGN.md).
+
+- **Home:** Continue listening cards with progress, two large tiles (Paste text and Upload a file), and My library.
+- **Reader:** one cream column. The sentence being read gets a soft purple background and the current word sunbeam yellow. Tap any word to listen from there. Space plays and pauses; the arrow keys skip 10 seconds.
+- **Player bar:** title and time, a progress line, then voice, back 10s, play, forward 10s and speed.
+- **Speed sheet** (0.8× to 2.0×, plus "Speed up gradually") and **voice sheet** (search, language, works-offline filter, and a sample for each voice).
+- **Notes:** select text and choose "Save note", or save the sentence being read. Notes appear in a panel beside the page and on the Notes page.
+- **My library:** search, filters, sorting, and a More menu for Rename and Delete.
+- **Settings:** font (Arial, OpenDyslexic, Comic), text size 18 to 32px, line and letter spacing, Cream or Sand page, light or dark, motion, voice and speed. There's also a Reading settings sheet you can open while reading.
+- **Navigation:** side menu on desktop (it collapses to an icon rail), icon rail on tablet, and a bottom bar on phone.
 - **Offline:** after the first visit, the app and every saved item work with no connection.
 
 ## Run it locally

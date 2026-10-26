@@ -21,8 +21,8 @@ export function toast(message, { type = 'info', duration = 6000 } = {}) {
   const region = document.getElementById('toasts');
   const el = document.createElement('div');
   el.className = `toast toast--${type}`;
-  el.innerHTML = `<span>${esc(message)}</span>
-    <button type="button" class="icon-btn icon-btn--sm" aria-label="Dismiss message">${icon('x')}</button>`;
+  el.innerHTML = `${icon(type === 'error' ? 'alert' : 'check-circle')}<span>${esc(message)}</span>
+    <button type="button" class="icon-btn" aria-label="Dismiss message">${icon('x')}</button>`;
   region.append(el);
   announce(message, { assertive: type === 'error' });
 

@@ -1,20 +1,8 @@
-/* Design tokens. Text 4.5:1 or better, borders, icons and focus 3:1 or
-   better, in every theme. */
+/* Ôdēō design tokens.
+   The first block is copied word for word from the Odeo brand guide
+   (.claude/skills/odeo-brand/SKILL.md). Don't edit it here: change the
+   guide, then paste it again. App-only tokens follow, built from it. */
 
-@font-face {
-  font-family: 'Comic Neue';
-  src: url('../fonts/ComicNeue-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'Comic Neue';
-  src: url('../fonts/ComicNeue-Bold.woff2') format('woff2');
-  font-weight: 600 800;
-  font-style: normal;
-  font-display: swap;
-}
 @font-face {
   font-family: 'OpenDyslexic';
   src: url('../fonts/OpenDyslexic-Regular.woff2') format('woff2');
@@ -29,221 +17,158 @@
   font-style: normal;
   font-display: swap;
 }
+/* Comic Neue is self-hosted (instead of the guide's Google Fonts link) so
+   headings work offline and under the site's security policy. */
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('../fonts/ComicNeue-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('../fonts/ComicNeue-Bold.woff2') format('woff2');
+  font-weight: 600 800;
+  font-style: normal;
+  font-display: swap;
+}
 
+/* ---------- Brand guide tokens (verbatim) ---------- */
 :root {
-  color-scheme: light;
-
-  --font-ui: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --font-opendyslexic: 'OpenDyslexic', 'Comic Neue', 'Comic Sans MS', sans-serif;
-  --font-comic: 'Comic Neue', 'Comic Sans MS', sans-serif;
-  --font-serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Noto Serif', 'Times New Roman', serif;
-  --font-system: var(--font-ui);
-  --read-font: var(--font-opendyslexic);
-  --chrome-font: var(--font-ui);
-
-  /* Reading preferences, set from Appearance */
-  --read-size: 20px;
-  --read-line: 1.8;
-  --read-letter: 0.05em;
-  --read-word: 0.16em;
-  --read-weight: 400;
-
-  --r-sm: 10px;
-  --r: 14px;
-  --r-lg: 20px;
-  --r-xl: 28px;
-  --s1: 4px;
-  --s2: 8px;
-  --s3: 12px;
-  --s4: 16px;
-  --s5: 24px;
-  --s6: 32px;
-  --s7: 48px;
-  --s8: 64px;
-  --target: 44px;
-  --appbar-h: 64px;
-  --tabbar-h: 72px;
-  --measure: 68ch;
-
-  /* Light */
-  --bg: #ffffff;
-  --bg-soft: #f6f4fb;
-  --bg-sunk: #eeebf6;
-  --line: #e6e2f0;
-  --line-strong: #857e9f;
-  --ink: #17122b;
-  --ink-2: #4a4462;
-  --ink-3: #635d7c;
-  --violet: #5b2ee6;
-  --violet-hover: #4a1fd0;
-  --on-violet: #ffffff;
-  --violet-soft: #efeaff;
-  --violet-text: #4a1fd0;
-  --focus: #5b2ee6;
-  --focus-gap: #ffffff;
-  --danger: #b42318;
-  --on-danger: #ffffff;
-  --danger-soft: #fdecea;
-  --shadow-sm: 0 1px 2px rgb(23 18 43 / 0.06), 0 2px 8px rgb(23 18 43 / 0.05);
-  --shadow: 0 2px 6px rgb(23 18 43 / 0.06), 0 12px 32px rgb(23 18 43 / 0.1);
-  --shadow-lg: 0 8px 20px rgb(23 18 43 / 0.08), 0 24px 64px rgb(23 18 43 / 0.16);
-  --backdrop: rgb(23 18 43 / 0.36);
-  --shadow-raise: 0 4px 10px rgb(23 18 43 / 0.2);
-
-  /* Cover tints for library items */
-  --cover-1: #3d4766;
-  --cover-2: #2e5a5f;
-  --cover-3: #6a3d63;
-  --cover-4: #4f5530;
-  --cover-5: #6e4636;
-
-  /* Reading page: Basic */
-  --page: #ffffff;
-  --page-ink: #17122b;
-  --sentence: #e2d8ff;
-  --word: #c7b5ff;
-  --word-ink: #17122b;
-  --word-line: #5b2ee6;
-  --note-mark: #fff3c4;
+  --odeo-bg: #FBF9F4;
+  --odeo-surface: #FFFEFB;
+  --odeo-surface-sunken: #F3F0EB;
+  --odeo-surface-raised: #FFFFFF;
+  --odeo-text: #211B30;
+  --odeo-text-muted: #615B70;
+  --odeo-border: #D9D5E0;
+  --odeo-border-strong: #807A8F;
+  --odeo-primary: #5B32C9;
+  --odeo-primary-hover: #4A26A8;
+  --odeo-on-primary: #FFFFFF;
+  --odeo-primary-soft: #ECE6FD;
+  --odeo-secondary: #FFC94D;
+  --odeo-on-secondary: #211B30;
+  --odeo-secondary-soft: #FFF4D6;
+  --odeo-success: #1E7A4F;
+  --odeo-warning: #8A5300;
+  --odeo-error: #B42335;
+  --odeo-focus-ring: #5B32C9;
+  --odeo-primary-50: #F6F3FF;
+  --odeo-primary-100: #ECE6FD;
+  --odeo-primary-200: #D8CCFB;
+  --odeo-primary-300: #B49CFF;
+  --odeo-primary-400: #8F6BF0;
+  --odeo-primary-500: #7347E0;
+  --odeo-primary-600: #5B32C9;
+  --odeo-primary-700: #4A26A8;
+  --odeo-primary-800: #3A1E85;
+  --odeo-primary-900: #2A1660;
+  --odeo-grey-50: #FBF9F4;
+  --odeo-grey-100: #F3F0EB;
+  --odeo-grey-200: #E6E2E8;
+  --odeo-grey-300: #D9D5E0;
+  --odeo-grey-400: #A9A3B5;
+  --odeo-grey-500: #807A8F;
+  --odeo-grey-600: #615B70;
+  --odeo-grey-700: #45405A;
+  --odeo-grey-800: #2F2A40;
+  --odeo-grey-900: #211B30;
+  --odeo-grey-950: #16121F;
+  --odeo-space-1: 4px;
+  --odeo-space-2: 8px;
+  --odeo-space-3: 12px;
+  --odeo-space-4: 16px;
+  --odeo-space-5: 20px;
+  --odeo-space-6: 24px;
+  --odeo-space-8: 32px;
+  --odeo-space-10: 40px;
+  --odeo-space-12: 48px;
+  --odeo-space-16: 64px;
+  --odeo-radius-sm: 8px;
+  --odeo-radius-md: 12px;
+  --odeo-radius-lg: 16px;
+  --odeo-radius-xl: 24px;
+  --odeo-radius-full: 9999px;
+  --odeo-tap-min: 48px;
+  --odeo-play-button: 64px;
+  --odeo-player-height: 88px;
+  --odeo-reader-measure: 680px;
+  --odeo-sheet-max: 480px;
+  --odeo-sidenav-width: 248px;
+  --odeo-nav-rail: 88px;
+  --odeo-shadow-card: 0 1px 2px #211b300d, 0 2px 8px #211b300f;
+  --odeo-shadow-float: 0 8px 24px #2a166021, 0 2px 6px #211b3014;
+  --odeo-font-heading: "Comic Sans MS", "Comic Sans", "Comic Neue", cursive;
+  --odeo-font-body: Arial, Arimo, "Helvetica Neue", Helvetica, sans-serif;
+  --odeo-font-dyslexic: OpenDyslexic, "Comic Sans MS", "Comic Neue", cursive;
 }
-
-:root[data-reading='warm'] {
-  --page: #f8eedd;
-  --page-ink: #2e2316;
-  --sentence: #edd5aa;
-  --word: #e2bd80;
-  --word-ink: #2e2316;
-  --word-line: #6b3f06;
-  --note-mark: #f3dc9c;
-}
-:root[data-reading='paper'] {
-  --page: #ececef;
-  --page-ink: #1d1d22;
-  --sentence: #d3cdf0;
-  --word: #bfb3f5;
-  --word-ink: #1d1d22;
-  --word-line: #4a1fd0;
-  --note-mark: #f2e4a6;
-}
-
-/* Dark: the device asks for it and the person hasn't chosen light */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
+  :root:not([data-theme="light"]) {
+    --odeo-bg: #16121F;
+    --odeo-surface: #211C2E;
+    --odeo-surface-sunken: #1B1726;
+    --odeo-surface-raised: #2B2540;
+    --odeo-text: #F1EDF7;
+    --odeo-text-muted: #A39DB2;
+    --odeo-border: #3D3654;
+    --odeo-border-strong: #8A839C;
+    --odeo-primary: #B49CFF;
+    --odeo-primary-hover: #CBB9FF;
+    --odeo-on-primary: #16121F;
+    --odeo-primary-soft: #2E2550;
+    --odeo-secondary: #FFD46B;
+    --odeo-on-secondary: #16121F;
+    --odeo-secondary-soft: #3A3120;
+    --odeo-success: #6FD39F;
+    --odeo-warning: #FFC94D;
+    --odeo-error: #FF8A96;
+    --odeo-focus-ring: #B49CFF;
+    --odeo-shadow-card: 0 1px 3px #00000099;
+    --odeo-shadow-float: 0 12px 28px #000000cc;
     color-scheme: dark;
-    --bg: #121019;
-    --bg-soft: #1b1825;
-    --bg-sunk: #252134;
-    --line: #322d44;
-    --line-strong: #8d86a8;
-    --ink: #f2effa;
-    --ink-2: #c5bfd8;
-    --ink-3: #aaa3c0;
-    --violet: #a98bff;
-    --violet-hover: #bda6ff;
-    --on-violet: #140e26;
-    --violet-soft: #2a2242;
-    --violet-text: #c3b0ff;
-    --focus: #c3b0ff;
-    --focus-gap: #121019;
-    --danger: #ff9b91;
-    --on-danger: #1c0f12;
-    --danger-soft: #3a1d22;
-    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-    --shadow: 0 2px 6px rgb(0 0 0 / 0.35), 0 12px 32px rgb(0 0 0 / 0.4);
-    --shadow-lg: 0 8px 20px rgb(0 0 0 / 0.4), 0 24px 64px rgb(0 0 0 / 0.55);
-    --backdrop: rgb(0 0 0 / 0.6);
-    --shadow-raise: 0 4px 12px rgb(0 0 0 / 0.5);
-    --cover-1: #3d4766;
-    --cover-2: #2e5a5f;
-    --cover-3: #6a3d63;
-    --cover-4: #4f5530;
-    --cover-5: #6e4636;
-    --page: #121019;
-    --page-ink: #f2effa;
-    --sentence: #2b2347;
-    --word: #6a4fd6;
-    --word-ink: #ffffff;
-    --word-line: #ffffff;
-    --note-mark: #4a3d12;
-  }
-  :root:not([data-theme='light'])[data-reading='warm'] {
-    --page: #1e1912;
-    --page-ink: #efe4d2;
-    --sentence: #3a2e1d;
-    --word: #8a6224;
-    --word-ink: #ffffff;
-    --word-line: #ffffff;
-    --note-mark: #4d3b12;
-  }
-  :root:not([data-theme='light'])[data-reading='paper'] {
-    --page: #1c1c21;
-    --page-ink: #e8e8ee;
-    --sentence: #2e2c40;
-    --word: #5d52b8;
-    --word-ink: #ffffff;
-    --word-line: #ffffff;
-    --note-mark: #4a4114;
   }
 }
-
-:root[data-theme='dark'] {
+:root[data-theme="dark"] {
+  --odeo-bg: #16121F;
+  --odeo-surface: #211C2E;
+  --odeo-surface-sunken: #1B1726;
+  --odeo-surface-raised: #2B2540;
+  --odeo-text: #F1EDF7;
+  --odeo-text-muted: #A39DB2;
+  --odeo-border: #3D3654;
+  --odeo-border-strong: #8A839C;
+  --odeo-primary: #B49CFF;
+  --odeo-primary-hover: #CBB9FF;
+  --odeo-on-primary: #16121F;
+  --odeo-primary-soft: #2E2550;
+  --odeo-secondary: #FFD46B;
+  --odeo-on-secondary: #16121F;
+  --odeo-secondary-soft: #3A3120;
+  --odeo-success: #6FD39F;
+  --odeo-warning: #FFC94D;
+  --odeo-error: #FF8A96;
+  --odeo-focus-ring: #B49CFF;
+  --odeo-shadow-card: 0 1px 3px #00000099;
+  --odeo-shadow-float: 0 12px 28px #000000cc;
   color-scheme: dark;
-  --bg: #121019;
-  --bg-soft: #1b1825;
-  --bg-sunk: #252134;
-  --line: #322d44;
-  --line-strong: #8d86a8;
-  --ink: #f2effa;
-  --ink-2: #c5bfd8;
-  --ink-3: #aaa3c0;
-  --violet: #a98bff;
-  --violet-hover: #bda6ff;
-  --on-violet: #140e26;
-  --violet-soft: #2a2242;
-  --violet-text: #c3b0ff;
-  --focus: #c3b0ff;
-  --focus-gap: #121019;
-  --danger: #ff9b91;
-  --on-danger: #1c0f12;
-  --danger-soft: #3a1d22;
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-  --shadow: 0 2px 6px rgb(0 0 0 / 0.35), 0 12px 32px rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 8px 20px rgb(0 0 0 / 0.4), 0 24px 64px rgb(0 0 0 / 0.55);
-  --backdrop: rgb(0 0 0 / 0.6);
-  --shadow-raise: 0 4px 12px rgb(0 0 0 / 0.5);
-  --cover-1: #3d4766;
-  --cover-2: #2e5a5f;
-  --cover-3: #6a3d63;
-  --cover-4: #4f5530;
-  --cover-5: #6e4636;
-  --page: #121019;
-  --page-ink: #f2effa;
-  --sentence: #2b2347;
-  --word: #6a4fd6;
-  --word-ink: #ffffff;
-  --word-line: #ffffff;
-  --note-mark: #4a3d12;
-}
-:root[data-theme='dark'][data-reading='warm'] {
-  --page: #1e1912;
-  --page-ink: #efe4d2;
-  --sentence: #3a2e1d;
-  --word: #8a6224;
-  --word-ink: #ffffff;
-  --word-line: #ffffff;
-  --note-mark: #4d3b12;
-}
-:root[data-theme='dark'][data-reading='paper'] {
-  --page: #1c1c21;
-  --page-ink: #e8e8ee;
-  --sentence: #2e2c40;
-  --word: #5d52b8;
-  --word-ink: #ffffff;
-  --word-line: #ffffff;
-  --note-mark: #4a4114;
 }
 
-:root[data-font='comic'] { --read-font: var(--font-comic); }
-:root[data-font='serif'] { --read-font: var(--font-serif); }
-:root[data-font='system'] { --read-font: var(--font-system); }
-:root[data-font-everywhere='true'] { --chrome-font: var(--read-font); }
+/* ---------- App tokens, derived from the brand ---------- */
+:root {
+  /* Reading preferences, set from Reading settings */
+  --read-font: var(--odeo-font-body);
+  --read-size: 20px;
+  --read-line: 1.7; /* 34px at 20px, the brand reader style */
+  --read-letter: 0em;
+  --read-word: 0.16em;
+  --page: var(--odeo-surface);
+
+  /* Where the content area starts, so the player stays off the navigation */
+  --content-left: 0px;
+  --mobile-bar: 0px;
+}
+:root[data-reading='sand'] { --page: var(--odeo-surface-sunken); }
+:root[data-font='dyslexic'] { --read-font: var(--odeo-font-dyslexic); }
+:root[data-font='comic'] { --read-font: var(--odeo-font-heading); }

@@ -1,13 +1,14 @@
 {
-  "name": "Ôdēō — Text to speech",
+  "name": "Ôdēō: listen to any text",
   "short_name": "Ôdēō",
   "description": "Turn any text, PDF or TXT file into speech with word-by-word highlighting.",
-  "start_url": "./#/text",
+  "start_url": "./#/home",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#fbf8ff",
-  "theme_color": "#6d28d9",
+  "background_color": "#FBF9F4",
+  "theme_color": "#5B32C9",
   "icons": [
-    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "assets/odeo-app-icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" },
+    { "src": "assets/odeo-favicon.svg", "sizes": "48x48", "type": "image/svg+xml", "purpose": "any" }
   ]
 }

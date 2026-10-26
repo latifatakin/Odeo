@@ -31,19 +31,19 @@ Used on phones, tablets and laptops, often in long listening sessions, sometimes
 - Paste text or upload PDF/TXT (up to 20 MB); review extracted text before listening.
 - Word-by-word highlighting from boundary events, with an estimated-timing fallback for voices that give none.
 - Voices are whatever the device offers; online voices need a connection. No celebrity or cloned voices.
-- Speed 0.5×–2.5× range is available through the browser; estimated time only (no true audio duration).
+- Speed 0.8×–2.0×; times are estimates (the browser gives no true audio duration).
 - No audio download (Web Speech API limitation).
 - Notes from selected text or the current sentence, with comments.
 - My library: titles, dates, search, rename, delete, resume position.
-- Settings: font (OpenDyslexic, Comic Sans, others), size, spacing, theme, voice, speed.
+- Settings page plus a Reading settings sheet: font (Arial, OpenDyslexic, Comic), size 18–32px, line and letter spacing, page colour, light/dark, motion, voice, speed (0.8–2.0×).
 - Storage records carry a sync-ready envelope so sign-in and sync can be added later.
 - Out of scope for now (user decided): AI summary, quiz, chat; book store or licensed books; accounts.
 
 ## Brand Commitments
 
-- Name: Ôdēō (with the diacritics).
-- Purple is the brand accent (user confirmed).
-- Voice: playful and upbeat, friendly and encouraging (user chose this over calm or neutral), while staying plain and never childish.
+- The Odeo brand guide (`.claude/skills/odeo-brand/SKILL.md`) is binding for every screen, component, asset and piece of copy (user provided, 26 Oct 2026).
+- Name: Ôdēō. Brand purple #5B32C9, sunbeam yellow #FFC94D, cream backgrounds, Comic Sans / Comic Neue headings, Arial body.
+- Voice: like a kind friend. Short sentences, everyday words, sentence case, no emoji.
 
 ## Evidence on Hand
 

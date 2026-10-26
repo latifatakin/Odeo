@@ -38,15 +38,14 @@ const uuid = () =>
       });
 
 export const DEFAULT_SETTINGS = {
-  font: 'opendyslexic', // 'opendyslexic' | 'comic' | 'serif' | 'system'
-  fontSize: 20, // px, reading text
-  lineHeight: 1.8,
-  letterSpacing: 0.05, // em
-  bold: false,
-  fontEverywhere: false, // use the reading font for menus and buttons too
+  font: 'body', // 'body' (Arial) | 'dyslexic' (OpenDyslexic) | 'comic'
+  fontSize: 20, // px, reader text: 18 to 32 in 2px steps
+  lineHeight: 1.7, // reader line height
+  letterSpacing: 0, // em
   theme: 'system', // 'system' | 'light' | 'dark'
-  readingTheme: 'basic', // 'basic' | 'warm' | 'paper'
-  rate: 1,
+  readingTheme: 'cream', // 'cream' | 'sand'
+  motion: 'system', // 'system' | 'reduce' | 'allow'
+  rate: 1, // 0.8 to 2.0
   autoSpeed: false, // speed up gradually while listening
   voiceURI: null,
   recentVoices: [],

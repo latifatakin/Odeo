@@ -23,15 +23,15 @@ export function fileKind(file) {
 
 export async function extractText(file, { onProgress } = {}) {
   const kind = fileKind(file);
-  if (!kind) throw new ExtractError('This file type isn’t supported. Choose a PDF or TXT file.');
+  if (!kind) throw new ExtractError('We can’t read this type of file. Choose a PDF or TXT file instead.');
   if (file.size > MAX_FILE_MB * 1024 * 1024) {
-    throw new ExtractError(`This file is larger than ${MAX_FILE_MB} MB. Choose a smaller file.`);
+    throw new ExtractError(`This file is over ${MAX_FILE_MB} MB. Choose a smaller file, or split it into parts.`);
   }
-  if (file.size === 0) throw new ExtractError('This file is empty.');
+  if (file.size === 0) throw new ExtractError('This file is empty. Choose another file.');
 
   if (kind === 'txt') {
     const text = clean((await file.text()).replace(/^﻿/, ''));
-    if (!text) throw new ExtractError('This file has no text in it.');
+    if (!text) throw new ExtractError('We couldn’t find any text in this file. Choose another file.');
     return { text, pages: null, kind };
   }
 
@@ -41,9 +41,9 @@ export async function extractText(file, { onProgress } = {}) {
     pdf = await pdfjs.getDocument({ data: await file.arrayBuffer(), isEvalSupported: false }).promise;
   } catch (err) {
     if (err?.name === 'PasswordException') {
-      throw new ExtractError('This PDF is password-protected. Remove the password and try again.');
+      throw new ExtractError('This PDF is locked with a password. Remove the password, then try again.');
     }
-    throw new ExtractError('This PDF couldn’t be opened. It may be damaged.');
+    throw new ExtractError('We couldn’t open this PDF. It may be damaged. Try another copy, or copy the text instead.');
   }
 
   const pages = [];
@@ -66,7 +66,7 @@ export async function extractText(file, { onProgress } = {}) {
   const text = clean(pages.join('\n\n'));
   if (text.replace(/\s/g, '').length < 20) {
     throw new ExtractError(
-      'We couldn’t find any text in this PDF. It may be a scanned image. Try a PDF with selectable text, or copy the text and paste it instead.'
+      'We couldn’t read this PDF. It may be a scanned image. Try copying the text instead.'
     );
   }
   return { text, pages: pdf.numPages, kind };

@@ -160,12 +160,12 @@ class SpeechEngine extends EventTarget {
   }
 
   // Speak a short sample with the current settings (used by Settings).
-  sample(text) {
+  sample(text, voice = null) {
     if (!this.supported) return;
     if (this.state === 'playing') this.pause();
     synth.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    const v = this.currentVoice();
+    const v = voice || this.currentVoice();
     if (v) {
       u.voice = v;
       u.lang = v.lang;

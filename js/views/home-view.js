@@ -1,95 +1,99 @@
-// Home: pick up where you left off, or add something new.
+// Home: three bands. Continue listening, Add something to listen to, My library.
 
 import { repo } from '../storage/repo.js';
 import { getSettings } from '../settings.js';
 import { minutesFor } from '../text.js';
-import { importTilesHTML, SAMPLES, openSample } from '../importers.js';
-import { coverHTML, applyPct, progressPct } from '../covers.js';
-import { esc, icon } from '../ui.js';
+import { addTilesHTML, SAMPLES, openSample } from '../importers.js';
+import { typeTileHTML, progressHTML, applyPct, progressPct, kindLabel, isPasted } from '../covers.js';
+import { esc, icon, formatDate, plural } from '../ui.js';
 
 function greeting() {
   const h = new Date().getHours();
-  if (h < 5) return 'Up late?';
-  if (h < 12) return 'Good morning!';
-  if (h < 18) return 'Good afternoon!';
-  return 'Good evening!';
+  if (h < 12) return 'Good morning';
+  if (h < 18) return 'Good afternoon';
+  return 'Good evening';
 }
 
-function timeLeft(doc, rate) {
-  const pct = progressPct(doc);
-  if (doc.progress?.completed) return 'Finished';
-  const left = doc.wordCount - (doc.progress?.wordIndex || 0);
-  const mins = Math.max(1, Math.round(minutesFor(left, rate)));
-  return pct > 0 ? `${mins} min left` : `${mins} min listen`;
+const minsLeft = (d, rate) => Math.max(1, Math.round(minutesFor(d.wordCount - (d.progress?.wordIndex || 0), rate)));
+const minsTotal = (d, rate) => Math.max(1, Math.round(minutesFor(d.wordCount, rate)));
+
+export function libraryRowHTML(d, rate, { actions = '' } = {}) {
+  return `<li class="lib-row" data-id="${d.id}">
+    ${typeTileHTML(d)}
+    <div class="lib-main">
+      <h3 class="lib-title"><a href="#/session/${d.id}">${esc(d.title)}</a></h3>
+      <p class="lib-meta">Added ${formatDate(d.createdAt)} · ${minsTotal(d, rate)} min listen</p>
+    </div>
+    ${actions}
+  </li>`;
 }
 
 export async function render(main) {
-  const docs = (await repo.listDocuments()).sort((a, b) => b.lastOpenedAt.localeCompare(a.lastOpenedAt));
   const rate = getSettings().rate;
-  const listened = docs.reduce((n, d) => n + (d.progress?.completed ? d.wordCount : d.progress?.wordIndex || 0), 0);
-  const recent = docs.slice(0, 12);
+  const docs = (await repo.listDocuments()).sort((a, b) => b.lastOpenedAt.localeCompare(a.lastOpenedAt));
+  const inProgress = docs.filter((d) => !d.progress?.completed);
+  const resume = inProgress.find((d) => progressPct(d) > 0);
 
   main.innerHTML = `
   <div class="page">
     <header class="greet">
       <h1>${greeting()}</h1>
-      <p>${docs.length ? 'What are we listening to today?' : 'Turn any text into something you can listen to.'}</p>
-      ${
-        listened > 0
-          ? `<p class="stat-pill">${icon('volume')}${listened.toLocaleString()} words listened · about ${Math.max(1, Math.round(minutesFor(listened, 1)))} min</p>`
-          : ''
-      }
+      <p>${
+        resume
+          ? `Pick up where you stopped: <a href="#/session/${resume.id}">${esc(resume.title)}</a>, ${plural(minsLeft(resume, rate), 'minute')} left.`
+          : 'Paste text or upload a file, then press play.'
+      }</p>
     </header>
 
     ${
-      recent.length
+      inProgress.length
         ? `<section class="section" aria-labelledby="continue-h">
-            <div class="section-head">
-              <h2 id="continue-h">Continue listening</h2>
-              <a href="#/library">See all${icon('chevron-right')}</a>
-            </div>
-            <ul class="shelf" role="list">
-              ${recent
+            <div class="section-head"><h2 id="continue-h">Continue listening</h2></div>
+            <ul class="shelf">
+              ${inProgress
+                .slice(0, 10)
                 .map(
-                  (d) => `<li><a class="cover-card" href="#/session/${d.id}">
-                    ${coverHTML(d)}
-                    <span class="cover-card-title">${esc(d.title)}</span>
-                    <span class="cover-card-meta">${timeLeft(d, rate)}</span>
+                  (d) => `<li><a class="listen-card" href="#/session/${d.id}">
+                    <span class="listen-tile${isPasted(d) ? ' listen-tile--text' : ''}">
+                      <span class="type-word">${esc(kindLabel(d))}</span>
+                      <span class="mini-play" aria-hidden="true">${icon('play')}</span>
+                    </span>
+                    ${progressHTML(progressPct(d))}
+                    <span class="listen-title">${esc(d.title)}</span>
+                    <span class="listen-meta">${minsLeft(d, rate)} min left</span>
                   </a></li>`
                 )
                 .join('')}
             </ul>
           </section>`
-        : `<section class="section welcome" aria-labelledby="welcome-h">
-            <div>
-              <h2 id="welcome-h">Your first listen is one tap away</h2>
-              <p>Paste some text, upload a PDF, or let us pick a short sample. Everything stays on this device.</p>
-            </div>
-            <button type="button" class="btn btn--lg" data-import="sample">${icon('dice')}Surprise me</button>
-          </section>`
+        : ''
     }
 
-    <section class="section" aria-labelledby="import-h">
-      <div class="section-head"><h2 id="import-h">Import &amp; listen</h2></div>
-      <div class="import-grid">${importTilesHTML()}</div>
+    <section class="section" aria-labelledby="add-h">
+      <div class="section-head"><h2 id="add-h">Add something to listen to</h2></div>
+      <div class="add-tiles">${addTilesHTML()}</div>
     </section>
 
-    <section class="section" aria-labelledby="samples-h">
-      <div class="section-head"><h2 id="samples-h">Try a sample</h2></div>
-      <ul class="sample-list">
-        ${SAMPLES.map(
-          (s, i) => `<li><button type="button" class="sample" data-sample="${i}">
-            ${coverHTML({ id: s.title, title: s.title, source: { type: 'sample' } }, { small: true })}
-            <span><span class="sample-title">${esc(s.title)}</span><span class="sample-text">${esc(s.text)}</span></span>
-            <span class="sample-play">${icon('play')}<span class="sr-only">Listen</span></span>
-          </button></li>`
-        ).join('')}
-      </ul>
+    <section class="section" aria-labelledby="lib-h">
+      <div class="section-head">
+        <h2 id="lib-h">My library</h2>
+        ${docs.length ? `<a href="#/library">See all${icon('chevron-right')}</a>` : ''}
+      </div>
+      ${
+        docs.length
+          ? `<ul class="lib-list">${docs.slice(0, 5).map((d) => libraryRowHTML(d, rate)).join('')}</ul>`
+          : `<div class="empty">
+              ${icon('book')}
+              <h3 class="h5">Nothing here yet</h3>
+              <p>Everything you listen to is saved here. Want to try one of these first?</p>
+              <div class="empty-actions">
+                ${SAMPLES.map((s, i) => `<button type="button" class="btn btn--secondary" data-sample="${i}">${esc(s.title)}</button>`).join('')}
+              </div>
+            </div>`
+      }
     </section>
   </div>`;
 
   applyPct(main);
   main.querySelectorAll('[data-sample]').forEach((b) => b.addEventListener('click', () => openSample(Number(b.dataset.sample))));
-  return null;
 }
-

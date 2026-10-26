@@ -2,6 +2,7 @@
 // a soft wash on the sentence being read, a stronger chip on the word.
 
 import { tokenize } from './text.js';
+import { prefersReducedMotion } from './settings.js';
 
 export class Reader {
   constructor(container, text) {
@@ -82,7 +83,7 @@ export class Reader {
     const bottom = parseFloat(css.getPropertyValue('--sticky-bottom')) || 0;
     const margin = 48;
     if (r.top < top + margin || r.bottom > window.innerHeight - bottom - margin) {
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const reduce = prefersReducedMotion();
       const target = window.scrollY + r.top - top - (window.innerHeight - top - bottom) * 0.3;
       window.scrollTo({ top: Math.max(0, target), behavior: reduce ? 'auto' : 'smooth' });
     }

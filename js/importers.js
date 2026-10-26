@@ -1,4 +1,5 @@
-// The ways to add something to listen to: Home tiles and the + sheet.
+// Adding something to listen to: the Add sheet, the shared file picker,
+// samples, and saving new items.
 
 import { repo, StorageFullError } from './storage/repo.js';
 import { navigate } from './router.js';
@@ -21,21 +22,19 @@ export const SAMPLES = [
   },
 ];
 
-const TILES = [
-  { kind: 'type', icon: 'type', label: 'Type or paste', hint: 'Drop in any text' },
-  { kind: 'file', icon: 'folder', label: 'Upload a file', hint: 'PDF or TXT' },
-  { kind: 'clipboard', icon: 'clipboard', label: 'From clipboard', hint: 'Listen to what you copied' },
-  { kind: 'sample', icon: 'dice', label: 'Surprise me', hint: 'Try a short sample' },
-];
-
-export function importTilesHTML() {
-  return TILES.map(
-    (t) => `<button type="button" class="tile" data-import="${t.kind}">
-      <span class="tile-icon">${icon(t.icon)}</span>
-      <span class="tile-label">${t.label}</span>
-      <span class="tile-hint">${t.hint}</span>
-    </button>`
-  ).join('');
+// The two ways in, as large tiles (Home and the Add sheet).
+export function addTilesHTML() {
+  return `
+    <a class="add-tile add-tile--text" href="#/text" data-add="text">
+      <span class="add-tile-icon">${icon('paste')}</span>
+      <span class="add-tile-title">Paste text</span>
+      <span class="add-tile-hint">Type or paste anything you want to hear.</span>
+    </a>
+    <button type="button" class="add-tile" data-add="file">
+      <span class="add-tile-icon">${icon('upload')}</span>
+      <span class="add-tile-title">Upload a file</span>
+      <span class="add-tile-hint">PDF or TXT, up to 20 MB.</span>
+    </button>`;
 }
 
 let pendingFile = null;
@@ -49,74 +48,43 @@ export async function createAndOpen({ title, text, source }) {
   try {
     const doc = await repo.createDocument({ title: title || titleFromText(text), text, source });
     navigate(`session/${doc.id}`);
+    toast('Saved to your library');
     return doc;
   } catch (err) {
     if (err instanceof StorageFullError) {
-      toast('Your library is full. Delete a few things in Library, then try again.', { type: 'error' });
+      toast('Your library is full. Delete a few things in My library, then try again.', { type: 'error' });
       return null;
     }
     throw err;
   }
 }
 
-export async function openSample(i) {
+export function openSample(i) {
   const s = SAMPLES[i];
   return createAndOpen({ title: s.title, text: s.text, source: { type: 'sample' } });
 }
 
-async function run(kind) {
-  closeAddSheet();
-  if (kind === 'type') return navigate('text');
-  if (kind === 'file') return $('#global-file').click();
-  if (kind === 'sample') {
-    const docs = await repo.listDocuments();
-    const titles = new Set(docs.map((d) => d.title));
-    const fresh = SAMPLES.map((_, i) => i).filter((i) => !titles.has(SAMPLES[i].title));
-    const pool = fresh.length ? fresh : SAMPLES.map((_, i) => i);
-    return openSample(pool[Math.floor(Math.random() * pool.length)]);
-  }
-  if (kind === 'clipboard') {
-    let text = '';
-    try {
-      text = (await navigator.clipboard.readText()).trim();
-    } catch {
-      toast('Your browser didn’t share the clipboard. Use Type or paste instead.', { type: 'error' });
-      return navigate('text');
-    }
-    if (!text) return toast('Your clipboard is empty. Copy some text first.');
-    if (text.length > MAX_CHARS) return toast('That’s a lot of text! Paste it in Type or paste to trim it down.', { type: 'error' });
-    return createAndOpen({ text, source: { type: 'paste' } });
-  }
-}
-
-// ---------- + sheet ----------
-
 let opener = null;
 export function openAddSheet() {
-  const dlg = $('#add-dialog');
   opener = document.activeElement;
-  dlg.showModal();
-}
-function closeAddSheet() {
-  const dlg = $('#add-dialog');
-  if (dlg.open) dlg.close();
+  $('#add-dialog').showModal();
 }
 
 export function initImporters() {
   const dlg = $('#add-dialog');
-  dlg.querySelector('[data-import-grid]').innerHTML = importTilesHTML();
+  dlg.querySelector('[data-add-tiles]').innerHTML = addTilesHTML();
   dlg.querySelector('.sheet-close').addEventListener('click', () => dlg.close());
-  dlg.addEventListener('click', (e) => {
-    if (e.target === dlg) dlg.close();
-  });
+  dlg.addEventListener('click', (e) => e.target === dlg && dlg.close());
   dlg.addEventListener('close', () => {
     if (opener?.isConnected && document.activeElement === document.body) opener.focus();
   });
 
   document.addEventListener('click', (e) => {
-    const t = e.target.closest('[data-import]');
-    if (t) run(t.dataset.import);
-    if (e.target.closest('.add-open')) openAddSheet();
+    if (e.target.closest('.add-open')) return openAddSheet();
+    const add = e.target.closest('[data-add]');
+    if (!add) return;
+    if (dlg.open) dlg.close();
+    if (add.dataset.add === 'file') $('#global-file').click();
   });
 
   $('#global-file').addEventListener('change', (e) => {

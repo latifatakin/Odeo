@@ -1,66 +1,77 @@
+/* Base: type scale and browser defaults, from the Odeo brand guide. */
+
 *,
 *::before,
-*::after {
-  box-sizing: border-box;
-}
+*::after { box-sizing: border-box; }
 
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  scroll-padding-top: calc(var(--sticky-top, 0px) + 16px);
-  scroll-padding-bottom: calc(var(--sticky-bottom, 0px) + 16px);
-  background: var(--bg);
+  background: var(--odeo-bg);
+  scroll-padding-top: var(--odeo-space-4);
+  scroll-padding-bottom: calc(var(--sticky-bottom, 0px) + var(--odeo-space-4));
 }
 
 body {
   margin: 0;
   min-height: 100vh;
   min-height: 100dvh;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--chrome-font);
-  font-size: 1rem;
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
+  background: var(--odeo-bg);
+  color: var(--odeo-text);
+  font-family: var(--odeo-font-body);
+  font-size: 18px;
+  line-height: 28px;
 }
 
-h1,
-h2,
-h3 {
+/* Headings: Comic Sans MS / Comic Neue, bold. Sizes per the guide. */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
   margin: 0;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
-  text-wrap: balance;
-  overflow-wrap: anywhere;
+  font-family: var(--odeo-font-heading);
+  font-weight: 700;
+  color: var(--odeo-text);
+  overflow-wrap: break-word;
 }
-h1 { font-size: clamp(1.75rem, 1.35rem + 1.6vw, 2.5rem); font-weight: 750; }
-h2 { font-size: 1.25rem; font-weight: 700; }
-h3 { font-size: 1.05rem; font-weight: 650; }
-p { margin: 0; }
+h1, .h1 { font-size: 40px; line-height: 48px; }
+h2, .h2 { font-size: 32px; line-height: 40px; }
+h3, .h3 { font-size: 26px; line-height: 34px; }
+h4, .h4 { font-size: 22px; line-height: 30px; }
+h5, .h5 { font-size: 20px; line-height: 28px; }
+h6, .h6 { font-size: 18px; line-height: 26px; }
+@media (max-width: 599.98px) {
+  h1, .h1 { font-size: 32px; line-height: 40px; }
+  h2, .h2 { font-size: 28px; line-height: 36px; }
+  h3, .h3 { font-size: 24px; line-height: 32px; }
+  h4, .h4 { font-size: 20px; line-height: 28px; }
+  h5, .h5 { font-size: 18px; line-height: 26px; }
+}
 
-a { color: var(--violet-text); text-underline-offset: 0.2em; }
+p { margin: 0; }
+.body-sm { font-size: 16px; line-height: 24px; }
+.caption { font-size: 14px; line-height: 20px; color: var(--odeo-text-muted); }
+.label { font-size: 16px; line-height: 20px; font-weight: 700; }
+.muted { color: var(--odeo-text-muted); }
+
+a { color: var(--odeo-primary); text-decoration: underline; text-underline-offset: 0.18em; }
+a:hover { color: var(--odeo-primary-hover); }
 
 button,
 input,
 select,
-textarea {
-  font: inherit;
-  color: inherit;
-  letter-spacing: inherit;
-}
+textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
 img,
 svg { display: block; max-width: 100%; }
+em, i { font-style: normal; font-weight: 700; } /* bold, never italics */
 
-::selection { background: var(--violet); color: var(--on-violet); }
+::selection { background: var(--odeo-primary); color: var(--odeo-on-primary); }
 input,
-textarea { caret-color: var(--violet); }
-
-* { scrollbar-width: thin; scrollbar-color: var(--line-strong) transparent; }
+textarea { caret-color: var(--odeo-primary); }
+* { scrollbar-width: thin; scrollbar-color: var(--odeo-border-strong) transparent; }
 
 .icon {
-  width: 1.25em;
-  height: 1.25em;
+  width: 24px;
+  height: 24px;
   flex: none;
   fill: none;
   stroke: currentColor;
@@ -69,15 +80,20 @@ textarea { caret-color: var(--violet); }
   stroke-linejoin: round;
 }
 
+/* Logo colours follow the theme: primary bubble, text "deo". */
+.lb { stroke: var(--odeo-primary); }
+.lb-fill { fill: var(--odeo-primary); }
+.lt { fill: var(--odeo-text); }
+
+/* Focus: 3px ring with a 2px gap */
 :focus-visible {
-  outline: 3px solid var(--focus);
+  outline: 3px solid var(--odeo-focus-ring);
   outline-offset: 2px;
-  box-shadow: 0 0 0 2px var(--focus-gap);
 }
 main:focus,
-[tabindex='-1']:focus { outline: none; box-shadow: none; }
+[tabindex='-1']:focus { outline: none; }
 h1[tabindex='-1']:focus-visible,
-h2[tabindex='-1']:focus-visible { outline: 3px solid var(--focus); outline-offset: 4px; }
+h2[tabindex='-1']:focus-visible { outline: 3px solid var(--odeo-focus-ring); outline-offset: 4px; }
 
 .sr-only {
   position: absolute !important;
@@ -93,38 +109,44 @@ h2[tabindex='-1']:focus-visible { outline: 3px solid var(--focus); outline-offse
 
 .skip-link {
   position: absolute;
-  left: var(--s4);
+  left: var(--odeo-space-4);
   top: -100px;
   z-index: 100;
-  padding: var(--s3) var(--s4);
-  background: var(--violet);
-  color: var(--on-violet);
-  border-radius: var(--r-sm);
+  padding: var(--odeo-space-3) var(--odeo-space-4);
+  background: var(--odeo-primary);
+  color: var(--odeo-on-primary);
+  border-radius: var(--odeo-radius-md);
   font-weight: 700;
   text-decoration: none;
 }
-.skip-link:focus { top: var(--s3); }
+.skip-link:focus { top: var(--odeo-space-3); color: var(--odeo-on-primary); }
 
 [hidden] { display: none !important; }
-
 .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
 
+/* Reduced motion: from the device, or chosen in Settings */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  :root:not([data-motion='allow']) *,
+  :root:not([data-motion='allow']) *::before,
+  :root:not([data-motion='allow']) *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }
+:root[data-motion='reduce'] *,
+:root[data-motion='reduce'] *::before,
+:root[data-motion='reduce'] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
 
 @media (forced-colors: active) {
-  .btn,
-  .icon-btn,
-  .player,
-  .tile,
-  .sheet { border: 1px solid CanvasText; }
   .w.is-current .wt { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+  .w.in-sentence { forced-color-adjust: none; outline: 1px solid CanvasText; }
 }
+
+.noscript { padding: var(--odeo-space-6); text-align: center; }

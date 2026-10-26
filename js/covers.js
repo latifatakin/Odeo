@@ -1,16 +1,11 @@
-// Generated covers and voice avatars: a tint picked from the id, so the
-// same item always gets the same colour.
+// File-type tiles, progress, voice letters and language names.
 
 import { esc } from './ui.js';
 
-export function tintFor(key = '') {
-  let h = 0;
-  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
-  return (h % 5) + 1;
-}
-
-const KIND = { paste: 'Text', pdf: 'PDF', txt: 'TXT', sample: 'Sample' };
+const KIND = { paste: 'Text', pdf: 'PDF', txt: 'TXT', sample: 'Text' };
 export const kindLabel = (doc) => KIND[doc.source?.type] || 'Text';
+// Pasted text sits on secondary-soft, files on primary-soft.
+export const isPasted = (doc) => ['paste', 'sample'].includes(doc.source?.type || 'paste');
 
 export function progressPct(doc) {
   const p = doc.progress;
@@ -19,13 +14,12 @@ export function progressPct(doc) {
   return Math.round((p.wordIndex / (doc.wordCount - 1)) * 100);
 }
 
-export function coverHTML(doc, { small = false } = {}) {
-  const pct = progressPct(doc);
-  return `<div class="cover${small ? ' cover--sm' : ''}" data-tint="${tintFor(doc.id)}" aria-hidden="true">
-    <span class="cover-kind">${esc(kindLabel(doc))}</span>
-    ${small ? `<span class="cover-initial">${esc((doc.title.match(/[\p{L}\p{N}]/u) || ['•'])[0].toUpperCase())}</span>` : `<span class="cover-title">${esc(doc.title)}</span>`}
-    ${pct > 0 ? `<span class="cover-progress"><span data-pct="${pct}"></span></span>` : ''}
-  </div>`;
+export function typeTileHTML(doc) {
+  return `<span class="type-tile${isPasted(doc) ? ' type-tile--text' : ''}" aria-hidden="true">${esc(kindLabel(doc))}</span>`;
+}
+
+export function progressHTML(pct) {
+  return `<span class="progress-line" aria-hidden="true"><span data-pct="${pct}"></span></span>`;
 }
 
 // Inline styles are blocked by the security policy, so widths are set here.
@@ -52,12 +46,13 @@ export function languageName(lang = '') {
   return name;
 }
 
-// Short, friendly voice name: "Google UK English Female" → "UK English Female"
+// Friendly voice name: "Google UK English Female" -> "UK English Female"
 export function voiceShortName(v) {
   return v.name.replace(/^(Microsoft|Google|Apple)\s+/i, '').replace(/\s*\(.*$/, '').replace(/\s+Online.*$/i, '').trim() || v.name;
 }
 
+// Voices show the first letter of their name in a primary-soft circle.
 export function avatarHTML(v) {
   const name = v ? voiceShortName(v) : '?';
-  return `<span class="avatar" data-tint="${tintFor(v?.voiceURI || name)}" aria-hidden="true">${esc(name.charAt(0).toUpperCase())}</span>`;
+  return `<span class="avatar" aria-hidden="true">${esc(name.charAt(0).toUpperCase())}</span>`;
 }

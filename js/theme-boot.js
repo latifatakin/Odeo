@@ -1,12 +1,26 @@
-// Runs before the page paints so saved theme, page colour and font apply with no flash.
+// Runs before the page paints so saved theme, fonts, page colour and the
+// navigation layout apply with no flash.
 (function () {
+  var root = document.documentElement;
   try {
     var raw = localStorage.getItem('odeo:v1:settings:user');
     var v = raw ? JSON.parse(raw).values || {} : {};
-    var root = document.documentElement;
     if (v.theme === 'light' || v.theme === 'dark') root.setAttribute('data-theme', v.theme);
-    if (v.font) root.setAttribute('data-font', v.font);
-    if (v.readingTheme) root.setAttribute('data-reading', v.readingTheme);
-    if (v.fontEverywhere) root.setAttribute('data-font-everywhere', 'true');
+    if (v.font === 'dyslexic' || v.font === 'comic' || v.font === 'body') root.setAttribute('data-font', v.font);
+    if (v.readingTheme === 'sand') root.setAttribute('data-reading', 'sand');
+    if (v.motion === 'reduce' || v.motion === 'allow') root.setAttribute('data-motion', v.motion);
   } catch (e) {}
+
+  // Navigation: bar (phone), rail (tablet or collapsed desktop), side (desktop).
+  function navMode() {
+    var w = window.innerWidth;
+    var collapsed = false;
+    try { collapsed = localStorage.getItem('odeo:nav') === 'collapsed'; } catch (e) {}
+    if (w < 600) { root.setAttribute('data-nav', 'bar'); root.removeAttribute('data-nav-forced'); }
+    else if (w < 1024) { root.setAttribute('data-nav', 'rail'); root.setAttribute('data-nav-forced', 'rail'); }
+    else { root.setAttribute('data-nav', collapsed ? 'rail' : 'side'); root.removeAttribute('data-nav-forced'); }
+  }
+  navMode();
+  window.odeoNavMode = navMode;
+  window.addEventListener('resize', navMode);
 })();

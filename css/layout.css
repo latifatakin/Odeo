@@ -19,10 +19,12 @@
   padding: var(--odeo-space-6) var(--odeo-space-4);
   background: var(--odeo-surface);
   border-right: 1px solid var(--odeo-border);
-  overflow-y: auto;
 }
+/* The nav itself doesn't scroll (that would clip the edge toggle);
+   only its item list does, on very short screens. */
+.nav-items { min-height: 0; overflow-y: auto; }
 
-.nav-top { display: grid; gap: var(--odeo-space-6); }
+.nav-top { display: flex; align-items: center; gap: var(--odeo-space-2); }
 
 .nav-logo {
   display: inline-flex;
@@ -35,23 +37,29 @@
 .logo-full { width: 112px; height: 40px; }
 .logo-mark { display: none; width: 40px; height: 40px; }
 
-.nav-add {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--odeo-space-2);
-  width: 100%;
-  min-height: var(--odeo-tap-min);
-  padding: 0 var(--odeo-space-6);
-  border: 0;
-  border-radius: var(--odeo-radius-md);
-  background: var(--odeo-primary);
-  color: var(--odeo-on-primary);
-  font-size: 16px;
-  line-height: 20px;
-  font-weight: 700;
+/* Sidebar toggle: a small round arrow sitting on the sidebar's right edge,
+   on the divider above Reading settings and Help. The circle is 32px; the
+   ::before extends the tap area to 48px. */
+.nav-bottom { position: relative; }
+.nav-toggle {
+  position: absolute;
+  top: -16px;
+  right: calc(-1 * var(--odeo-space-4) - 16px);
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--odeo-border);
+  border-radius: var(--odeo-radius-full);
+  background: var(--odeo-surface-raised);
+  color: var(--odeo-text);
+  box-shadow: var(--odeo-shadow-card);
 }
-.nav-add:hover { background: var(--odeo-primary-hover); }
+.nav-toggle::before { content: ''; position: absolute; inset: -8px; border-radius: inherit; }
+.nav-toggle .icon { width: 18px; height: 18px; }
+.nav-toggle:hover { background: var(--odeo-surface-sunken); }
 
 .nav-items,
 .nav-bottom { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--odeo-space-1); }
@@ -72,7 +80,7 @@
   color: var(--odeo-text);
   font-size: 16px;
   line-height: 20px;
-  font-weight: 700;
+  font-weight: 400;
   text-align: left;
   text-decoration: none;
 }
@@ -80,7 +88,7 @@
 .nav-link:hover { background: var(--odeo-surface-sunken); color: var(--odeo-text); }
 .nav-items a[aria-current='page'],
 .nav-link[aria-current='page'],
-.nav-items a.is-section { background: var(--odeo-primary-soft); color: var(--odeo-primary); }
+.nav-items a.is-section { background: var(--odeo-primary-soft); color: var(--odeo-primary); font-weight: 700; }
 .nav-icon { display: grid; place-items: center; flex: none; }
 
 .mobile-brand { display: none; }
@@ -99,9 +107,8 @@
 :root[data-nav='rail'] .logo-full { display: none; }
 :root[data-nav='rail'] .logo-mark { display: block; }
 :root[data-nav='rail'] .nav-logo { justify-self: center; padding: var(--odeo-space-1); }
-:root[data-nav='rail'] .nav-top { justify-items: center; gap: var(--odeo-space-4); }
-:root[data-nav='rail'] .nav-add { width: 56px; height: 56px; padding: 0; border-radius: var(--odeo-radius-lg); }
-:root[data-nav='rail'] .nav-add .nav-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:root[data-nav='rail'] .nav-top { flex-direction: column; gap: var(--odeo-space-2); }
+:root[data-nav='rail'] .nav-toggle { right: calc(-1 * var(--odeo-space-2) - 16px); }
 :root[data-nav='rail'] .nav-items,
 :root[data-nav='rail'] .nav-bottom { width: 100%; gap: var(--odeo-space-2); }
 :root[data-nav='rail'] .nav-items a,
@@ -127,7 +134,7 @@
 :root[data-nav='rail'] .nav-items a[aria-current='page'] .nav-icon,
 :root[data-nav='rail'] .nav-link[aria-current='page'] .nav-icon,
 :root[data-nav='rail'] .nav-items a.is-section .nav-icon { background: var(--odeo-primary-soft); }
-:root[data-nav-forced='rail'] .nav-collapse { display: none; }
+:root[data-nav-forced='rail'] .nav-toggle { display: none; }
 
 @media (max-width: 1023.98px) {
   .main { padding: var(--odeo-space-8) var(--odeo-space-6) var(--odeo-space-16); }

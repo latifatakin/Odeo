@@ -21,8 +21,11 @@ are built from brand tokens:
 
 ## Applied rules
 
-- **Navigation:** side navigation on desktop (collapsible to the rail; the choice is
-  remembered), icon rail on tablet, bottom bar on phone. `js/theme-boot.js` sets
+- **Navigation:** side navigation on desktop, icon rail on tablet, bottom bar on phone.
+  On desktop a small round arrow sits on the sidebar's right edge, on the divider above
+  Reading settings and Help. It collapses the side navigation to the rail (the arrow
+  flips to point right) and the choice is remembered. The circle is 32px and its tap
+  area 48px. `js/theme-boot.js` sets
   `<html data-nav="side|rail|bar">` before first paint. There's no top navigation bar.
 - **Reading highlight:** sentence in `--odeo-primary-soft` with `--odeo-radius-sm`
   ends; current word in `--odeo-secondary`. The word's text uses `--odeo-on-secondary`,
@@ -41,7 +44,36 @@ are built from brand tokens:
 - **Keyboard:** Space plays and pauses, and Left and Right skip 10 seconds in the reader
   (not while typing or when a dialog is open).
 
+## Quiet surfaces
+
+The app is a tool for long listening sessions, so it keeps visual noise low. On 27 Oct
+2026 it was toned down within the brand:
+
+- **One shadow job:** only the Continue listening cards keep `--odeo-shadow-card`, as the
+  guide specifies. Floating things (player, sheets, menus, the phone Add button, the
+  floating notes panel) use `--odeo-shadow-float`. Everything else is flat on
+  `--odeo-surface` with a 1px `--odeo-border` edge: settings groups, add tiles, empty
+  states, the reading page and the docked notes panel.
+- **Purple stays near 10%:** the Add button, the play button, links, the current nav item
+  and progress. The small play dot on each listening card is `--odeo-surface` with a
+  `--odeo-primary` icon, not a solid purple circle.
+- **Neutral list badges:** file-type tiles in lists use `--odeo-surface-sunken` with
+  `--odeo-text-muted`. The tinted tiles (`primary-soft` for files, `secondary-soft` for
+  pasted text) stay only on the Continue listening cards.
+- **Weight marks the current place:** side-nav items and library titles are regular
+  weight, and only the current page is bold.
+- **Notes are a list, not cards:** hairline dividers, with the quote on
+  `--odeo-secondary-soft`.
+- **Motion:** sheets rise 8px over 0.24s with ease-out-quart; nothing else animates.
+
 ## Deliberate differences from the guide
+
+- **No Add button in the side navigation or rail** (user decision, 27 Oct 2026). Adding
+  lives on Home (Paste text, Upload a file), in empty states, and in the phone bar's
+  centre button.
+- **Edge toggle instead of a "Collapse menu" row** (user decision, 27 Oct 2026): a round
+  arrow on the sidebar's edge, following the familiar sidebar pattern. Its label switches
+  between "Collapse sidebar" and "Expand sidebar".
 
 - **Comic Neue is self-hosted** (`fonts/`) instead of loaded from Google Fonts, so
   headings work offline and under the site's Content Security Policy.

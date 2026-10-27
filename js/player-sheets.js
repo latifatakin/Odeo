@@ -1,12 +1,11 @@
 // Speed and voice sheets that open from the player bar and Settings.
 
 import { speech } from './speech.js';
-import { getSettings, updateSettings, MIN_RATE, MAX_RATE } from './settings.js';
+import { getSettings, updateSettings, MAX_RATE } from './settings.js';
 import { minutesFor } from './text.js';
 import { avatarHTML, voiceShortName, languageName } from './covers.js';
 import { esc, icon, announce, closeOnBackdrop } from './ui.js';
 
-export { MIN_RATE, MAX_RATE };
 const SPEEDS = [0.8, 1, 1.2, 1.4, 1.6, 1.8, 2];
 
 function makeSheet(id, title, bodyHTML) {

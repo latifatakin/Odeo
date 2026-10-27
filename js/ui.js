@@ -81,24 +81,10 @@ export function closeOnBackdrop(dlg) {
 }
 
 const dateFmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-const shortFmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short' });
 const timeFmt = new Intl.DateTimeFormat(undefined, { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
 
 export const formatDate = (iso) => dateFmt.format(new Date(iso));
-export const formatShortDate = (iso) => shortFmt.format(new Date(iso));
 export const formatDateTime = (iso) => timeFmt.format(new Date(iso));
-
-export function formatRelative(iso) {
-  const diff = (Date.now() - new Date(iso).getTime()) / 1000;
-  if (diff < 60) return 'just now';
-  if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} hr ago`;
-  if (diff < 86400 * 7) {
-    const d = Math.floor(diff / 86400);
-    return d === 1 ? 'yesterday' : `${d} days ago`;
-  }
-  return formatDate(iso);
-}
 
 export function formatDuration(minutes) {
   const total = Math.max(0, Math.round(minutes * 60));

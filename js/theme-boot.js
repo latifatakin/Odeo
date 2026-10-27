@@ -23,4 +23,11 @@
   navMode();
   window.odeoNavMode = navMode;
   window.addEventListener('resize', navMode);
+  // Breakpoint listeners also fire when the size changes without a resize
+  // event (some device emulators and zoom changes).
+  ['(max-width: 599.98px)', '(max-width: 1023.98px)'].forEach(function (q) {
+    var mq = window.matchMedia(q);
+    if (mq.addEventListener) mq.addEventListener('change', navMode);
+    else if (mq.addListener) mq.addListener(navMode);
+  });
 })();

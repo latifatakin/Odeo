@@ -15,7 +15,7 @@ export function progressPct(doc) {
 }
 
 export function typeTileHTML(doc) {
-  return `<span class="type-tile${isPasted(doc) ? ' type-tile--text' : ''}" aria-hidden="true">${esc(kindLabel(doc))}</span>`;
+  return `<span class="type-tile" aria-hidden="true">${esc(kindLabel(doc))}</span>`;
 }
 
 export function progressHTML(pct) {

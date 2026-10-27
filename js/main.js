@@ -22,10 +22,12 @@ function syncCollapse() {
   try {
     collapsed = localStorage.getItem('odeo:nav') === 'collapsed';
   } catch {}
-  btn.querySelector('.nav-label').textContent = collapsed ? 'Expand menu' : 'Collapse menu';
-  btn.setAttribute('aria-label', collapsed ? 'Expand menu' : 'Collapse menu');
+  const label = collapsed ? 'Expand sidebar' : 'Collapse sidebar';
+  btn.setAttribute('aria-label', label);
+  btn.setAttribute('title', label);
+  btn.setAttribute('aria-expanded', String(!collapsed));
+  btn.querySelector('use').setAttribute('href', collapsed ? '#i-chevron-right' : '#i-chevron-left');
 }
-$('#nav-collapse').removeAttribute('aria-pressed');
 $('#nav-collapse').addEventListener('click', () => {
   try {
     const collapsed = localStorage.getItem('odeo:nav') === 'collapsed';

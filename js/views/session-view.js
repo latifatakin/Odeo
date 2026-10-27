@@ -27,45 +27,49 @@ export async function render(main, [id, startAt]) {
 
   let notesOpen = false;
   try {
-    notesOpen = localStorage.getItem(NOTES_KEY) === '1';
+    // Reopen automatically only where the panel docks beside the page; on
+    // smaller screens it would cover the text.
+    notesOpen = localStorage.getItem(NOTES_KEY) === '1' && window.innerWidth - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--content-left')) || 0) >= 1120;
   } catch {}
 
   main.innerHTML = `
   <div class="reader${notesOpen ? ' notes-open' : ''}" id="reader">
-    <div class="reader-top">
-      <button type="button" class="back-link btn--ghost" id="back">${icon('chevron-left')}Back</button>
-      <div class="reader-top-actions">
-        <button type="button" class="icon-btn" id="notes-toggle" aria-expanded="${notesOpen}" aria-controls="notes-panel" aria-label="Notes">${icon('notes')}</button>
-        <button type="button" class="icon-btn reading-open" aria-haspopup="dialog" aria-label="Reading settings">${icon('text-size')}</button>
-      </div>
-    </div>
-
     <div class="reader-body">
-      <article class="page-sheet" aria-labelledby="doc-title">
-        <header class="doc-head">
-          <div class="doc-title-row" id="title-row">
-            <h1 class="h3" id="doc-title">${esc(doc.title)}</h1>
-            <button type="button" class="icon-btn" id="rename-btn" aria-label="Rename">${icon('pencil')}</button>
+      <div class="reader-col">
+        <div class="reader-top">
+          <button type="button" class="back-link btn--ghost" id="back">${icon('chevron-left')}Back</button>
+          <div class="reader-top-actions">
+            <button type="button" class="icon-btn" id="notes-toggle" aria-expanded="${notesOpen}" aria-controls="notes-panel" aria-label="Notes">${icon('notes')}</button>
+            <button type="button" class="icon-btn reading-open" aria-haspopup="dialog" aria-label="Reading settings">${icon('text-size')}</button>
           </div>
-          <form class="rename-form" id="rename-form" hidden>
-            <label class="sr-only" for="rename-input">Title</label>
-            <input id="rename-input" class="input" type="text" maxlength="120" autocomplete="off" />
-            <button type="submit" class="btn btn--primary">Save</button>
-            <button type="button" class="btn btn--secondary" id="rename-cancel">Cancel</button>
-          </form>
-          <p class="doc-meta">${esc(kindLabel(doc))}${doc.source?.pages ? ` · ${plural(doc.source.pages, 'page')}` : ''} · ${plural(doc.wordCount, 'word')} · <span id="doc-duration"></span></p>
-          <p class="helper">Tap any word to listen from there. Select text to save a note.</p>
-        </header>
-        ${
-          speech.supported
-            ? ''
-            : `<div class="notice" role="note">${icon('alert')}<p><strong>Speech isn’t available.</strong> You can still read and save notes. For listening, try the latest Chrome, Edge, Safari or Firefox.</p></div>`
-        }
-        <div class="reading-text" id="reading"></div>
-        <div class="selection-pop" id="selection-pop" hidden>
-          <button type="button" class="btn btn--secondary" id="pop-save">${icon('note-plus')}Save note</button>
         </div>
-      </article>
+
+        <article class="page-sheet" aria-labelledby="doc-title">
+          <header class="doc-head">
+            <div class="doc-title-row" id="title-row">
+              <h1 class="h3" id="doc-title">${esc(doc.title)}</h1>
+              <button type="button" class="icon-btn" id="rename-btn" aria-label="Rename">${icon('pencil')}</button>
+            </div>
+            <form class="rename-form" id="rename-form" hidden>
+              <label class="sr-only" for="rename-input">Title</label>
+              <input id="rename-input" class="input" type="text" maxlength="120" autocomplete="off" />
+              <button type="submit" class="btn btn--primary">Save</button>
+              <button type="button" class="btn btn--secondary" id="rename-cancel">Cancel</button>
+            </form>
+            <p class="doc-meta">${esc(kindLabel(doc))}${doc.source?.pages ? ` · ${plural(doc.source.pages, 'page')}` : ''} · ${plural(doc.wordCount, 'word')} · <span id="doc-duration"></span></p>
+            <p class="helper">Tap any word to listen from there. Select text to save a note.</p>
+          </header>
+          ${
+            speech.supported
+              ? ''
+              : `<div class="notice" role="note">${icon('alert')}<p><strong>Speech isn’t available.</strong> You can still read and save notes. For listening, try the latest Chrome, Edge, Safari or Firefox.</p></div>`
+          }
+          <div class="reading-text" id="reading"></div>
+          <div class="selection-pop" id="selection-pop" hidden>
+            <button type="button" class="btn btn--secondary" id="pop-save">${icon('note-plus')}Save note</button>
+          </div>
+        </article>
+      </div>
 
       <aside class="notes-panel" id="notes-panel" aria-labelledby="notes-heading">
         <div class="notes-panel-head">

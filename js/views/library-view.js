@@ -36,7 +36,7 @@ export async function render(main) {
       <p>Everything you’ve listened to. It all plays offline, too.</p>
     </header>
 
-    <div class="library-tools" role="search">
+    <div class="library-tools" role="search" id="lib-tools">
       <div class="field">
         <label for="lib-search">Search</label>
         <div class="search">
@@ -53,7 +53,7 @@ export async function render(main) {
         </select>
       </div>
     </div>
-    <fieldset class="chips" id="lib-filter">
+    <fieldset class="chips" id="lib-filter" data-tools>
       <legend class="sr-only">Show</legend>
       <label class="chip"><input type="radio" name="lf" value="all" checked /><span>${icon('check')}All</span></label>
       <label class="chip"><input type="radio" name="lf" value="progress" /><span>${icon('check')}In progress</span></label>
@@ -79,6 +79,9 @@ export async function render(main) {
   async function load() {
     docs = await repo.listDocuments();
     const usage = await repo.usage();
+    const hasDocs = docs.length > 0;
+    $('#lib-tools', main).hidden = !hasDocs;
+    $('#lib-filter', main).hidden = !hasDocs;
     $('#lib-storage', main).textContent = `${plural(docs.length, 'item')} saved on this device. Using ${formatMB(usage.bytes)} of about ${formatMB(usage.quota)}.`;
     draw();
   }

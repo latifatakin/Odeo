@@ -35,7 +35,7 @@ export function render(main) {
         <h2 class="h4" id="h-private">Your privacy</h2>
         <p>Everything stays on this device. Your text and files are never uploaded, and there’s no account to make.</p>
       </section>
-      <p><a href="#/settings">Open Settings</a></p>
+      <p><a href="#/settings">Back to Settings</a></p>
     </div>
   </div>`;
 }

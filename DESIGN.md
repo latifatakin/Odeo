@@ -71,9 +71,24 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
 - **No Add button in the side navigation or rail** (user decision, 27 Oct 2026). Adding
   lives on Home (Paste text, Upload a file), in empty states, and in the phone bar's
   centre button.
+- **One Settings row at the bottom of the side navigation** (user decision, 27 Oct 2026):
+  styled like an account row (round icon badge, "Settings", and "Reading, voice, display"
+  underneath). It replaces the Settings item, Reading settings and Help. Clicking it opens
+  a small menu above the row (beside it in the rail) with "Reading settings" (the
+  Settings page) and "Get help" (an email to hello@latifatakinyemi.com). The menu
+  uses menu-button keyboard behaviour: arrows, Home/End, Escape returns focus. The phone
+  bar keeps its Settings tab.
 - **Edge toggle instead of a "Collapse menu" row** (user decision, 27 Oct 2026): a round
   arrow on the sidebar's edge, following the familiar sidebar pattern. Its label switches
   between "Collapse sidebar" and "Expand sidebar".
+- **Icons are Hugeicons stroke-rounded** (user decision, 27 Oct 2026) instead of the
+  guide's suggested Lucide. They are the free style from `@hugeicons/core-free-icons`
+  4.3.5, copied as shapes into the SVG sprite in `index.html` (no package, no font, so
+  they work offline and within the security policy). Their 1.5px stroke is dropped so
+  the `.icon` rule draws them at the guide's 24px with a 2px rounded stroke. Play and
+  pause are filled so the main player button stays solid. Sprite ids (`#i-home`,
+  `#i-play` and so on) are unchanged. To add one, search Hugeicons, take the free
+  stroke-rounded shape, remove its stroke attributes and add a new `<symbol>`.
 
 - **Comic Neue is self-hosted** (`fonts/`) instead of loaded from Google Fonts, so
   headings work offline and under the site's Content Security Policy.

@@ -49,6 +49,12 @@ export async function render(main) {
         ${displaySettingsHTML(p)}
       </section>
 
+      <section class="settings-card" aria-labelledby="set-help">
+        <h2 class="h4" id="set-help">Help</h2>
+        <p>How Ôdēō works, keyboard shortcuts, and how voices and privacy work.</p>
+        <div><a class="btn btn--secondary" href="#/help">${icon('help')}Open help</a></div>
+      </section>
+
       <section class="settings-card" aria-labelledby="set-data">
         <h2 class="h4" id="set-data">Your data</h2>
         <p class="status">${icon('lock')}<span>Everything stays on this device. Nothing is uploaded, and there’s no account.</span></p>

@@ -63,8 +63,6 @@ async function render() {
     else a.removeAttribute('aria-current');
     a.classList.toggle('is-section', (r === 'library' && name === 'session') || (r === 'settings' && name === 'help'));
   });
-  // The Settings row is a menu button, so it shows its section without aria-current.
-  $$('[data-route-section]').forEach((b) => b.classList.toggle('is-section', ['settings', 'help'].includes(name)));
 
   // Move focus to the new page's heading so screen reader and keyboard users
   // start at the top of the new content (not on first load).

@@ -71,13 +71,20 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
 - **No Add button in the side navigation or rail** (user decision, 27 Oct 2026). Adding
   lives on Home (Paste text, Upload a file), in empty states, and in the phone bar's
   centre button.
-- **One Settings row at the bottom of the side navigation** (user decision, 27 Oct 2026):
-  styled like an account row (round icon badge, "Settings", and "Reading, voice, display"
-  underneath). It replaces the Settings item, Reading settings and Help. Clicking it opens
-  a small menu above the row (beside it in the rail) with "Reading settings" (the
-  Settings page) and "Get help" (an email to hello@latifatakinyemi.com). The menu
-  uses menu-button keyboard behaviour: arrows, Home/End, Escape returns focus. The phone
-  bar keeps its Settings tab.
+- **Settings is an ordinary tab at the bottom of the side navigation** (user decision,
+  28 Oct 2026). It looks and behaves like Home, Library and Notes: inactive until you
+  are on Settings or Help, then the current-page style. No pop-up; Help lives on the
+  Settings page. The rail and phone bar treat it the same way.
+- **Filled icon on the current tab** (user decision, 28 Oct 2026). Tabs show the
+  outline icon normally and a filled version when current. Hugeicons' solid styles are
+  Pro only, so the filled versions (`#i-home-fill`, `#i-library-fill`, `#i-notes-fill`,
+  `#i-settings-fill`) are built from the free shapes: the outline filled with
+  `currentColor`, inner details drawn with the `.cut` class in the pill colour.
+- **All-purple logo in the app, 96px wide** (user decision, 28 Oct 2026). The "deo"
+  letters take `--odeo-primary` through `--logo-text`, which differs from the guide's
+  "don't recolor" rule. 96px is the guide's minimum; the rail mark is 32px.
+- **Page background matches the side navigation in light mode** (user decision,
+  28 Oct 2026): `--app-bg` is `--odeo-surface` in light and stays `--odeo-bg` in dark.
 - **Edge toggle instead of a "Collapse menu" row** (user decision, 27 Oct 2026): a round
   arrow on the sidebar's edge, following the familiar sidebar pattern. Its label switches
   between "Collapse sidebar" and "Expand sidebar".

@@ -164,10 +164,16 @@
   --read-letter: 0em;
   --read-word: 0.16em;
   --page: var(--odeo-surface);
+  /* Page background: the side navigation's colour in light mode (user decision) */
+  --app-bg: var(--odeo-surface);
 
   /* Where the content area starts, so the player stays off the navigation */
   --content-left: 0px;
   --mobile-bar: 0px;
+}
+:root[data-theme='dark'] { --app-bg: var(--odeo-bg); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) { --app-bg: var(--odeo-bg); }
 }
 :root[data-reading='sand'] { --page: var(--odeo-surface-sunken); }
 :root[data-font='dyslexic'] { --read-font: var(--odeo-font-dyslexic); }

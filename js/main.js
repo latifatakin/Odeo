@@ -39,53 +39,6 @@ $('#nav-collapse').addEventListener('click', () => {
 });
 syncCollapse();
 
-// ---------- Settings menu (pop-up from the Settings row) ----------
-
-function initSettingsMenu() {
-  const btn = $('#settings-menu-btn');
-  const menu = $('#settings-menu');
-  const items = () => [...menu.querySelectorAll('[role="menuitem"]')];
-
-  const open = (focusIndex = 0) => {
-    menu.hidden = false;
-    btn.setAttribute('aria-expanded', 'true');
-    items()[focusIndex]?.focus();
-  };
-  const close = ({ focusButton = false } = {}) => {
-    if (menu.hidden) return;
-    menu.hidden = true;
-    btn.setAttribute('aria-expanded', 'false');
-    if (focusButton) btn.focus();
-  };
-
-  btn.addEventListener('click', () => (menu.hidden ? open() : close()));
-  btn.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-      e.preventDefault();
-      open(e.key === 'ArrowUp' ? items().length - 1 : 0);
-    }
-  });
-  menu.addEventListener('keydown', (e) => {
-    const list = items();
-    const i = list.indexOf(document.activeElement);
-    if (e.key === 'ArrowDown') list[(i + 1) % list.length].focus();
-    else if (e.key === 'ArrowUp') list[(i - 1 + list.length) % list.length].focus();
-    else if (e.key === 'Home') list[0].focus();
-    else if (e.key === 'End') list[list.length - 1].focus();
-    else if (e.key === 'Escape') close({ focusButton: true });
-    else if (e.key === 'Tab') close();
-    else return;
-    if (e.key !== 'Tab') e.preventDefault();
-  });
-  menu.addEventListener('click', (e) => {
-    if (e.target.closest('[role="menuitem"]')) close();
-  });
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('#settings-menu, #settings-menu-btn')) close();
-  });
-  document.addEventListener('routechange', () => close());
-}
-
 // ---------- Reading settings sheet ----------
 
 export function openReadingSettings() {
@@ -127,7 +80,6 @@ async function start() {
   await initSettings();
   initImporters();
   initReadingSheet();
-  initSettingsMenu();
   updateOnline();
   startRouter();
 

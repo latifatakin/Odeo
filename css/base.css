@@ -7,7 +7,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  background: var(--odeo-bg);
+  background: var(--app-bg);
   scroll-padding-top: var(--odeo-space-4);
   scroll-padding-bottom: calc(var(--sticky-bottom, 0px) + var(--odeo-space-4));
 }
@@ -16,7 +16,7 @@ body {
   margin: 0;
   min-height: 100vh;
   min-height: 100dvh;
-  background: var(--odeo-bg);
+  background: var(--app-bg);
   color: var(--odeo-text);
   font-family: var(--odeo-font-body);
   font-size: 18px;
@@ -80,10 +80,14 @@ textarea { caret-color: var(--odeo-primary); }
   stroke-linejoin: round;
 }
 
+/* Details inside a filled icon are drawn in the pill colour behind it */
+.cut { stroke: var(--icon-cut, var(--odeo-primary-soft)); }
+@media (forced-colors: active) { .cut { stroke: Canvas; } }
+
 /* Logo colours follow the theme: primary bubble, text "deo". */
 .lb { stroke: var(--odeo-primary); }
 .lb-fill { fill: var(--odeo-primary); }
-.lt { fill: var(--odeo-text); }
+.lt { fill: var(--logo-text, var(--odeo-text)); }
 
 /* Focus: 3px ring with a 2px gap */
 :focus-visible {

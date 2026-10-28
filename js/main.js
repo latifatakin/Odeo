@@ -3,7 +3,7 @@ import { initSettings } from './settings.js';
 import { initImporters } from './importers.js';
 import { readingSettingsHTML, bindSettings, nextPrefix } from './settings-ui.js';
 import { route, startRouter } from './router.js';
-import { $, closeOnBackdrop } from './ui.js';
+import { $, closeOnBackdrop, toast } from './ui.js';
 
 route('home', () => import('./views/home-view.js'));
 route('text', () => import('./views/text-view.js'));
@@ -135,8 +135,62 @@ async function start() {
   // add ?sw to the address to test offline mode locally.
   const local = ['localhost', '127.0.0.1'].includes(location.hostname);
   if ('serviceWorker' in navigator && location.protocol !== 'file:' && (!local || location.search.includes('sw'))) {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
+    initUpdates();
   }
+}
+
+// New versions: the service worker installs a new deploy in the background.
+// When it takes over, reload once at a calm moment so people see the update,
+// never while audio is playing, someone is typing, or a sheet is open.
+const UPDATED_FLAG = 'odeo:updated';
+
+function safeToReload() {
+  if (window.speechSynthesis?.speaking) return false;
+  if (document.querySelector('dialog[open]')) return false;
+  if (['text', 'file'].includes(document.body.dataset.view)) return false;
+  const el = document.activeElement;
+  if (el && (el.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName))) return false;
+  return true;
+}
+
+function initUpdates() {
+  const sw = navigator.serviceWorker;
+  const hadController = Boolean(sw.controller); // false on a first visit: nothing to refresh
+  let pending = false;
+
+  const tryReload = () => {
+    if (!pending || !safeToReload()) return;
+    pending = false;
+    try { sessionStorage.setItem(UPDATED_FLAG, '1'); } catch {}
+    location.reload();
+  };
+
+  sw.addEventListener('controllerchange', () => {
+    if (!hadController || pending) return;
+    pending = true;
+    tryReload();
+    if (pending) {
+      document.addEventListener('routechange', tryReload);
+      document.addEventListener('focusout', () => setTimeout(tryReload, 0));
+      setInterval(tryReload, 3000);
+    }
+  });
+
+  sw.register('sw.js', { updateViaCache: 'none' })
+    .then((reg) => {
+      // Look for a new deploy whenever someone comes back to the tab.
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') reg.update().catch(() => {});
+      });
+    })
+    .catch(() => {});
+
+  try {
+    if (sessionStorage.getItem(UPDATED_FLAG)) {
+      sessionStorage.removeItem(UPDATED_FLAG);
+      toast('Ôdēō has been updated.');
+    }
+  } catch {}
 }
 
 start();

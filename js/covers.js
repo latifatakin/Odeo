@@ -2,7 +2,7 @@
 
 import { esc } from './ui.js';
 
-const KIND = { paste: 'Text', pdf: 'PDF', txt: 'TXT', sample: 'Text' };
+const KIND = { paste: 'Text', pdf: 'PDF', txt: 'TXT', sample: 'Text', link: 'Web' };
 export const kindLabel = (doc) => KIND[doc.source?.type] || 'Text';
 // Pasted text sits on secondary-soft, files on primary-soft.
 export const isPasted = (doc) => ['paste', 'sample'].includes(doc.source?.type || 'paste');

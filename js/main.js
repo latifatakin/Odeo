@@ -8,6 +8,7 @@ import { $, closeOnBackdrop, toast } from './ui.js';
 route('home', () => import('./views/home-view.js'));
 route('text', () => import('./views/text-view.js'));
 route('file', () => import('./views/file-view.js'));
+route('link', () => import('./views/link-view.js'));
 route('library', () => import('./views/library-view.js'));
 route('notes', () => import('./views/notes-view.js'));
 route('settings', () => import('./views/settings-view.js'));
@@ -99,7 +100,7 @@ const UPDATED_FLAG = 'odeo:updated';
 function safeToReload() {
   if (window.speechSynthesis?.speaking) return false;
   if (document.querySelector('dialog[open]')) return false;
-  if (['text', 'file'].includes(document.body.dataset.view)) return false;
+  if (['text', 'file', 'link'].includes(document.body.dataset.view)) return false;
   const el = document.activeElement;
   if (el && (el.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName))) return false;
   return true;

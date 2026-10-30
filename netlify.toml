@@ -2,6 +2,11 @@
 [build]
   publish = "."
 
+# Paste link: one small function (netlify/functions/article.mjs) fetches web pages.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
 [[headers]]
   for = "/*"
   [headers.values]

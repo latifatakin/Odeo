@@ -26,7 +26,7 @@ export const SAMPLES = [
 export function addTilesHTML() {
   return `
     <a class="add-tile add-tile--text" href="#/text" data-add="text">
-      <span class="add-tile-icon">${icon('paste')}</span>
+      <span class="add-tile-icon">${icon('text')}</span>
       <span class="add-tile-title">Paste text</span>
       <span class="add-tile-hint">Type or paste anything you want to hear.</span>
     </a>
@@ -34,10 +34,23 @@ export function addTilesHTML() {
       <span class="add-tile-icon">${icon('upload')}</span>
       <span class="add-tile-title">Upload a file</span>
       <span class="add-tile-hint">PDF or TXT, up to 20 MB.</span>
-    </button>`;
+    </button>
+    <a class="add-tile" href="#/link" data-add="link">
+      <span class="add-tile-icon">${icon('link')}</span>
+      <span class="add-tile-title">Paste a link</span>
+      <span class="add-tile-hint">An article, blog post or PDF on the web.</span>
+    </a>`;
 }
 
 let pendingFile = null;
+// Hand a chosen or dropped file to the Upload page, which reads and checks it.
+export function openFile(file) {
+  if (!file) return;
+  pendingFile = file;
+  if (location.hash === '#/file') document.dispatchEvent(new CustomEvent('odeo:file'));
+  else navigate('file');
+}
+
 export const takePendingFile = () => {
   const f = pendingFile;
   pendingFile = null;
@@ -90,9 +103,6 @@ export function initImporters() {
   $('#global-file').addEventListener('change', (e) => {
     const file = e.target.files[0];
     e.target.value = '';
-    if (!file) return;
-    pendingFile = file;
-    if (location.hash === '#/file') document.dispatchEvent(new CustomEvent('odeo:file'));
-    else navigate('file');
+    openFile(file);
   });
 }

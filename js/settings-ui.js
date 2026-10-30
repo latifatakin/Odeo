@@ -10,7 +10,7 @@ const GROUPS = {
   font: {
     legend: 'Font',
     options: [
-      { value: 'body', label: 'Arial', cls: 'chip-body' },
+      { value: 'body', label: 'Atkinson Hyperlegible', cls: 'chip-body' },
       { value: 'dyslexic', label: 'OpenDyslexic', cls: 'chip-dyslexic' },
       { value: 'comic', label: 'Comic', cls: 'chip-comic' },
     ],

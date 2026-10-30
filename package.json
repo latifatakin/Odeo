@@ -1,0 +1,10 @@
+{
+  "name": "odeo",
+  "private": true,
+  "description": "Ôdēō. The site needs no build; these packages are only for the Paste link function in netlify/functions.",
+  "type": "module",
+  "dependencies": {
+    "@mozilla/readability": "0.6.0",
+    "linkedom": "0.18.14"
+  }
+}

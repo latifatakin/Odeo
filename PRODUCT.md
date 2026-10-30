@@ -20,7 +20,7 @@ People with dyslexia, people with visual impairments, and people who learn bette
 
 ## Positioning
 
-Free and fully private: everything runs in the browser, nothing is uploaded, and there is no account. Reading comfort for dyslexia (OpenDyslexic, spacing, themes) is built in, not an add-on.
+Free and private: everything runs in the browser and there is no account. Files and text never leave the device. The one exception is Paste link: the link (only the link) goes to Ôdēō's own Netlify Function, which fetches the page; nothing is stored there. Reading comfort for dyslexia (OpenDyslexic, spacing, themes) is built in, not an add-on.
 
 ## Operating Context
 
@@ -28,21 +28,21 @@ Used on phones, tablets and laptops, often in long listening sessions, sometimes
 
 ## Capabilities and Constraints
 
-- Paste text or upload PDF/TXT (up to 20 MB); review extracted text before listening.
+- Paste text, upload PDF/TXT (up to 20 MB), or paste a link to a web article or PDF (pages up to 5 MB); review extracted text before listening. Paste link needs a connection and can't open paywalled or login-only pages.
 - Word-by-word highlighting from boundary events, with an estimated-timing fallback for voices that give none.
 - Voices are whatever the device offers; online voices need a connection. No celebrity or cloned voices.
 - Speed 0.8×–2.0×; times are estimates (the browser gives no true audio duration).
 - No audio download (Web Speech API limitation).
 - Notes from selected text or the current sentence, with comments.
 - My library: titles, dates, search, rename, delete, resume position.
-- Settings page plus a Reading settings sheet: font (Arial, OpenDyslexic, Comic), size 18–32px, line and letter spacing, page colour, light/dark, motion, voice, speed (0.8–2.0×).
+- Settings page plus a Reading settings sheet: font (Atkinson Hyperlegible, OpenDyslexic, Comic), size 18–32px, line and letter spacing, page colour, light/dark, motion, voice, speed (0.8–2.0×).
 - Storage records carry a sync-ready envelope so sign-in and sync can be added later.
 - Out of scope for now (user decided): AI summary, quiz, chat; book store or licensed books; accounts.
 
 ## Brand Commitments
 
 - The Odeo brand guide (`.claude/skills/odeo-brand/SKILL.md`) is binding for every screen, component, asset and piece of copy (user provided, 26 Oct 2026).
-- Name: Ôdēō. Brand purple #5B32C9, sunbeam yellow #FFC94D, cream backgrounds, Comic Sans / Comic Neue headings, Arial body.
+- Name: Ôdēō. Brand purple #5B32C9, sunbeam yellow #FFC94D, cream backgrounds, Helvetica headings and Atkinson Hyperlegible for all other text (user decision, 30 Oct 2026; the guide said Comic Sans headings and Arial body).
 - Voice: like a kind friend. Short sentences, everyday words, sentence case, no emoji.
 
 ## Evidence on Hand
@@ -53,7 +53,7 @@ No testimonials, user counts, press or metrics exist. Never fabricate them. Samp
 
 1. Listening first: play is always one obvious step away.
 2. Comfort is adjustable, never imposed: every reading preference can change and is remembered.
-3. Private by default: nothing leaves the device.
+3. Private by default: nothing leaves the device, except a pasted link, which goes to Ôdēō's own server only to fetch that page.
 4. Never lose someone's place: progress and notes save automatically.
 5. Works without a connection once visited.
 

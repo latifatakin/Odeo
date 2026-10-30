@@ -8,13 +8,14 @@ Everything runs in the browser. There are no accounts and no server, and text ne
 
 The look follows the Odeo brand guide. See [DESIGN.md](DESIGN.md).
 
-- **Home:** Continue listening cards with progress, two large tiles (Paste text and Upload a file), and My library.
+- **Home:** a large upload area (click or drop a file), Paste text and Paste link buttons, Continue listening cards with progress, and My library.
+- **Paste link:** paste a link to an article or PDF; a small Netlify Function fetches the page and finds the article text.
 - **Reader:** one cream column. The sentence being read gets a soft purple background and the current word sunbeam yellow. Tap any word to listen from there. Space plays and pauses; the arrow keys skip 10 seconds.
 - **Player bar:** title and time, a progress line, then voice, back 10s, play, forward 10s and speed.
 - **Speed sheet** (0.8× to 2.0×, plus "Speed up gradually") and **voice sheet** (search, language, works-offline filter, and a sample for each voice).
 - **Notes:** select text and choose "Save note", or save the sentence being read. Notes appear in a panel beside the page and on the Notes page.
 - **My library:** search, filters, sorting, and a More menu for Rename and Delete.
-- **Settings:** font (Arial, OpenDyslexic, Comic), text size 18 to 32px, line and letter spacing, Cream or Sand page, light or dark, motion, voice and speed. There's also a Reading settings sheet you can open while reading.
+- **Settings:** font (Atkinson Hyperlegible, OpenDyslexic, Comic), text size 18 to 32px, line and letter spacing, Cream or Sand page, light or dark, motion, voice and speed. There's also a Reading settings sheet you can open while reading.
 - **Navigation:** side menu on desktop (it collapses to an icon rail), icon rail on tablet, and a bottom bar on phone.
 - **Offline:** after the first visit, the app and every saved item work with no connection.
 
@@ -28,17 +29,19 @@ python3 -m http.server 8000
 
 Then open http://localhost:8000.
 
+Paste link needs the Netlify Function, so it only works when deployed, or locally with `netlify dev` (Netlify CLI).
+
 Offline support is switched off on `localhost` so your edits show up straight away. To test offline mode locally, open http://localhost:8000/?sw instead.
 
 ## Deploy to Netlify (free)
 
-**Option A: drag and drop.** Go to https://app.netlify.com/drop and drag this whole folder onto the page.
+**Option A: drag and drop.** Go to https://app.netlify.com/drop and drag this whole folder onto the page. Paste link won't work this way, because drag and drop doesn't run functions; use Option B.
 
 **Option B: from Git** (deploys automatically on every push):
 
 1. Push this folder to a GitHub repository.
 2. In Netlify, choose **Add new site → Import an existing project** and pick the repo.
-3. Leave the build command empty and set the publish directory to `.`. `netlify.toml` already sets this, plus the security headers.
+3. Leave the build command empty and set the publish directory to `.`. `netlify.toml` already sets this, plus the security headers and the functions folder. Netlify installs the two packages in `package.json` and deploys `netlify/functions/article.mjs` for Paste link.
 
 **When you deploy changes,** bump `VERSION` in `sw.js` (for example `odeo-v2`). Returning visitors then get the new files instead of their cached copy.
 

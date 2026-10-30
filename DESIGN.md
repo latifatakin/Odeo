@@ -13,7 +13,7 @@ are built from brand tokens:
 | Token | Value | Why |
 | --- | --- | --- |
 | `--page` | `--odeo-surface` (Cream) or `--odeo-surface-sunken` (Sand) | Reader background choice |
-| `--read-font` | `--odeo-font-body`, `--odeo-font-dyslexic` or `--odeo-font-heading` | Reader font choice |
+| `--read-font` | `--odeo-font-body`, `--odeo-font-dyslexic` or `--font-comic` | Reader font choice |
 | `--read-size` | 18 to 32px, default 20px | Brand reader style |
 | `--read-line` | 1.7 (34px at 20px), 2.0 or 2.4 | Brand reader line height |
 | `--read-word` | 0.16em + 3.5 × letter spacing | Word gaps grow faster than letter gaps |
@@ -31,8 +31,17 @@ are built from brand tokens:
   ends; current word in `--odeo-secondary`. The word's text uses `--odeo-on-secondary`,
   which equals `--odeo-text` in light mode and keeps contrast in dark mode, where
   `--odeo-text` is light. Saved notes use `--odeo-secondary-soft`.
-- **Type:** headings in `--odeo-font-heading` at the guide's sizes, with mobile sizes
-  under 600px. Everything else in `--odeo-font-body`, 18px body, 14px minimum.
+- **Fonts** (user decision, 30 Oct 2026, replacing the guide's Comic Sans headings and
+  Arial body): headings in Helvetica (`--odeo-font-heading`: Helvetica Neue, Helvetica,
+  then Arial on devices without it). Everything else in Atkinson Hyperlegible
+  (`--odeo-font-body`), self-hosted in `fonts/` (regular and bold, Latin and extended
+  Latin, SIL OFL). It is also the reader's default, shown as "Atkinson Hyperlegible" in
+  Reading settings. The "Comic" reading option keeps its own `--font-comic`.
+- **Type:** headings in `--odeo-font-heading`, everything else in `--odeo-font-body`.
+  Sizes (user decision, 30 Oct 2026): H1 28/36, H2 22/30, H3 20/28, H4 18/26,
+  H5–H6 16/24, the same on every screen size. Body and inputs 16/24. Supporting text
+  under a page heading (`.lede`, `.page-head p`) 18/28 in the muted grey. 14px minimum.
+  Side navigation labels 16px; icons 24px. Reader text keeps its own size setting.
 - **Controls:** at least 48px in both directions. Chips are native radio buttons; toggles
   are checkboxes with `role="switch"`. Changes apply right away and save.
 - **Sheets:** a bottom sheet with a grab handle on phones, and a centred panel no wider
@@ -85,6 +94,19 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   "don't recolor" rule. 96px is the guide's minimum; the rail mark is 32px.
 - **Page background matches the side navigation in light mode** (user decision,
   28 Oct 2026): `--app-bg` is `--odeo-surface` in light and stays `--odeo-bg` in dark.
+- **Light-mode colours changed from the guide** (user decision, 30 Oct 2026):
+  `--odeo-surface` #FCFAFF (pages and side navigation), `--odeo-surface-sunken`
+  #F2EEF9 to match, `--odeo-text` #090018, `--odeo-text-muted` #4E4E4E. Dark mode
+  keeps the guide's values.
+- **Home follows the user's reference** (30 Oct 2026): a centred H1 ("Make any text
+  accessible with Ôdēō") and supporting line, then one large upload area (white, 2px
+  border, radius lg, 320px tall; 220px on phones). The whole area is a button that
+  opens the file picker, and files can be dropped on it (dashed purple while dragging).
+  Phones say only "Choose a file". Two soft pill buttons sit under it, "Paste text" (T
+  icon) and "Paste link" (chain icon), on `--odeo-surface-sunken`, 48px tall, radius
+  full, bold 16px, purple icon, purple on hover (user's reference, 30 Oct 2026). Then
+  Continue listening and My library, all in one 800px centred column. The greeting is
+  gone.
 - **Edge toggle instead of a "Collapse menu" row** (user decision, 27 Oct 2026): a round
   arrow on the sidebar's edge, following the familiar sidebar pattern. Its label switches
   between "Collapse sidebar" and "Expand sidebar".
@@ -103,3 +125,19 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   (Android, Linux) show Comic Neue.
 - **Letter spacing** is an extra reader setting the guide doesn't list. It helps many
   dyslexic readers.
+
+## Paste link (30 Oct 2026)
+
+- **Page `#/link`:** H1 "Paste a link", a Link field (type url) with the privacy line
+  under it, and "Get the text". While fetching, the button reads "Getting the page…"
+  and a status line says it can take a few seconds. Then "Check the text" (title and
+  text, editable) and Start listening, like Upload a file. PDF links go straight to the
+  Upload a file page.
+- **Errors** say what to do next and suggest pasting the text when a site needs a login
+  or blocks readers. Obvious non-links are caught in the page before anything is sent.
+- **Server:** `netlify/functions/article.mjs` at `/api/article` (Readability and
+  linkedom, listed in `package.json`). It accepts public http(s) links only, checks
+  every redirect, refuses private network addresses, and limits pages to 5 MB and
+  10 seconds. Nothing is stored.
+- **Library:** saved links show the type word "Web" on the purple-tint tile.
+

@@ -1,4 +1,4 @@
-// Hash router: #/home, #/text, #/file, #/library, #/notes, #/session/<id>[/<word>]
+// Hash router: #/home, #/text, #/file, #/link, #/library, #/notes, #/session/<id>[/<word>]
 // Hash routes work on any static host with no server rules.
 
 import { $$ } from './ui.js';

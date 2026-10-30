@@ -1,18 +1,12 @@
-// Home: three bands. Continue listening, Add something to listen to, My library.
+// Home: a centred heading, one large upload area (with paste as the other way in),
+// then Continue listening and My library.
 
 import { repo } from '../storage/repo.js';
 import { getSettings } from '../settings.js';
 import { minutesFor } from '../text.js';
-import { addTilesHTML, SAMPLES, openSample } from '../importers.js';
+import { SAMPLES, openSample, openFile } from '../importers.js';
 import { typeTileHTML, progressHTML, applyPct, progressPct, kindLabel, isPasted } from '../covers.js';
 import { esc, icon, formatDate, plural } from '../ui.js';
-
-function greeting() {
-  const h = new Date().getHours();
-  if (h < 12) return 'Good morning';
-  if (h < 18) return 'Good afternoon';
-  return 'Good evening';
-}
 
 const minsLeft = (d, rate) => Math.max(1, Math.round(minutesFor(d.wordCount - (d.progress?.wordIndex || 0), rate)));
 const minsTotal = (d, rate) => Math.max(1, Math.round(minutesFor(d.wordCount, rate)));
@@ -35,15 +29,28 @@ export async function render(main) {
   const resume = inProgress.find((d) => progressPct(d) > 0);
 
   main.innerHTML = `
-  <div class="page">
-    <header class="greet">
-      <h1>${greeting()}</h1>
-      <p>${
-        resume
-          ? `Pick up where you stopped: <a href="#/session/${resume.id}">${esc(resume.title)}</a>, ${plural(minsLeft(resume, rate), 'minute')} left.`
-          : 'Paste text or upload a file, then press play.'
-      }</p>
+  <div class="page page--home">
+    <header class="hero">
+      <h1>Make any text accessible with Ôdēō</h1>
+      <p class="lede">Turn any document, article or study notes into speech, and follow each word as it’s read.</p>
     </header>
+
+    <section class="home-add" aria-label="Add something to listen to">
+      <button type="button" class="home-drop" data-add="file" aria-describedby="home-drop-hint">
+        ${icon('upload')}
+        <span class="home-drop-title"><span class="home-drop-link">Choose a file</span><span class="home-drop-drag"> or drag and drop it here</span></span>
+        <span class="home-drop-hint" id="home-drop-hint">PDF or TXT, up to 20 MB. It stays on your device.</span>
+      </button>
+      <ul class="home-pills" aria-label="Other ways to add">
+        <li><a class="pill-btn" href="#/text">${icon('text')}Paste text</a></li>
+        <li><a class="pill-btn" href="#/link">${icon('link')}Paste link</a></li>
+      </ul>
+      ${
+        resume
+          ? `<p class="home-alt">Pick up where you stopped: <a href="#/session/${resume.id}">${esc(resume.title)}</a>, ${plural(minsLeft(resume, rate), 'minute')} left.</p>`
+          : ''
+      }
+    </section>
 
     ${
       inProgress.length
@@ -69,11 +76,6 @@ export async function render(main) {
         : ''
     }
 
-    <section class="section" aria-labelledby="add-h">
-      <div class="section-head"><h2 id="add-h">Add something to listen to</h2></div>
-      <div class="add-tiles">${addTilesHTML()}</div>
-    </section>
-
     <section class="section" aria-labelledby="lib-h">
       <div class="section-head">
         <h2 id="lib-h">My library</h2>
@@ -95,5 +97,19 @@ export async function render(main) {
   </div>`;
 
   applyPct(main);
+
+  // Drag and drop a file onto the upload area
+  const drop = main.querySelector('.home-drop');
+  ['dragenter', 'dragover'].forEach((t) =>
+    drop.addEventListener(t, (e) => {
+      e.preventDefault();
+      drop.classList.add('is-over');
+    })
+  );
+  ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, () => drop.classList.remove('is-over')));
+  drop.addEventListener('drop', (e) => {
+    e.preventDefault();
+    openFile(e.dataTransfer?.files?.[0]);
+  });
   main.querySelectorAll('[data-sample]').forEach((b) => b.addEventListener('click', () => openSample(Number(b.dataset.sample))));
 }

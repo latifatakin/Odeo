@@ -38,7 +38,7 @@ const uuid = () =>
       });
 
 export const DEFAULT_SETTINGS = {
-  font: 'body', // 'body' (Arial) | 'dyslexic' (OpenDyslexic) | 'comic'
+  font: 'body', // 'body' (Atkinson Hyperlegible) | 'dyslexic' (OpenDyslexic) | 'comic'
   fontSize: 20, // px, reader text: 18 to 32 in 2px steps
   lineHeight: 1.7, // reader line height
   letterSpacing: 0, // em

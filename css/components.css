@@ -322,7 +322,7 @@ input[type='range'] { width: 100%; min-height: var(--odeo-tap-min); margin: 0; a
   background: var(--ui-active);
   color: var(--odeo-text);
 }
-.add-tile--text .add-tile-icon { background: var(--odeo-secondary-soft); color: var(--odeo-text); }
+.add-tile--text .add-tile-icon { background: var(--odeo-primary-soft); color: var(--odeo-text); } /* matches the purple pasted-text tile */
 .add-tile-title { font-family: var(--odeo-font-heading); font-weight: 700; font-size: 18px; line-height: 26px; }
 .add-tile-hint { color: var(--odeo-text-muted); font-size: 16px; line-height: 24px; }
 

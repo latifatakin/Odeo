@@ -88,8 +88,8 @@ export function openVoiceSheet() {
     'Voice',
     `<div class="voice-tools">
       <div class="field">
-        <label for="voice-search">Search voices</label>
-        <div class="search">${icon('search')}<input id="voice-search" type="search" autocomplete="off" /></div>
+        <label class="sr-only" for="voice-search">Search voices</label>
+        <div class="search">${icon('search')}<input id="voice-search" type="search" placeholder="Search" autocomplete="off" /></div>
       </div>
       <div class="voice-filters">
         <div class="field">

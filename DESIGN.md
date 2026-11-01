@@ -180,8 +180,10 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
 
 - **One row:** search, a sort button and a filter button, side by side. No "Search" or
   "Sort by" labels on screen (the search field has a hidden label for screen readers
-  and "Search" as its placeholder). Search uses the button corner radius
-  (`--odeo-radius-md`), as do all search fields.
+  and "Search" as its placeholder). Search is fully rounded
+  (`--odeo-radius-full`), like the Paste text / Paste link pills. Every search field
+  (Library, Notes, the Voice picker) shares this style: 8px top and bottom padding, 16px at the
+  sides, a hidden label for screen readers and "Search" as the placeholder.
 - **Sort button** reads "Sort by" with a down arrow (screen readers also hear the current
   sort). Its menu has "Sort by" (Recents, Date added, Name, each with an icon) and
   "Order" (New to old / Old to new, or A to Z / Z to A for Name). The chosen options

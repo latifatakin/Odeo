@@ -12,8 +12,8 @@ export async function render(main) {
       <p>Everything you’ve saved while listening. Jump back to any moment to hear it again.</p>
     </header>
     <div class="field">
-      <label for="notes-search">Search notes</label>
-      <div class="search">${icon('search')}<input id="notes-search" type="search" autocomplete="off" /></div>
+      <label class="sr-only" for="notes-search">Search notes</label>
+      <div class="search">${icon('search')}<input id="notes-search" type="search" placeholder="Search" autocomplete="off" /></div>
     </div>
     <p class="sr-only" id="notes-results" role="status"></p>
     <div id="notes-groups" class="section"></div>

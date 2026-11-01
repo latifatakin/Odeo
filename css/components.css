@@ -106,10 +106,12 @@
 .search .icon { position: absolute; left: var(--odeo-space-4); color: var(--odeo-text-muted); pointer-events: none; }
 .search input {
   width: 100%;
-  min-height: var(--odeo-tap-min);
-  padding: 0 var(--odeo-space-4) 0 52px;
+  /* Height comes from the padding (user decision): 8px top and bottom, 16px at the sides.
+     The left padding also makes room for the icon: 16px + 24px icon + 8px gap. */
+  padding: var(--odeo-space-2) var(--odeo-space-4) var(--odeo-space-2) calc(var(--odeo-space-4) + 24px + var(--odeo-space-2));
+  line-height: 24px;
   border: 2px solid var(--odeo-border-strong);
-  border-radius: var(--odeo-radius-md); /* same corners as buttons */
+  border-radius: var(--odeo-radius-full); /* fully rounded, like the Paste text / Paste link pills */
   background: var(--odeo-surface-sunken);
   font-size: 16px;
 }
@@ -390,6 +392,8 @@ mark { background: var(--odeo-secondary); color: var(--odeo-on-secondary); borde
 
 /* Sort and filter: quiet buttons that open menus, after the user's Speechify reference */
 .tool-menu { position: relative; flex: none; }
+/* Sort and filter sit right next to each other; their tap areas still don't overlap */
+.tool-menu + .tool-menu { margin-left: calc(-1 * var(--odeo-space-2)); }
 .tool-btn,
 .tool-icon {
   display: inline-flex;
@@ -404,7 +408,7 @@ mark { background: var(--odeo-secondary); color: var(--odeo-on-secondary); borde
   font-size: 16px;
   font-weight: 500;
 }
-.tool-btn { padding: 0 var(--odeo-space-3) 0 var(--odeo-space-4); }
+.tool-btn { padding: 0 var(--odeo-space-2) 0 var(--odeo-space-4); }
 .tool-btn .icon { width: 20px; height: 20px; }
 .tool-icon { position: relative; width: var(--odeo-tap-min); padding: 0; }
 .sort-ico { display: none; }

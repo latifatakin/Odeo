@@ -247,7 +247,7 @@ input[type='range'] { width: 100%; min-height: var(--odeo-tap-min); margin: 0; a
 .home-add { display: grid; gap: var(--odeo-space-3); justify-items: center; max-width: 800px; margin: 0 auto; }
 .home-drop {
   width: 100%;
-  min-height: 320px;
+  min-height: clamp(220px, 34vh, 320px); /* scales with the screen */
   display: grid;
   place-content: center;
   justify-items: center;
@@ -287,7 +287,7 @@ input[type='range'] { width: 100%; min-height: var(--odeo-tap-min); margin: 0; a
 
 .link-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--odeo-space-4); margin-top: var(--odeo-space-6); }
 /* Phones can't drag files, so just "Choose a file" */
-:root[data-nav='bar'] .home-drop { min-height: 220px; }
+:root[data-nav='bar'] .home-drop { min-height: 200px; padding-block: var(--odeo-space-8); }
 :root[data-nav='bar'] .home-drop-drag { display: none; }
 :root[data-nav='bar'] .hero { margin-top: 0; }
 .home-add + .section { margin-top: var(--odeo-space-12); }
@@ -336,10 +336,11 @@ input[type='range'] { width: 100%; min-height: var(--odeo-tap-min); margin: 0; a
   align-items: center;
   gap: var(--odeo-space-5);
   padding: var(--odeo-space-3);
-  margin-inline: calc(var(--odeo-space-3) * -1);
   border-radius: var(--odeo-radius-lg);
   transition: background-color 0.15s;
 }
+/* On wide screens the row's hover area reaches past the column so tiles line up with headings */
+:root[data-nav='side'] .lib-row { margin-inline: calc(var(--odeo-space-3) * -1); }
 .lib-row:hover { background: var(--odeo-surface-raised); box-shadow: var(--odeo-shadow-card); }
 .lib-row:focus-within { background: var(--odeo-surface-raised); }
 
@@ -398,7 +399,7 @@ mark { background: var(--odeo-secondary); color: var(--odeo-on-secondary); borde
   min-height: var(--odeo-tap-min);
   border: 0;
   border-radius: var(--odeo-radius-md);
-  background: var(--ui-active);
+  background: transparent; /* no fill until hover (user decision) */
   color: var(--ui-quiet);
   font-size: 16px;
   font-weight: 500;
@@ -418,17 +419,17 @@ mark { background: var(--odeo-secondary); color: var(--odeo-on-secondary); borde
 .tool-btn[aria-expanded='true'],
 .tool-icon[aria-expanded='true'] { background: var(--odeo-primary-soft); color: var(--ui-quiet-hover); }
 .tool-icon.is-on { color: var(--odeo-text); }
-.filter-dot { position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; border-radius: var(--odeo-radius-full); background: var(--odeo-text); box-shadow: 0 0 0 2px var(--ui-active); }
+.filter-dot { position: absolute; top: 10px; right: 10px; width: 8px; height: 8px; border-radius: var(--odeo-radius-full); background: var(--odeo-text); box-shadow: 0 0 0 2px var(--app-bg); }
 
 .menu--tool { min-width: 240px; padding: var(--odeo-space-2); }
+/* A small gap between items so two highlighted rows never touch */
+.menu:not([hidden]),
+.menu [role='group'] { display: grid; gap: var(--odeo-space-1); }
 .menu-label { padding: var(--odeo-space-2) var(--odeo-space-3) var(--odeo-space-1); font-size: 14px; line-height: 20px; color: var(--odeo-text-muted); }
 .menu--tool [role='menuitemradio'][aria-checked='true'] { background: var(--odeo-primary-soft); }
 .menu-check { margin-left: auto; display: inline-flex; visibility: hidden; }
 [aria-checked='true'] > .menu-check { visibility: visible; }
 
-.filter-note { display: flex; flex-wrap: wrap; align-items: center; gap: var(--odeo-space-1) var(--odeo-space-2); margin: 0 0 var(--odeo-space-2); font-size: 14px; line-height: 20px; color: var(--odeo-text-muted); }
-.link-btn { min-height: 24px; padding: 0 var(--odeo-space-1); border: 0; background: none; color: var(--odeo-text); font-size: 14px; font-weight: 500; text-decoration: underline; text-underline-offset: 0.18em; }
-.link-btn:hover { color: var(--ui-quiet-hover); }
 .storage-line { margin-top: var(--odeo-space-8); }
 
 /* More menu */
@@ -477,6 +478,52 @@ mark { background: var(--odeo-secondary); color: var(--odeo-on-secondary); borde
 .empty p { color: var(--odeo-text-muted); max-width: 48ch; }
 .empty .icon { width: 40px; height: 40px; color: var(--odeo-text-muted); }
 .empty-actions { display: flex; flex-wrap: wrap; gap: var(--odeo-space-3); margin-top: var(--odeo-space-2); }
+
+/* ---------- Library empty state (after the user's Speechify reference) ---------- */
+.lib-empty { display: grid; gap: var(--odeo-space-4); justify-items: center; text-align: center; margin-top: var(--odeo-space-6); }
+.lib-empty-title { font-size: 22px; line-height: 30px; }
+.lib-empty-sub { color: var(--odeo-text-muted); max-width: 48ch; margin-top: calc(var(--odeo-space-2) * -1); }
+.lib-empty--search { margin-top: var(--odeo-space-10); }
+.add-drop {
+  width: 100%;
+  min-height: clamp(200px, 30vh, 280px);
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--odeo-space-4);
+  padding: var(--odeo-space-8) var(--odeo-space-5);
+  border: 2px dashed var(--odeo-border-strong);
+  border-radius: var(--odeo-radius-lg);
+  background: var(--odeo-surface-raised);
+}
+.add-drop.is-over { border-color: var(--odeo-text); background: var(--odeo-primary-soft); }
+.add-drop > .icon { width: 48px; height: 48px; color: var(--odeo-text-muted); }
+.add-drop-hint { font-size: 14px; line-height: 20px; color: var(--odeo-text-muted); }
+:root[data-nav='bar'] .add-drop-drag { display: none; }
+.add-pair { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--odeo-space-4); }
+.add-card {
+  display: grid;
+  align-content: center;
+  gap: var(--odeo-space-3);
+  min-height: 136px;
+  padding: var(--odeo-space-5);
+  border-radius: var(--odeo-radius-lg);
+  background: var(--odeo-surface-raised);
+  color: var(--ui-quiet);
+  text-decoration: none;
+  font-weight: 500;
+}
+.add-card--text { justify-items: center; text-align: center; }
+.add-card--text .icon { width: 32px; height: 32px; }
+.add-card--text:hover { background: var(--odeo-primary-soft); color: var(--ui-quiet-hover); }
+.add-card--link { justify-items: stretch; text-align: left; }
+.add-card-label { display: inline-flex; align-items: center; gap: var(--odeo-space-2); color: var(--odeo-text); font-weight: 500; }
+.add-link-row { display: flex; gap: var(--odeo-space-2); }
+.add-link-row .input { flex: 1 1 auto; min-width: 0; }
+@media (max-width: 599.98px) {
+  .add-pair { grid-template-columns: 1fr; }
+  .add-card { min-height: 0; }
+}
 
 /* ---------- Notes ---------- */
 .note-group + .note-group { margin-top: var(--odeo-space-10); }

@@ -182,18 +182,18 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   "Sort by" labels on screen (the search field has a hidden label for screen readers
   and "Search" as its placeholder). Search uses the button corner radius
   (`--odeo-radius-md`), as do all search fields.
-- **Sort button** shows the current sort ("Recents", "Date added" or "Name") with a
-  down arrow. Its menu has "Sort by" (Recents, Date added, Name, each with an icon) and
+- **Sort button** reads "Sort by" with a down arrow (screen readers also hear the current
+  sort). Its menu has "Sort by" (Recents, Date added, Name, each with an icon) and
   "Order" (New to old / Old to new, or A to Z / Z to A for Name). The chosen options
   get a light purple `--odeo-primary-soft` background and a tick. Picking a sort resets the order to its
   natural one (newest first, or A to Z). Sort and order are remembered on the device.
   On phones under 420px the button shows the sort's icon instead of the word.
 - **Filter button** is a funnel icon. Its menu: All, Unread (not started yet), Uploads
   (PDF and TXT files), Links. When a filter is on, the funnel gets a small dot, its
-  label says which filter, and a line under the toolbar says what's showing, with
-  "Show all". The old In progress / Not started / Finished chips are gone.
-- Both are quiet buttons: grey on `--ui-active`, light purple background and purple
-  text on hover or while open. Menus use menu-button keyboard behaviour (arrows,
+  label says which filter. There is no "Showing…" line (removed 1 Nov 2026). The old In
+  progress / Not started / Finished chips are gone.
+- Both are quiet buttons: grey text with no background fill; light purple background
+  and purple text on hover or while open (user decision, 1 Nov 2026). Menus use menu-button keyboard behaviour (arrows,
   Home/End, Escape returns to the button, Tab closes) and `menuitemradio` items.
 
 ## No white surfaces (1 Nov 2026, user rule)
@@ -205,4 +205,27 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   background on hover, keyboard focus and when chosen, with purple text on hover.
 - Opening a menu with a mouse or touch moves focus into it without drawing the focus
   ring; opening it from the keyboard shows the ring as usual.
+
+## Responsive checks (1 Nov 2026)
+
+- Every page and sheet is checked at 320, 375, 600, 768, 1024 and 1440px: no sideways
+  scrolling and nothing spilling out of its card. The only overhangs are on purpose:
+  the round sidebar toggle on the sidebar's edge, and list rows reaching 12px past the
+  column on the full sidebar layout so tiles line up with headings (not on tablet or
+  phone).
+- Menus have a 4px gap between items so two highlighted items never touch.
+- The Settings voice row wraps: on narrow screens "Choose voice" moves below the voice.
+- The upload box on Home is `clamp(220px, 34vh, 320px)` tall (200px on phones).
+- On phones the reader's text box has normal padding; the room for the player is
+  below the box, as on larger screens.
+
+## Library empty state (1 Nov 2026, after the user's Speechify reference)
+
+- When the library is empty, or a filter has nothing in it: a centred heading ("Add
+  your first file", "Nothing unread", "No uploads yet", "No links yet") with one short
+  line, then a dashed upload box (light purple, purple "Choose a file" button, drop a
+  file on it), then two tiles side by side: Paste text (opens the paste page) and Paste
+  link (type a link and press Open; the Paste a link page then fetches it straight away).
+  The tiles stack on phones. No "Show everything" button.
+- A search with no match shows only "Nothing matches “…”" and "Try another word."
 

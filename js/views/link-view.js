@@ -179,5 +179,16 @@ export function render(main) {
     await createAndOpen({ title: reviewTitle.value.trim() || titleFromText(text), text, source });
   });
 
+  // A link typed into the Paste link tile (My library) arrives here: fetch it straight away.
+  let handed = '';
+  try {
+    handed = sessionStorage.getItem('odeo:link-url') || '';
+    sessionStorage.removeItem('odeo:link-url');
+  } catch {}
+  if (handed) {
+    input.value = handed;
+    form.requestSubmit();
+  }
+
   return () => controller?.abort();
 }

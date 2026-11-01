@@ -6,6 +6,8 @@ import { getSettings } from '../settings.js';
 import { minutesFor } from '../text.js';
 import { docRowHTML, applyPct, progressPct, kindLabel } from '../covers.js';
 import { $, $$, esc, icon, announce, confirmDialog, formatDate, plural, debounce } from '../ui.js';
+import { navigate } from '../router.js';
+import { openFile } from '../importers.js';
 
 const SORT_KEY = 'odeo:library-sort';
 const ORDER_KEY = 'odeo:library-order';
@@ -16,11 +18,48 @@ const SORTS = {
   title: { label: 'Name', icon: 'sort-az', defaultOrder: 'asc' },
 };
 const FILTERS = {
-  all: { label: 'All', icon: 'library', note: '' },
-  unread: { label: 'Unread', icon: 'unread', note: 'Showing what you haven’t started' },
-  uploads: { label: 'Uploads', icon: 'upload', note: 'Showing uploaded files' },
-  links: { label: 'Links', icon: 'link', note: 'Showing links' },
+  all: { label: 'All', icon: 'library', empty: 'Nothing here yet' },
+  unread: { label: 'Unread', icon: 'unread', empty: 'Nothing unread' },
+  uploads: { label: 'Uploads', icon: 'upload', empty: 'No uploads yet' },
+  links: { label: 'Links', icon: 'link', empty: 'No links yet' },
 };
+
+// Empty state, after the user's Speechify reference: a heading, a dashed upload box,
+// then Paste text and Paste link side by side (the link can be typed in right here).
+function addPanelHTML(heading, sub) {
+  return `<section class="lib-empty" aria-labelledby="lib-empty-h">
+    <h2 class="lib-empty-title" id="lib-empty-h">${esc(heading)}</h2>
+    <p class="lib-empty-sub">${esc(sub)}</p>
+    <div class="add-drop" data-drop>
+      ${icon('upload')}
+      <button type="button" class="btn btn--primary" data-add="file" aria-describedby="add-drop-hint">Choose a file</button>
+      <p class="add-drop-hint" id="add-drop-hint"><span class="add-drop-drag">or drag and drop it here. </span>PDF or TXT, up to 20 MB.</p>
+    </div>
+    <div class="add-pair">
+      <a class="add-card add-card--text" href="#/text">${icon('text')}<span>Paste text</span></a>
+      <form class="add-card add-card--link" data-link-form novalidate>
+        <label class="add-card-label" for="add-link-url">${icon('link')}Paste link</label>
+        <div class="add-link-row">
+          <input id="add-link-url" class="input" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="https://" />
+          <button type="submit" class="btn btn--primary">Open</button>
+        </div>
+      </form>
+    </div>
+  </section>`;
+}
+function bindAddPanel(root) {
+  const drop = root.querySelector('[data-drop]');
+  ['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add('is-over'); }));
+  ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, () => drop.classList.remove('is-over')));
+  drop.addEventListener('drop', (e) => { e.preventDefault(); openFile(e.dataTransfer?.files?.[0]); });
+  root.querySelector('[data-link-form]').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const url = e.target.querySelector('input').value.trim();
+    // Hand the link to the Paste a link page, which checks it and fetches the text.
+    try { sessionStorage.setItem('odeo:link-url', url); } catch {}
+    navigate('link');
+  });
+}
 const orderLabel = (sort, order) =>
   sort === 'title' ? (order === 'asc' ? 'A to Z' : 'Z to A') : order === 'desc' ? 'New to old' : 'Old to new';
 const check = () => `<span class="menu-check">${icon('check')}</span>`;
@@ -65,7 +104,7 @@ export async function render(main) {
 
       <div class="tool-menu">
         <button type="button" class="tool-btn" id="sort-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="sort-menu">
-          <span class="sort-ico" id="sort-ico" aria-hidden="true"></span><span class="sr-only">Sort by </span><span class="sort-label" id="sort-label"></span>${icon('chevron-down')}
+          <span class="sort-ico" id="sort-ico" aria-hidden="true"></span><span class="sort-label">Sort by</span><span class="sr-only">, <span id="sort-label"></span></span>${icon('chevron-down')}
         </button>
         <div class="menu menu--tool" id="sort-menu" role="menu" aria-label="Sort" hidden>
           <p class="menu-label" id="sort-by-label">Sort by</p>
@@ -89,7 +128,6 @@ export async function render(main) {
         </div>
       </div>
     </div>
-    <p class="filter-note" id="filter-note" hidden><span id="filter-note-text"></span> <button type="button" class="link-btn" id="filter-clear">Show all</button></p>
 
     <p class="sr-only" id="lib-results" role="status"></p>
     <ul class="lib-list section" id="lib-list"></ul>
@@ -135,32 +173,19 @@ export async function render(main) {
     const q = search.value.trim();
     const items = filtered();
     closeMenus();
-    if (!docs.length) {
-      list.innerHTML = '';
-      emptyBox.innerHTML = `<div class="empty">
-        ${icon('book')}
-        <h2 class="h5">Your library is empty</h2>
-        <p>Everything you listen to is saved here, so you can pick up where you stopped.</p>
-        <div class="empty-actions">
-          <a class="btn btn--primary" href="#/text">Paste text</a>
-          <button type="button" class="btn btn--secondary" data-add="file">Upload a file</button>
-        </div>
-      </div>`;
-      return;
-    }
     if (!items.length) {
       list.innerHTML = '';
-      emptyBox.innerHTML = `<div class="empty">
-        ${icon('search')}
-        <h2 class="h5">${q ? `Nothing matches “${esc(q)}”` : 'Nothing in this list yet'}</h2>
-        <p>Try another word or a different filter.</p>
-        <button type="button" class="btn btn--secondary" id="clear-search">Show everything</button>
-      </div>`;
-      $('#clear-search', main).addEventListener('click', () => {
-        search.value = '';
-        setFilter('all');
-        search.focus();
-      });
+      // Search with no match: a short message. Empty library or empty filter: ways to add something.
+      if (q) {
+        emptyBox.innerHTML = `<div class="lib-empty lib-empty--search">
+          <h2 class="lib-empty-title">Nothing matches “${esc(q)}”</h2>
+          <p class="lib-empty-sub">Try another word.</p>
+        </div>`;
+      } else {
+        const heading = !docs.length ? 'Add your first file' : FILTERS[filter].empty;
+        emptyBox.innerHTML = addPanelHTML(heading, !docs.length ? 'Everything you add is saved here, so you can listen any time, even offline.' : 'Add something new to listen to.');
+        bindAddPanel(emptyBox);
+      }
       return;
     }
     emptyBox.innerHTML = '';
@@ -288,8 +313,6 @@ export async function render(main) {
     $('#filter-btn', main).setAttribute('aria-label', on ? `Filter: ${FILTERS[filter].label}` : 'Filter');
     $('#filter-btn', main).classList.toggle('is-on', on);
     $('.filter-dot', main).hidden = !on;
-    $('#filter-note', main).hidden = !on;
-    $('#filter-note-text', main).textContent = FILTERS[filter].note;
     draw();
     announceResults();
   }
@@ -307,10 +330,6 @@ export async function render(main) {
     draw();
   });
   toolMenu($('#filter-btn', main), $('#filter-menu', main), (item) => setFilter(item.dataset.filter));
-  $('#filter-clear', main).addEventListener('click', () => {
-    setFilter('all');
-    $('#filter-btn', main).focus();
-  });
   syncSortMenu();
   $$('[data-filter]', main).forEach((b) => b.setAttribute('aria-checked', String(b.dataset.filter === filter)));
 

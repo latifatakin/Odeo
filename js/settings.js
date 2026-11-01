@@ -93,6 +93,6 @@ function apply() {
   const dark =
     current.theme === 'dark' ||
     (current.theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  document.querySelectorAll('meta[name="theme-color"]').forEach((m) => (m.content = dark ? '#16121F' : '#FBF9F4'));
+  document.querySelectorAll('meta[name="theme-color"]').forEach((m) => (m.content = dark ? '#101010' : '#FBF9F4'));
 }
 

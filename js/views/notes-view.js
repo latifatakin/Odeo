@@ -55,12 +55,18 @@ export async function render(main) {
       <h1>Notes</h1>
       <p>Everything you’ve saved while listening. Press a note to hear it again.</p>
     </header>
-    <div class="notes-tools">
-      <div class="field">
-        <label for="notes-search">Search your notes</label>
-        <div class="search">${icon('search')}<input id="notes-search" type="search" placeholder="Search" autocomplete="off" /></div>
+    <div class="library-tools">
+      <div class="search lib-search" role="search">
+        ${icon('search')}
+        <label class="sr-only" for="notes-search">Search your notes</label>
+        <input id="notes-search" type="search" placeholder="Search" autocomplete="off" />
       </div>
-      <div class="doc-chips" id="doc-chips" role="group" aria-label="Show notes from"></div>
+      <div class="tool-menu" id="doc-filter">
+        <button type="button" class="icon-btn tool-icon" id="doc-filter-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="doc-filter-menu" aria-label="Filter by document">
+          ${icon('filter')}<span class="filter-dot" aria-hidden="true" hidden></span>
+        </button>
+        <div class="menu menu--tool menu--docs" id="doc-filter-menu" role="menu" aria-label="Show notes from" hidden></div>
+      </div>
     </div>
     <p class="sr-only" id="notes-results" role="status"></p>
     <div id="notes-board" class="sticky-board section"></div>
@@ -76,7 +82,9 @@ export async function render(main) {
 
   const box = $('#notes-board', main);
   const search = $('#notes-search', main);
-  const chipsBox = $('#doc-chips', main);
+  const filterWrap = $('#doc-filter', main);
+  const filterBtn = $('#doc-filter-btn', main);
+  const filterMenu = $('#doc-filter-menu', main);
   const player = $('#note-player', main);
   const page = $('.page', main);
   let docs = [];
@@ -93,25 +101,65 @@ export async function render(main) {
     draw();
   }
 
-  // ---------- Document chips ----------
+  // ---------- Filter by document (same menu as My library's filter) ----------
+  // Arrows, Home and End move; Enter or Space picks; Escape closes; Tab closes.
+  const check = () => `<span class="menu-check">${icon('check')}</span>`;
   function drawChips() {
     const ids = [...new Set([...allNotes].sort((a, b) => b.createdAt.localeCompare(a.createdAt)).map((n) => n.documentId))];
-    chipsBox.hidden = ids.length < 2;
-    const chip = (id, label, color) => {
-      const on = docFilter === id;
-      return `<button type="button" class="doc-chip" data-doc="${id}" aria-pressed="${on}">
-        ${on ? icon('check') : color == null ? '' : `<span class="doc-dot" data-color="${color}" aria-hidden="true"></span>`}<span>${esc(label)}</span>
+    filterWrap.hidden = ids.length < 2;
+    const item = (id, label, color) => `<button type="button" role="menuitemradio" data-doc="${id}" aria-checked="${docFilter === id}">
+        ${color == null ? icon('notes') : `<span class="doc-dot" data-color="${color}" aria-hidden="true"></span>`}<span class="menu-text">${esc(label)}</span>${check()}
       </button>`;
-    };
-    chipsBox.innerHTML = chip(ALL, 'All notes', null) + ids.map((id) => chip(id, byDoc.get(id).title, byDoc.get(id).noteColor ?? 0)).join('');
+    filterMenu.innerHTML = item(ALL, 'All notes', null) + ids.map((id) => item(id, byDoc.get(id).title, byDoc.get(id).noteColor ?? 0)).join('');
+    const on = docFilter !== ALL;
+    filterBtn.setAttribute('aria-label', on ? `Filter by document: ${byDoc.get(docFilter).title}` : 'Filter by document');
+    filterBtn.classList.toggle('is-on', on);
+    filterBtn.querySelector('.filter-dot').hidden = !on;
   }
-  chipsBox.addEventListener('click', (e) => {
+  const menuItems = () => $$('[role="menuitemradio"]', filterMenu);
+  let byPointer = false;
+  function closeFilter(focusBtn = false) {
+    if (filterMenu.hidden) return;
+    filterMenu.hidden = true;
+    filterBtn.setAttribute('aria-expanded', 'false');
+    if (focusBtn) filterBtn.focus();
+  }
+  function openFilter() {
+    closeMenus();
+    filterMenu.hidden = false;
+    filterBtn.setAttribute('aria-expanded', 'true');
+    const list = menuItems();
+    // Focus ring only for keyboard users; a mouse or touch open stays clean.
+    (list.find((i) => i.getAttribute('aria-checked') === 'true') || list[0]).focus({ focusVisible: !byPointer });
+    byPointer = false;
+  }
+  filterBtn.addEventListener('pointerdown', () => (byPointer = true));
+  filterBtn.addEventListener('click', () => (filterMenu.hidden ? openFilter() : closeFilter()));
+  filterBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      openFilter();
+    }
+  });
+  filterMenu.addEventListener('keydown', (e) => {
+    const list = menuItems();
+    const i = list.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') list[(i + 1) % list.length].focus();
+    else if (e.key === 'ArrowUp') list[(i - 1 + list.length) % list.length].focus();
+    else if (e.key === 'Home') list[0].focus();
+    else if (e.key === 'End') list[list.length - 1].focus();
+    else if (e.key === 'Escape') closeFilter(true);
+    else if (e.key === 'Tab') return closeFilter();
+    else return;
+    e.preventDefault();
+  });
+  filterMenu.addEventListener('click', (e) => {
     const b = e.target.closest('[data-doc]');
     if (!b) return;
     docFilter = b.dataset.doc;
+    closeFilter(true);
     drawChips();
     draw();
-    chipsBox.querySelector(`[data-doc="${docFilter}"]`)?.focus();
     announceResults();
   });
 
@@ -338,6 +386,7 @@ export async function render(main) {
   });
   const onDocClick = (e) => {
     if (!e.target.closest('.sticky-actions')) closeMenus();
+    if (!e.target.closest('#doc-filter')) closeFilter();
   };
   document.addEventListener('click', onDocClick);
 

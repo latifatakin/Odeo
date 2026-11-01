@@ -18,7 +18,7 @@ export async function render(main) {
   main.innerHTML = `
   <div class="page page--home">
     <header class="hero">
-      <h1>Make any text accessible with Ôdēō</h1>
+      <h1>Make any text accessible with Odeo</h1>
       <p class="lede">Turn any document, article or study notes into speech, and follow each word as it’s read.</p>
     </header>
 

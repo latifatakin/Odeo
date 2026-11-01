@@ -121,9 +121,11 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
     from …, saved …: full text. comment. Press to play." 3px focus ring, 2px gap.
   - **More menu** (48px): Play, Go to this part of the document, Copy, Delete. Delete
     asks for confirmation inside the card.
-  - Visible search label "Search your notes" (this page only). Document chips under the
-    search: dot in the note colour + name; selected chip has a check, bold text and a
-    2px dark border. On phones the chips are one sideways-scrolling row.
+  - **Toolbar matches My library** (user decision, 1 Nov 2026, replacing the spec's
+    visible label and chips): the same rounded search bar with a hidden label ("Search
+    your notes") and "Search" placeholder, then the three-line filter icon. Its menu lists
+    All notes and each document with its colour dot; the chosen one has a check and a
+    light purple background, and a dot on the icon shows a filter is on.
   - **Settings → Display → "Color notes by document"** (on by default, saved). Off: cards
     use `--odeo-surface-raised` with the same border.
   - Inside the reader, notes are still a plain list with the quote on
@@ -255,3 +257,25 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   (user decision). It turns purple on hover and when a file is dragged over it.
 - A search with no match shows only "Nothing matches “…”" and "Try another word."
 
+
+## Settings, Help, navigation and dark mode (1 Nov 2026, user decisions)
+
+- **Settings** (Speechify reference for layout, hierarchy and dropdowns only; Ôdēō's
+  colours and hover): sections listed on the left (General, Reading, Listening, Your
+  data, Help), the chosen one on the right. Each row: name (18px) and a short grey line
+  on the left, the control on the right, a hairline between rows, no boxes. Dropdowns
+  are native selects styled as grey pills with a chevron; light purple with purple text
+  on hover. The chosen section uses the same purple style as the chosen page. Under
+  900px the sections become one sideways-scrolling row of pills; under 600px controls
+  drop below their label.
+- **Help:** "Back to settings" sits at the top, styled like the reader's Back button.
+  Sections have no borders or boxes, just space between them.
+- **Chosen page in the navigation:** purple icon and text on light purple
+  (`--odeo-primary` on `--odeo-primary-soft`), in the side nav, rail and phone bar. On
+  Help, Settings shows as chosen.
+- **Home heading** says "Odeo" (plain letters). The logo and other copy keep Ôdēō.
+- **Dark mode** (ElevenLabs and Speechify references): neutral blacks and greys
+  instead of purple-tinted ones. Page #101010, surface #161616, inputs #1C1C1C, pop-ups
+  #1E1E1E with a 1px #2E2E2E edge (`--odeo-popup-border`), text #FAFAFA, grey text
+  #A3A3A3, strong border #8A8A8A. Purple stays for calls to action and the chosen
+  item. All pairs checked for contrast, including on the note colours.

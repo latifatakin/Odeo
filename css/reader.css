@@ -132,6 +132,7 @@
   border-radius: var(--odeo-radius-xl);
   background: var(--odeo-surface);
   box-shadow: var(--odeo-shadow-float);
+  border: 1px solid var(--odeo-popup-border);
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--odeo-space-2);

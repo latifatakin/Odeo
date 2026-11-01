@@ -71,6 +71,52 @@ function chipGroup(key, prefix) {
   </fieldset>`;
 }
 
+// A Settings row with a dropdown on the right (Settings page). Uses a native <select>
+// so it works with every screen reader, keyboard and phone picker.
+export function selectRow(key, label, hint, prefix) {
+  const g = GROUPS[key];
+  const id = `${prefix}-${key}`;
+  return `<div class="set-row">
+    <div class="set-text">
+      <label class="set-label" for="${id}">${label}</label>
+      ${hint ? `<p class="set-hint" id="${id}-hint">${hint}</p>` : ''}
+    </div>
+    <div class="select-wrap">
+      <select class="select" id="${id}" data-setting="${key}"${hint ? ` aria-describedby="${id}-hint"` : ''}>
+        ${g.options.map((o) => `<option value="${o.value}">${esc(o.label)}</option>`).join('')}
+      </select>
+      ${icon('chevron-down')}
+    </div>
+  </div>`;
+}
+
+// A Settings row with an on/off switch on the right (Settings page).
+export function switchRow(key, label, hint, prefix) {
+  const id = `${prefix}-${key}`;
+  return `<div class="set-row">
+    <div class="set-text">
+      <label class="set-label" for="${id}">${label}</label>
+      ${hint ? `<p class="set-hint" id="${id}-hint">${hint}</p>` : ''}
+    </div>
+    <input type="checkbox" class="toggle" role="switch" id="${id}" data-setting="${key}"${hint ? ` aria-describedby="${id}-hint"` : ''} />
+  </div>`;
+}
+
+// Text size as a Settings row: smaller, the size, larger.
+export function sizeRow(prefix) {
+  return `<div class="set-row">
+    <div class="set-text">
+      <span class="set-label" id="${prefix}-size-row">Text size</span>
+      <p class="set-hint">For the text you listen to.</p>
+    </div>
+    <div class="stepper" role="group" aria-labelledby="${prefix}-size-row">
+      <button type="button" class="icon-btn" data-size="-2" aria-label="Smaller text">${icon('minus')}</button>
+      <output data-size-out aria-live="polite"></output>
+      <button type="button" class="icon-btn" data-size="2" aria-label="Larger text">${icon('plus')}</button>
+    </div>
+  </div>`;
+}
+
 function toggleRow(key, label, hint, prefix) {
   const id = `${prefix}-${key}`;
   return `<label class="toggle-row" for="${id}">
@@ -111,6 +157,9 @@ export function listeningToggleHTML(prefix) {
 export function bindSettings(container) {
   const sync = () => {
     const s = getSettings();
+    container.querySelectorAll('select[data-setting]').forEach((el) => {
+      el.value = String(s[el.dataset.setting]);
+    });
     container.querySelectorAll('input[data-setting]').forEach((el) => {
       const v = s[el.dataset.setting];
       if (el.type === 'checkbox') el.checked = !!v;
@@ -125,7 +174,7 @@ export function bindSettings(container) {
   };
 
   const onChange = (e) => {
-    const el = e.target.closest('input[data-setting]');
+    const el = e.target.closest('input[data-setting], select[data-setting]');
     if (!el) return;
     const key = el.dataset.setting;
     let value;

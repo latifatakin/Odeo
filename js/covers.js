@@ -1,6 +1,6 @@
 // File-type tiles, progress, voice letters and language names.
 
-import { esc } from './ui.js';
+import { esc, icon } from './ui.js';
 
 const KIND = { paste: 'Text', pdf: 'PDF', txt: 'TXT', sample: 'Text', link: 'Web' };
 export const kindLabel = (doc) => KIND[doc.source?.type] || 'Text';
@@ -14,8 +14,27 @@ export function progressPct(doc) {
   return Math.round((p.wordIndex / (doc.wordCount - 1)) * 100);
 }
 
+// File tiles: a rounded square with the file type's icon over a soft wave.
+// Pasted text is warm yellow; files and links are neutral (purple is for calls to action).
+const TILE_ICON = { pdf: 'file-pdf', txt: 'file-txt', link: 'globe', paste: 'file-text', sample: 'file-text' };
 export function typeTileHTML(doc) {
-  return `<span class="type-tile" aria-hidden="true">${esc(kindLabel(doc))}</span>`;
+  const type = doc.source?.type || 'paste';
+  return `<span class="type-tile type-tile--${isPasted(doc) ? 'text' : 'file'}" aria-hidden="true">${icon(TILE_ICON[type] || 'file-text')}</span>`;
+}
+
+// One list row for Continue listening and My library: tile, title, details,
+// an optional progress line, extra content and actions. The title link covers the row.
+export function docRowHTML(doc, { titleHTML = esc(doc.title), level = 2, meta = '', progress = null, extra = '', actions = '' } = {}) {
+  return `<li class="lib-row" data-id="${doc.id}">
+    ${typeTileHTML(doc)}
+    <div class="lib-main">
+      <h${level} class="lib-title"><a href="#/session/${doc.id}">${titleHTML}</a></h${level}>
+      <p class="lib-meta">${meta}</p>
+      ${progress === null ? '' : `<div class="lib-progress">${progressHTML(progress)}</div>`}
+      ${extra}
+    </div>
+    ${actions}
+  </li>`;
 }
 
 export function progressHTML(pct) {

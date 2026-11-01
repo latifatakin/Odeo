@@ -8,13 +8,13 @@ Everything runs in the browser. There are no accounts and no server, and text ne
 
 The look follows the Odeo brand guide. See [DESIGN.md](DESIGN.md).
 
-- **Home:** a large upload area (click or drop a file), Paste text and Paste link buttons, Continue listening cards with progress, and My library.
+- **Home:** a large upload area (click or drop a file), Paste text and Paste link buttons, and Continue listening (with progress). My library has its own page.
 - **Paste link:** paste a link to an article or PDF; a small Netlify Function fetches the page and finds the article text.
 - **Reader:** one cream column. The sentence being read gets a soft purple background and the current word sunbeam yellow. Tap any word to listen from there. Space plays and pauses; the arrow keys skip 10 seconds.
 - **Player bar:** elapsed time, a progress line and time left, then voice, back 10s, play, forward 10s and speed. It floats below the page.
 - **Speed sheet** (0.8× to 2.0×, plus "Speed up gradually") and **voice sheet** (search, language, works-offline filter, and a sample for each voice).
 - **Notes:** select text and choose "Save note" (it appears right where your selection ends), or save the sentence being read. Notes appear in a panel beside the page and on the Notes page.
-- **My library:** search, filters, sorting, and a More menu for Rename and Delete.
+- **My library:** search, a sort menu (Recents, Date added, Name; new to old or old to new), a filter menu (Unread, Uploads, Links), and a More menu for Rename and Delete.
 - **Settings:** font (Atkinson Hyperlegible, OpenDyslexic, Comic), text size 18 to 32px, line and letter spacing, Cream or Sand page, light or dark, motion, voice and speed. There's also a Reading settings sheet you can open while reading.
 - **Navigation:** side menu on desktop (it collapses to an icon rail), icon rail on tablet, and a bottom bar on phone.
 - **Offline:** after the first visit, the app and every saved item work with no connection.

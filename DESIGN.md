@@ -90,10 +90,17 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   except the purple play button.
 - **Default font:** Atkinson Hyperlegible. Settings saved by the first versions, whose
   default was OpenDyslexic, move to Atkinson; choosing OpenDyslexic now is kept.
-- **Neutral list badges:** file-type tiles in lists use `--odeo-surface-sunken` with
-  `--odeo-text-muted`. The tinted tiles (`--ui-active` for files and links,
-  `secondary-soft` for pasted text) stay only on the Continue listening cards.
-- **Weight marks the current place:** side-nav items and library titles are regular
+- **List rows** (user's reference, 1 Nov 2026), shared by Continue listening on Home and
+  My library (`docRowHTML` in `js/covers.js`): a 72px rounded file tile (56px on
+  phones), then the title in medium 16px and details in 14px grey (type · minutes ·
+  added date, plus % listened and notes in My library), and a thin progress line when
+  started. No dividers; a row lifts to `--odeo-surface-raised` with a card shadow on
+  hover. The whole row opens the item.
+- **File tiles:** the type's icon (PDF, TXT, globe for web links, a document for pasted
+  text) over two soft waves at the bottom. Files and links are neutral (`--ui-active`
+  with a slightly darker wave); pasted text is warm yellow (`--odeo-secondary-soft` with
+  a sunbeam wave). Never purple. The Notes page uses the same tile at 48px.
+- **Weight marks the current place:** side-nav items are regular
   weight, and only the current page is bold.
 - **Notes are a list, not cards:** hairline dividers, with the quote on
   `--odeo-secondary-soft`.
@@ -128,9 +135,12 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   opens the file picker, and files can be dropped on it (dashed dark border while dragging).
   Phones say only "Choose a file". Two soft pill buttons sit under it, "Paste text" (T
   icon) and "Paste link" (chain icon), on `--odeo-surface-sunken`, 48px tall, radius
-  full, medium 16px, icon in the text colour, `--ui-active` background (user's reference
-  and rule, 30 Oct 2026). Then
-  Continue listening and My library, all in one 800px centred column. The greeting is
+  full, medium 16px, grey text and icon on `--ui-active`; on hover the text turns purple
+  on a light purple `--odeo-primary-soft` background (user's reference and decisions,
+  30 Oct and 1 Nov 2026). There is no "Pick up where you stopped" line (removed
+  1 Nov 2026); Continue listening covers it. Then
+  Continue listening (up to five, with See all), all in one 800px centred column. My
+  library is no longer on Home (removed 1 Nov 2026). The greeting is
   gone.
 - **Edge toggle instead of a "Collapse menu" row** (user decision, 27 Oct 2026): a round
   arrow on the sidebar's edge, following the familiar sidebar pattern. Its label switches
@@ -165,4 +175,24 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   every redirect, refuses private network addresses, and limits pages to 5 MB and
   10 seconds. Nothing is stored.
 - **Library:** saved links show the type word "Web" on the neutral tile.
+
+## My library toolbar (1 Nov 2026, after the user's Speechify reference)
+
+- **One row:** search, a sort button and a filter button, side by side. No "Search" or
+  "Sort by" labels on screen (the search field has a hidden label for screen readers
+  and "Search" as its placeholder). Search uses the button corner radius
+  (`--odeo-radius-md`), as do all search fields.
+- **Sort button** shows the current sort ("Recents", "Date added" or "Name") with a
+  down arrow. Its menu has "Sort by" (Recents, Date added, Name, each with an icon) and
+  "Order" (New to old / Old to new, or A to Z / Z to A for Name). The chosen options
+  get a `--ui-active` background and a tick. Picking a sort resets the order to its
+  natural one (newest first, or A to Z). Sort and order are remembered on the device.
+  On phones under 420px the button shows the sort's icon instead of the word.
+- **Filter button** is a funnel icon. Its menu: All, Unread (not started yet), Uploads
+  (PDF and TXT files), Links. When a filter is on, the funnel gets a small dot, its
+  label says which filter, and a line under the toolbar says what's showing, with
+  "Show all". The old In progress / Not started / Finished chips are gone.
+- Both are quiet buttons: grey on `--ui-active`, light purple background and purple
+  text on hover or while open. Menus use menu-button keyboard behaviour (arrows,
+  Home/End, Escape returns to the button, Tab closes) and `menuitemradio` items.
 

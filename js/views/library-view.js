@@ -1,12 +1,29 @@
-// My library: search, filter, sort, and a More menu for Rename and Delete.
+// My library: one toolbar row (search, a sort menu, a filter menu), then the list,
+// with a More menu on each row for Rename and Delete.
 
 import { repo } from '../storage/repo.js';
 import { getSettings } from '../settings.js';
 import { minutesFor } from '../text.js';
-import { typeTileHTML, progressHTML, applyPct, progressPct } from '../covers.js';
+import { docRowHTML, applyPct, progressPct, kindLabel } from '../covers.js';
 import { $, $$, esc, icon, announce, confirmDialog, formatDate, plural, debounce } from '../ui.js';
 
 const SORT_KEY = 'odeo:library-sort';
+const ORDER_KEY = 'odeo:library-order';
+
+const SORTS = {
+  opened: { label: 'Recents', icon: 'clock', defaultOrder: 'desc' },
+  added: { label: 'Date added', icon: 'calendar', defaultOrder: 'desc' },
+  title: { label: 'Name', icon: 'sort-az', defaultOrder: 'asc' },
+};
+const FILTERS = {
+  all: { label: 'All', icon: 'library', note: '' },
+  unread: { label: 'Unread', icon: 'unread', note: 'Showing what you haven’t started' },
+  uploads: { label: 'Uploads', icon: 'upload', note: 'Showing uploaded files' },
+  links: { label: 'Links', icon: 'link', note: 'Showing links' },
+};
+const orderLabel = (sort, order) =>
+  sort === 'title' ? (order === 'asc' ? 'A to Z' : 'Z to A') : order === 'desc' ? 'New to old' : 'Old to new';
+const check = () => `<span class="menu-check">${icon('check')}</span>`;
 const formatMB = (bytes) => `${(bytes / 1024 / 1024).toFixed(bytes < 1024 * 1024 ? 2 : 1)} MB`;
 
 function highlight(text, q) {
@@ -24,8 +41,11 @@ function snippet(text, q) {
 
 export async function render(main) {
   let sort = 'opened';
+  let order = 'desc';
+  let filter = 'all';
   try {
-    sort = localStorage.getItem(SORT_KEY) || 'opened';
+    sort = SORTS[localStorage.getItem(SORT_KEY)] ? localStorage.getItem(SORT_KEY) : 'opened';
+    order = ['asc', 'desc'].includes(localStorage.getItem(ORDER_KEY)) ? localStorage.getItem(ORDER_KEY) : SORTS[sort].defaultOrder;
   } catch {}
   const rate = getSettings().rate;
 
@@ -36,30 +56,40 @@ export async function render(main) {
       <p>Everything you’ve listened to. It all plays offline, too.</p>
     </header>
 
-    <div class="library-tools" role="search" id="lib-tools">
-      <div class="field">
-        <label for="lib-search">Search</label>
-        <div class="search">
-          ${icon('search')}
-          <input id="lib-search" type="search" autocomplete="off" />
+    <div class="library-tools" id="lib-tools">
+      <div class="search lib-search" role="search">
+        ${icon('search')}
+        <label class="sr-only" for="lib-search">Search your library</label>
+        <input id="lib-search" type="search" placeholder="Search" autocomplete="off" />
+      </div>
+
+      <div class="tool-menu">
+        <button type="button" class="tool-btn" id="sort-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="sort-menu">
+          <span class="sort-ico" id="sort-ico" aria-hidden="true"></span><span class="sr-only">Sort by </span><span class="sort-label" id="sort-label"></span>${icon('chevron-down')}
+        </button>
+        <div class="menu menu--tool" id="sort-menu" role="menu" aria-label="Sort" hidden>
+          <p class="menu-label" id="sort-by-label">Sort by</p>
+          <div role="group" aria-labelledby="sort-by-label">
+            ${Object.entries(SORTS).map(([k, s]) => `<button type="button" role="menuitemradio" data-sort="${k}">${icon(s.icon)}<span>${s.label}</span>${check()}</button>`).join('')}
+          </div>
+          <p class="menu-label" id="order-label">Order</p>
+          <div role="group" aria-labelledby="order-label">
+            <button type="button" role="menuitemradio" data-order="desc">${icon('arrow-down')}<span data-order-text></span>${check()}</button>
+            <button type="button" role="menuitemradio" data-order="asc">${icon('arrow-up')}<span data-order-text></span>${check()}</button>
+          </div>
         </div>
       </div>
-      <div class="field">
-        <label for="lib-sort">Sort by</label>
-        <select id="lib-sort" class="select">
-          <option value="opened">Recently opened</option>
-          <option value="added">Recently added</option>
-          <option value="title">Title A to Z</option>
-        </select>
+
+      <div class="tool-menu">
+        <button type="button" class="icon-btn tool-icon" id="filter-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="filter-menu" aria-label="Filter">
+          ${icon('filter')}<span class="filter-dot" aria-hidden="true" hidden></span>
+        </button>
+        <div class="menu menu--tool" id="filter-menu" role="menu" aria-label="Filter" hidden>
+          ${Object.entries(FILTERS).map(([k, f]) => `<button type="button" role="menuitemradio" data-filter="${k}">${icon(f.icon)}<span>${f.label}</span>${check()}</button>`).join('')}
+        </div>
       </div>
     </div>
-    <fieldset class="chips" id="lib-filter" data-tools>
-      <legend class="sr-only">Show</legend>
-      <label class="chip"><input type="radio" name="lf" value="all" checked /><span>${icon('check')}All</span></label>
-      <label class="chip"><input type="radio" name="lf" value="progress" /><span>${icon('check')}In progress</span></label>
-      <label class="chip"><input type="radio" name="lf" value="new" /><span>${icon('check')}Not started</span></label>
-      <label class="chip"><input type="radio" name="lf" value="done" /><span>${icon('check')}Finished</span></label>
-    </fieldset>
+    <p class="filter-note" id="filter-note" hidden><span id="filter-note-text"></span> <button type="button" class="link-btn" id="filter-clear">Show all</button></p>
 
     <p class="sr-only" id="lib-results" role="status"></p>
     <ul class="lib-list section" id="lib-list"></ul>
@@ -70,8 +100,6 @@ export async function render(main) {
   const list = $('#lib-list', main);
   const emptyBox = $('#lib-empty', main);
   const search = $('#lib-search', main);
-  const sortSel = $('#lib-sort', main);
-  sortSel.value = sort;
   let docs = [];
 
   const state = (d) => (d.progress?.completed ? 'done' : progressPct(d) > 0 ? 'progress' : 'new');
@@ -81,18 +109,25 @@ export async function render(main) {
     const usage = await repo.usage();
     const hasDocs = docs.length > 0;
     $('#lib-tools', main).hidden = !hasDocs;
-    $('#lib-filter', main).hidden = !hasDocs;
     $('#lib-storage', main).textContent = `${plural(docs.length, 'item')} saved on this device. Using ${formatMB(usage.bytes)} of about ${formatMB(usage.quota)}.`;
     draw();
   }
 
   function filtered() {
     const q = search.value.trim().toLowerCase();
-    const f = main.querySelector('input[name="lf"]:checked').value;
-    const out = docs.filter((d) => (f === 'all' || state(d) === f) && (!q || d.title.toLowerCase().includes(q) || d.text.toLowerCase().includes(q)));
-    if (sort === 'title') out.sort((a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }));
-    else if (sort === 'added') out.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-    else out.sort((a, b) => b.lastOpenedAt.localeCompare(a.lastOpenedAt));
+    const keep = {
+      all: () => true,
+      unread: (d) => state(d) === 'new',
+      uploads: (d) => ['pdf', 'txt'].includes(d.source?.type),
+      links: (d) => d.source?.type === 'link',
+    }[filter];
+    const out = docs.filter((d) => keep(d) && (!q || d.title.toLowerCase().includes(q) || d.text.toLowerCase().includes(q)));
+    const byKey = {
+      title: (a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: 'base' }),
+      added: (a, b) => a.createdAt.localeCompare(b.createdAt),
+      opened: (a, b) => a.lastOpenedAt.localeCompare(b.lastOpenedAt),
+    }[sort];
+    out.sort((a, b) => (order === 'asc' ? byKey(a, b) : byKey(b, a)));
     return out;
   }
 
@@ -123,8 +158,7 @@ export async function render(main) {
       </div>`;
       $('#clear-search', main).addEventListener('click', () => {
         search.value = '';
-        main.querySelector('input[name="lf"][value="all"]').checked = true;
-        draw();
+        setFilter('all');
         search.focus();
       });
       return;
@@ -135,28 +169,25 @@ export async function render(main) {
         const pct = progressPct(d);
         const s = state(d);
         const mins = Math.max(1, Math.round(minutesFor(d.wordCount, rate)));
-        return `<li class="lib-row" data-id="${d.id}">
-          ${typeTileHTML(d)}
-          <div class="lib-main">
-            <h2 class="lib-title"><a href="#/session/${d.id}">${highlight(d.title, q)}</a></h2>
-            <form class="rename-inline" hidden>
+        return docRowHTML(d, {
+          titleHTML: highlight(d.title, q),
+          meta: `${esc(kindLabel(d))} · ${mins} min listen · Added ${formatDate(d.createdAt)}${s === 'done' ? ' · Finished' : s === 'progress' ? ` · ${pct}% listened` : ''}${d.noteCount ? ` · ${plural(d.noteCount, 'note')}` : ''}`,
+          progress: s === 'progress' ? pct : null,
+          extra: `<form class="rename-inline" hidden>
               <label class="sr-only" for="rn-${d.id}">New title for ${esc(d.title)}</label>
               <input id="rn-${d.id}" class="input" type="text" maxlength="120" value="${esc(d.title)}" autocomplete="off" />
               <button type="submit" class="btn btn--primary">Save</button>
               <button type="button" class="btn btn--secondary" data-act="cancel">Cancel</button>
             </form>
-            <p class="lib-meta">Added ${formatDate(d.createdAt)} · ${mins} min listen${s === 'done' ? ' · Finished' : s === 'progress' ? ` · ${pct}% listened` : ''}${d.noteCount ? ` · ${plural(d.noteCount, 'note')}` : ''}</p>
-            ${q && !d.title.toLowerCase().includes(q.toLowerCase()) ? `<p class="lib-snippet">${snippet(d.text, q)}</p>` : ''}
-            ${s === 'progress' ? `<div class="lib-progress">${progressHTML(pct)}</div>` : ''}
-          </div>
-          <div class="lib-actions">
+            ${q && !d.title.toLowerCase().includes(q.toLowerCase()) ? `<p class="lib-snippet">${snippet(d.text, q)}</p>` : ''}`,
+          actions: `<div class="lib-actions">
             <button type="button" class="icon-btn" data-act="more" aria-haspopup="menu" aria-expanded="false" aria-label="More options for ${esc(d.title)}">${icon('more')}</button>
             <ul class="menu" role="menu" hidden>
               <li role="none"><button type="button" role="menuitem" data-act="rename">${icon('pencil')}Rename</button></li>
               <li role="none"><button type="button" role="menuitem" class="danger" data-act="delete">${icon('trash')}Delete</button></li>
             </ul>
-          </div>
-        </li>`;
+          </div>`,
+        });
       })
       .join('');
     applyPct(list);
@@ -171,6 +202,7 @@ export async function render(main) {
   }
   function openMenu(btn) {
     const menu = btn.nextElementSibling;
+    toolMenus.forEach((m) => m.close());
     closeMenus(menu);
     menu.hidden = false;
     btn.setAttribute('aria-expanded', 'true');
@@ -185,17 +217,98 @@ export async function render(main) {
     draw();
     announceResults();
   }, 150));
-  $('#lib-filter', main).addEventListener('change', () => {
+
+  // ---------- Toolbar menus (sort and filter) ----------
+  // Menu buttons: click or arrow keys open; arrows, Home and End move; Enter or
+  // Space picks; Escape closes and returns to the button; Tab closes.
+  const toolMenus = [];
+  function toolMenu(btn, menu, onPick) {
+    const items = () => $$('[role^="menuitem"]', menu);
+    const close = (focusBtn = false) => {
+      if (menu.hidden) return;
+      menu.hidden = true;
+      btn.setAttribute('aria-expanded', 'false');
+      if (focusBtn) btn.focus();
+    };
+    const open = () => {
+      toolMenus.forEach((m) => m.close());
+      closeMenus();
+      menu.hidden = false;
+      btn.setAttribute('aria-expanded', 'true');
+      const list = items();
+      (list.find((i) => i.getAttribute('aria-checked') === 'true') || list[0]).focus();
+    };
+    btn.addEventListener('click', () => (menu.hidden ? open() : close()));
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        open();
+      }
+    });
+    menu.addEventListener('keydown', (e) => {
+      const list = items();
+      const i = list.indexOf(document.activeElement);
+      if (e.key === 'ArrowDown') list[(i + 1) % list.length].focus();
+      else if (e.key === 'ArrowUp') list[(i - 1 + list.length) % list.length].focus();
+      else if (e.key === 'Home') list[0].focus();
+      else if (e.key === 'End') list[list.length - 1].focus();
+      else if (e.key === 'Escape') close(true);
+      else if (e.key === 'Tab') return close();
+      else return;
+      e.preventDefault();
+    });
+    menu.addEventListener('click', (e) => {
+      const item = e.target.closest('[role^="menuitem"]');
+      if (!item) return;
+      onPick(item);
+      close(true);
+    });
+    const api = { close, el: menu, btn };
+    toolMenus.push(api);
+    return api;
+  }
+
+  function syncSortMenu() {
+    $('#sort-label', main).textContent = SORTS[sort].label;
+    $('#sort-ico', main).innerHTML = icon(SORTS[sort].icon); // shown instead of the word on narrow phones
+    $$('[data-sort]', main).forEach((b) => b.setAttribute('aria-checked', String(b.dataset.sort === sort)));
+    $$('[data-order]', main).forEach((b) => {
+      b.setAttribute('aria-checked', String(b.dataset.order === order));
+      b.querySelector('[data-order-text]').textContent = orderLabel(sort, b.dataset.order);
+    });
+  }
+  function setFilter(next) {
+    filter = next;
+    $$('[data-filter]', main).forEach((b) => b.setAttribute('aria-checked', String(b.dataset.filter === filter)));
+    const on = filter !== 'all';
+    $('#filter-btn', main).setAttribute('aria-label', on ? `Filter: ${FILTERS[filter].label}` : 'Filter');
+    $('#filter-btn', main).classList.toggle('is-on', on);
+    $('.filter-dot', main).hidden = !on;
+    $('#filter-note', main).hidden = !on;
+    $('#filter-note-text', main).textContent = FILTERS[filter].note;
     draw();
     announceResults();
-  });
-  sortSel.addEventListener('change', () => {
-    sort = sortSel.value;
+  }
+
+  toolMenu($('#sort-btn', main), $('#sort-menu', main), (item) => {
+    if (item.dataset.sort) {
+      sort = item.dataset.sort;
+      order = SORTS[sort].defaultOrder; // each sort starts in its natural order
+    } else order = item.dataset.order;
     try {
       localStorage.setItem(SORT_KEY, sort);
+      localStorage.setItem(ORDER_KEY, order);
     } catch {}
+    syncSortMenu();
     draw();
   });
+  toolMenu($('#filter-btn', main), $('#filter-menu', main), (item) => setFilter(item.dataset.filter));
+  $('#filter-clear', main).addEventListener('click', () => {
+    setFilter('all');
+    $('#filter-btn', main).focus();
+  });
+  syncSortMenu();
+  $$('[data-filter]', main).forEach((b) => b.setAttribute('aria-checked', String(b.dataset.filter === filter)));
 
   list.addEventListener('click', async (e) => {
     const btn = e.target.closest('button[data-act]');
@@ -256,6 +369,7 @@ export async function render(main) {
   });
   const onDocClick = (e) => {
     if (!e.target.closest('.lib-actions')) closeMenus();
+    if (!e.target.closest('.tool-menu')) toolMenus.forEach((m) => m.close());
   };
   document.addEventListener('click', onDocClick);
 

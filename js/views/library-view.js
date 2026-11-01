@@ -6,8 +6,7 @@ import { getSettings } from '../settings.js';
 import { minutesFor } from '../text.js';
 import { docRowHTML, applyPct, progressPct, kindLabel } from '../covers.js';
 import { $, $$, esc, icon, announce, confirmDialog, formatDate, plural, debounce } from '../ui.js';
-import { navigate } from '../router.js';
-import { openFile } from '../importers.js';
+import { addBoxHTML, bindAddBox } from '../add-box.js';
 
 const SORT_KEY = 'odeo:library-sort';
 const ORDER_KEY = 'odeo:library-order';
@@ -24,41 +23,13 @@ const FILTERS = {
   links: { label: 'Links', icon: 'link', empty: 'No links yet' },
 };
 
-// Empty state, after the user's Speechify reference: a heading, a dashed upload box,
-// then Paste text and Paste link side by side (the link can be typed in right here).
+// Empty state: a heading, then the same upload prompt as Home.
 function addPanelHTML(heading, sub) {
   return `<section class="lib-empty" aria-labelledby="lib-empty-h">
     <h2 class="lib-empty-title" id="lib-empty-h">${esc(heading)}</h2>
     <p class="lib-empty-sub">${esc(sub)}</p>
-    <div class="add-drop" data-drop>
-      ${icon('upload')}
-      <button type="button" class="btn btn--primary" data-add="file" aria-describedby="add-drop-hint">Choose a file</button>
-      <p class="add-drop-hint" id="add-drop-hint"><span class="add-drop-drag">or drag and drop it here. </span>PDF or TXT, up to 20 MB.</p>
-    </div>
-    <div class="add-pair">
-      <a class="add-card add-card--text" href="#/text">${icon('text')}<span>Paste text</span></a>
-      <form class="add-card add-card--link" data-link-form novalidate>
-        <label class="add-card-label" for="add-link-url">${icon('link')}Paste link</label>
-        <div class="add-link-row">
-          <input id="add-link-url" class="input" type="url" inputmode="url" autocomplete="url" spellcheck="false" placeholder="https://" />
-          <button type="submit" class="btn btn--primary">Open</button>
-        </div>
-      </form>
-    </div>
+    ${addBoxHTML('lib')}
   </section>`;
-}
-function bindAddPanel(root) {
-  const drop = root.querySelector('[data-drop]');
-  ['dragenter', 'dragover'].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add('is-over'); }));
-  ['dragleave', 'drop'].forEach((t) => drop.addEventListener(t, () => drop.classList.remove('is-over')));
-  drop.addEventListener('drop', (e) => { e.preventDefault(); openFile(e.dataTransfer?.files?.[0]); });
-  root.querySelector('[data-link-form]').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const url = e.target.querySelector('input').value.trim();
-    // Hand the link to the Paste a link page, which checks it and fetches the text.
-    try { sessionStorage.setItem('odeo:link-url', url); } catch {}
-    navigate('link');
-  });
 }
 const orderLabel = (sort, order) =>
   sort === 'title' ? (order === 'asc' ? 'A to Z' : 'Z to A') : order === 'desc' ? 'New to old' : 'Old to new';
@@ -184,7 +155,7 @@ export async function render(main) {
       } else {
         const heading = !docs.length ? 'Add your first file' : FILTERS[filter].empty;
         emptyBox.innerHTML = addPanelHTML(heading, !docs.length ? 'Everything you add is saved here, so you can listen any time, even offline.' : 'Add something new to listen to.');
-        bindAddPanel(emptyBox);
+        bindAddBox(emptyBox);
       }
       return;
     }

@@ -1,7 +1,7 @@
 // Service worker: makes the app open and play saved items with no connection.
 // Bump VERSION whenever you deploy changes so returning visitors get them.
 
-const VERSION = 'odeo-v24';
+const VERSION = 'odeo-v26';
 
 const APP_SHELL = [
   './',
@@ -32,6 +32,7 @@ const APP_SHELL = [
   'js/reader.js',
   'js/text.js',
   'js/ui.js',
+  'js/add-box.js',
   'js/covers.js',
   'js/importers.js',
   'js/player-sheets.js',

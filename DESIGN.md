@@ -98,8 +98,9 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   hover. The whole row opens the item.
 - **File tiles:** the type's icon (PDF, TXT, globe for web links, a document for pasted
   text) over two soft waves at the bottom. Files and links are neutral (`--ui-active`
-  with a slightly darker wave); pasted text is warm yellow (`--odeo-secondary-soft` with
-  a sunbeam wave). Never purple. The Notes page uses the same tile at 48px.
+  with a slightly darker wave); pasted text is light purple (`--odeo-primary-soft` with
+  a slightly darker purple wave). No yellow in the library (user decision, 1 Nov 2026);
+  search matches are marked in light purple too. The toolbar has 32px of space below it. The Notes page uses the same tile at 48px.
 - **Weight marks the current place:** side-nav items are regular
   weight, and only the current page is bold.
 - **Notes are a list, not cards:** hairline dividers, with the quote on
@@ -130,9 +131,9 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   #F2EEF9 to match, `--odeo-text` #090018, `--odeo-text-muted` #4E4E4E. Dark mode
   keeps the guide's values.
 - **Home follows the user's reference** (30 Oct 2026): a centred H1 ("Make any text
-  accessible with Ôdēō") and supporting line, then one large upload area (white, 2px
-  border, radius lg, 320px tall; 220px on phones). The whole area is a button that
-  opens the file picker, and files can be dropped on it (dashed dark border while dragging).
+  accessible with Ôdēō") and supporting line, then one large upload area (light purple, 2px
+  dashed border, radius lg, 320px tall; 220px on phones). The whole area is a button that
+  opens the file picker, and files can be dropped on it (purple border while dragging).
   Phones say only "Choose a file". Two soft pill buttons sit under it, "Paste text" (T
   icon) and "Paste link" (chain icon), on `--odeo-surface-sunken`, 48px tall, radius
   full, medium 16px, grey text and icon on `--ui-active`; on hover the text turns purple
@@ -225,9 +226,9 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
 
 - When the library is empty, or a filter has nothing in it: a centred heading ("Add
   your first file", "Nothing unread", "No uploads yet", "No links yet") with one short
-  line, then a dashed upload box (light purple, purple "Choose a file" button, drop a
-  file on it), then two tiles side by side: Paste text (opens the paste page) and Paste
-  link (type a link and press Open; the Paste a link page then fetches it straight away).
-  The tiles stack on phones. No "Show everything" button.
+  line, then the same upload prompt as Home (`js/add-box.js`): the large upload area and
+  the Paste text / Paste link pills. No "Show everything" button.
+- The upload area has a 2px dashed border (`--odeo-border-strong`) on Home and Library
+  (user decision). It turns purple on hover and when a file is dragged over it.
 - A search with no match shows only "Nothing matches “…”" and "Try another word."
 

@@ -255,15 +255,15 @@ input[type='range'] { width: 100%; min-height: var(--odeo-tap-min); margin: 0; a
   justify-items: center;
   gap: var(--odeo-space-3);
   padding: var(--odeo-space-10) var(--odeo-space-6);
-  border: 2px solid var(--odeo-border);
+  border: 2px dashed var(--odeo-border-strong); /* dashed, so it reads as a place to drop a file (user decision) */
   border-radius: var(--odeo-radius-lg);
   background: var(--odeo-surface-raised);
   color: var(--odeo-text);
   font: inherit;
   text-align: center;
 }
-.home-drop:hover { border-color: var(--odeo-border-strong); }
-.home-drop.is-over { border-style: dashed; border-color: var(--odeo-text); background: var(--ui-active); }
+.home-drop:hover { border-color: var(--odeo-primary); }
+.home-drop.is-over { border-color: var(--odeo-primary); background: var(--odeo-primary-soft); }
 .home-drop .icon { width: 48px; height: 48px; color: var(--odeo-text); }
 .home-drop-title { font-size: 18px; line-height: 28px; }
 .home-drop-link { color: var(--odeo-primary); font-weight: 500; text-decoration: underline; text-underline-offset: 0.18em; }
@@ -292,7 +292,7 @@ input[type='range'] { width: 100%; min-height: var(--odeo-tap-min); margin: 0; a
 :root[data-nav='bar'] .home-drop { min-height: 200px; padding-block: var(--odeo-space-8); }
 :root[data-nav='bar'] .home-drop-drag { display: none; }
 :root[data-nav='bar'] .hero { margin-top: 0; }
-.home-add + .section { margin-top: var(--odeo-space-12); }
+.home-section + .section { margin-top: var(--odeo-space-12); }
 
 .progress-line { display: block; height: 4px; border-radius: var(--odeo-radius-full); background: var(--ui-active); overflow: hidden; }
 .progress-line span { display: block; height: 100%; width: var(--pct, 0%); background: var(--odeo-text); }
@@ -359,9 +359,9 @@ input[type='range'] { width: 100%; min-height: var(--odeo-tap-min); margin: 0; a
   background: var(--tile-bg);
   color: var(--odeo-text);
 }
-.type-tile--text {
-  --tile-bg: var(--odeo-secondary-soft);
-  --tile-wave: color-mix(in srgb, var(--odeo-secondary) 45%, var(--odeo-secondary-soft));
+.type-tile--text { /* light purple, no yellow in the library (user decision) */
+  --tile-bg: var(--odeo-primary-soft);
+  --tile-wave: color-mix(in srgb, var(--odeo-primary) 18%, var(--odeo-primary-soft));
 }
 /* Two soft waves along the bottom, like the reference */
 .type-tile::before,
@@ -384,10 +384,10 @@ input[type='range'] { width: 100%; min-height: var(--odeo-tap-min); margin: 0; a
 .lib-snippet { font-size: 16px; line-height: 24px; color: var(--odeo-text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .lib-progress { max-width: 200px; margin-top: var(--odeo-space-1); }
 .lib-actions { position: relative; z-index: 1; }
-mark { background: var(--odeo-secondary); color: var(--odeo-on-secondary); border-radius: 4px; padding: 0 2px; }
+mark { background: var(--odeo-primary-soft); color: var(--odeo-text); font-weight: 700; border-radius: 4px; padding: 0 2px; } /* search matches: purple, not yellow */
 .rename-inline { position: relative; z-index: 1; display: flex; flex-wrap: wrap; gap: var(--odeo-space-2); }
 .rename-inline .input { flex: 1 1 200px; }
-.library-tools { display: flex; align-items: center; gap: var(--odeo-space-2); margin-bottom: var(--odeo-space-4); }
+.library-tools { display: flex; align-items: center; gap: var(--odeo-space-2); margin-bottom: var(--odeo-space-8); } /* more room before the list (user decision) */
 .lib-search { flex: 1 1 auto; min-width: 0; }
 
 /* Sort and filter: quiet buttons that open menus, after the user's Speechify reference */
@@ -488,46 +488,7 @@ mark { background: var(--odeo-secondary); color: var(--odeo-on-secondary); borde
 .lib-empty-title { font-size: 22px; line-height: 30px; }
 .lib-empty-sub { color: var(--odeo-text-muted); max-width: 48ch; margin-top: calc(var(--odeo-space-2) * -1); }
 .lib-empty--search { margin-top: var(--odeo-space-10); }
-.add-drop {
-  width: 100%;
-  min-height: clamp(200px, 30vh, 280px);
-  display: grid;
-  place-content: center;
-  justify-items: center;
-  gap: var(--odeo-space-4);
-  padding: var(--odeo-space-8) var(--odeo-space-5);
-  border: 2px dashed var(--odeo-border-strong);
-  border-radius: var(--odeo-radius-lg);
-  background: var(--odeo-surface-raised);
-}
-.add-drop.is-over { border-color: var(--odeo-text); background: var(--odeo-primary-soft); }
-.add-drop > .icon { width: 48px; height: 48px; color: var(--odeo-text-muted); }
-.add-drop-hint { font-size: 14px; line-height: 20px; color: var(--odeo-text-muted); }
-:root[data-nav='bar'] .add-drop-drag { display: none; }
-.add-pair { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--odeo-space-4); }
-.add-card {
-  display: grid;
-  align-content: center;
-  gap: var(--odeo-space-3);
-  min-height: 136px;
-  padding: var(--odeo-space-5);
-  border-radius: var(--odeo-radius-lg);
-  background: var(--odeo-surface-raised);
-  color: var(--ui-quiet);
-  text-decoration: none;
-  font-weight: 500;
-}
-.add-card--text { justify-items: center; text-align: center; }
-.add-card--text .icon { width: 32px; height: 32px; }
-.add-card--text:hover { background: var(--odeo-primary-soft); color: var(--ui-quiet-hover); }
-.add-card--link { justify-items: stretch; text-align: left; }
-.add-card-label { display: inline-flex; align-items: center; gap: var(--odeo-space-2); color: var(--odeo-text); font-weight: 500; }
-.add-link-row { display: flex; gap: var(--odeo-space-2); }
-.add-link-row .input { flex: 1 1 auto; min-width: 0; }
-@media (max-width: 599.98px) {
-  .add-pair { grid-template-columns: 1fr; }
-  .add-card { min-height: 0; }
-}
+.lib-empty .home-add { width: 100%; margin-top: var(--odeo-space-2); }
 
 /* ---------- Notes ---------- */
 .note-group + .note-group { margin-top: var(--odeo-space-10); }

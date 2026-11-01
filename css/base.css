@@ -50,8 +50,8 @@ p { margin: 0; }
 .label { font-size: 16px; line-height: 20px; font-weight: 700; }
 .muted { color: var(--odeo-text-muted); }
 
-a { color: var(--odeo-primary); text-decoration: underline; text-underline-offset: 0.18em; }
-a:hover { color: var(--odeo-primary-hover); }
+a { color: var(--odeo-text); text-decoration: underline; text-underline-offset: 0.18em; }
+a:hover { color: var(--odeo-text); text-decoration-thickness: 2px; }
 
 button,
 input,
@@ -62,9 +62,9 @@ img,
 svg { display: block; max-width: 100%; }
 em, i { font-style: normal; font-weight: 700; } /* bold, never italics */
 
-::selection { background: var(--odeo-primary); color: var(--odeo-on-primary); }
+::selection { background: var(--odeo-border); color: var(--odeo-text); }
 input,
-textarea { caret-color: var(--odeo-primary); }
+textarea { caret-color: var(--odeo-text); }
 * { scrollbar-width: thin; scrollbar-color: var(--odeo-border-strong) transparent; }
 
 .icon {
@@ -79,7 +79,7 @@ textarea { caret-color: var(--odeo-primary); }
 }
 
 /* Details inside a filled icon are drawn in the pill colour behind it */
-.cut { stroke: var(--icon-cut, var(--odeo-primary-soft)); }
+.cut { stroke: var(--icon-cut, var(--ui-active)); }
 @media (forced-colors: active) { .cut { stroke: Canvas; } }
 
 /* Logo colours follow the theme: primary bubble, text "deo". */
@@ -89,13 +89,13 @@ textarea { caret-color: var(--odeo-primary); }
 
 /* Focus: 3px ring with a 2px gap */
 :focus-visible {
-  outline: 3px solid var(--odeo-focus-ring);
+  outline: 3px solid var(--ui-focus);
   outline-offset: 2px;
 }
 main:focus,
 [tabindex='-1']:focus { outline: none; }
 h1[tabindex='-1']:focus-visible,
-h2[tabindex='-1']:focus-visible { outline: 3px solid var(--odeo-focus-ring); outline-offset: 4px; }
+h2[tabindex='-1']:focus-visible { outline: 3px solid var(--ui-focus); outline-offset: 4px; }
 
 .sr-only {
   position: absolute !important;

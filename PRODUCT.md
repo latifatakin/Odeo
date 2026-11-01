@@ -42,7 +42,7 @@ Used on phones, tablets and laptops, often in long listening sessions, sometimes
 ## Brand Commitments
 
 - The Odeo brand guide (`.claude/skills/odeo-brand/SKILL.md`) is binding for every screen, component, asset and piece of copy (user provided, 26 Oct 2026).
-- Name: Ôdēō. Brand purple #5B32C9, sunbeam yellow #FFC94D, cream backgrounds, Helvetica headings and Atkinson Hyperlegible for all other text (user decision, 30 Oct 2026; the guide said Comic Sans headings and Arial body).
+- Name: Ôdēō. Brand purple #5B32C9, used only for calls to action (user rule, 30 Oct 2026), sunbeam yellow #FFC94D, cream backgrounds, Helvetica headings and Atkinson Hyperlegible Next for all other text (user decision, 30 Oct 2026; the guide said Comic Sans headings and Arial body).
 - Voice: like a kind friend. Short sentences, everyday words, sentence case, no emoji.
 
 ## Evidence on Hand

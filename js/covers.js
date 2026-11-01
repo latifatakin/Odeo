@@ -4,7 +4,7 @@ import { esc } from './ui.js';
 
 const KIND = { paste: 'Text', pdf: 'PDF', txt: 'TXT', sample: 'Text', link: 'Web' };
 export const kindLabel = (doc) => KIND[doc.source?.type] || 'Text';
-// Pasted text sits on secondary-soft, files on primary-soft.
+// Pasted text sits on secondary-soft, files and links on the neutral --ui-active.
 export const isPasted = (doc) => ['paste', 'sample'].includes(doc.source?.type || 'paste');
 
 export function progressPct(doc) {
@@ -51,7 +51,7 @@ export function voiceShortName(v) {
   return v.name.replace(/^(Microsoft|Google|Apple)\s+/i, '').replace(/\s*\(.*$/, '').replace(/\s+Online.*$/i, '').trim() || v.name;
 }
 
-// Voices show the first letter of their name in a primary-soft circle.
+// Voices show the first letter of their name in a neutral circle.
 export function avatarHTML(v) {
   const name = v ? voiceShortName(v) : '?';
   return `<span class="avatar" aria-hidden="true">${esc(name.charAt(0).toUpperCase())}</span>`;

@@ -46,16 +46,7 @@ export async function render(main, [id, startAt]) {
 
         <article class="page-sheet" aria-labelledby="doc-title">
           <header class="doc-head">
-            <div class="doc-title-row" id="title-row">
-              <h1 class="h3" id="doc-title">${esc(doc.title)}</h1>
-              <button type="button" class="icon-btn" id="rename-btn" aria-label="Rename">${icon('pencil')}</button>
-            </div>
-            <form class="rename-form" id="rename-form" hidden>
-              <label class="sr-only" for="rename-input">Title</label>
-              <input id="rename-input" class="input" type="text" maxlength="120" autocomplete="off" />
-              <button type="submit" class="btn btn--primary">Save</button>
-              <button type="button" class="btn btn--secondary" id="rename-cancel">Cancel</button>
-            </form>
+            <h1 class="h3" id="doc-title">${esc(doc.title)}</h1>
             <p class="doc-meta">${esc(kindLabel(doc))}${doc.source?.pages ? ` · ${plural(doc.source.pages, 'page')}` : ''} · ${plural(doc.wordCount, 'word')} · <span id="doc-duration"></span></p>
             <p class="helper">Tap any word to listen from there. Select text to save a note.</p>
           </header>
@@ -86,14 +77,12 @@ export async function render(main, [id, startAt]) {
     </div>
   </div>
 
-  <section class="player" id="player" aria-labelledby="player-title">
-    <div class="player-head">
-      <h2 class="player-title" id="player-title">${esc(doc.title)}</h2>
-      <p class="player-time"><span id="elapsed">0:00</span> · <span id="remaining"></span> left</p>
-    </div>
+  <section class="player" id="player" aria-label="Player">
     <div class="player-track">
+      <span class="player-time" id="elapsed">0:00</span>
       <label for="position" class="sr-only">Position</label>
       <input type="range" id="position" class="range" min="0" max="${Math.max(0, doc.wordCount - 1)}" step="1" value="0" />
+      <span class="player-time"><span id="remaining"></span> left</span>
     </div>
     <div class="player-controls">
       <button type="button" class="voice-btn" id="voice-btn" aria-haspopup="dialog"></button>
@@ -267,35 +256,6 @@ export async function render(main, [id, startAt]) {
     if (speech.supported) speech.play(i);
   });
 
-  // ---------- Rename ----------
-  const titleRow = $('#title-row', main);
-  const renameForm = $('#rename-form', main);
-  const renameInput = $('#rename-input', main);
-  $('#rename-btn', main).addEventListener('click', () => {
-    renameInput.value = $('#doc-title', main).textContent;
-    titleRow.hidden = true;
-    renameForm.hidden = false;
-    renameInput.focus();
-    renameInput.select();
-  });
-  const closeRename = () => {
-    renameForm.hidden = true;
-    titleRow.hidden = false;
-    $('#rename-btn', main).focus();
-  };
-  $('#rename-cancel', main).addEventListener('click', closeRename);
-  renameInput.addEventListener('keydown', (e) => e.key === 'Escape' && closeRename());
-  renameForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const updated = await repo.renameDocument(doc.id, renameInput.value);
-    doc.title = updated.title;
-    $('#doc-title', main).textContent = updated.title;
-    $('#player-title', main).textContent = updated.title;
-    document.title = `${updated.title} — Ôdēō`;
-    closeRename();
-    announce(`Renamed to ${updated.title}`);
-  });
-
   // ---------- Notes panel ----------
   const panel = $('#notes-panel', main);
   const toggle = $('#notes-toggle', main);
@@ -413,13 +373,33 @@ export async function render(main, [id, startAt]) {
     if (!r) return hidePop();
     selection = r;
     addNoteLabel.textContent = 'Save selected text';
-    const box = $('.page-sheet', main).getBoundingClientRect();
     pop.hidden = false;
-    const w = pop.offsetWidth;
-    const left = Math.min(Math.max(8, r.rect.left - box.left + r.rect.width / 2 - w / 2), box.width - w - 8);
-    pop.style.setProperty('--x', `${left}px`);
-    pop.style.setProperty('--y', `${r.rect.bottom - box.top + 10}px`);
+    placePop();
   }, 150);
+
+  // Save note floats just after the end of the selection: below its last line,
+  // lined up with where the selection ends, and kept on screen and above the player.
+  function placePop() {
+    if (pop.hidden || !selection) return;
+    const r = reader.selectionRange();
+    if (!r) return;
+    const end = r.endRect;
+    const w = pop.offsetWidth;
+    const h = pop.offsetHeight;
+    const gap = 8;
+    const minX = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--content-left')) || 0) + gap;
+    const maxX = window.innerWidth - w - gap;
+    const floor = player.getBoundingClientRect().top - gap; // don't sit behind the player
+    let x = Math.min(Math.max(end.right - w / 2, minX), maxX);
+    let y = end.bottom + gap;
+    if (y + h > floor) y = end.top - h - gap; // no room below: go above the line
+    y = Math.min(y, floor - h); // never overlap the player
+    pop.style.setProperty('--x', `${Math.round(x)}px`);
+    pop.style.setProperty('--y', `${Math.round(Math.max(gap, y))}px`);
+  }
+  const onScrollOrResize = () => placePop();
+  window.addEventListener('scroll', onScrollOrResize, { passive: true });
+  window.addEventListener('resize', onScrollOrResize);
   document.addEventListener('selectionchange', onSelection);
   pop.addEventListener('mousedown', (e) => e.preventDefault());
   $('#add-note', main).addEventListener('mousedown', (e) => selection && e.preventDefault());
@@ -473,6 +453,8 @@ export async function render(main, [id, startAt]) {
     repo.removeEventListener('change', onRepoChange);
     document.removeEventListener('odeo:voice', onVoicePicked);
     document.removeEventListener('selectionchange', onSelection);
+    window.removeEventListener('scroll', onScrollOrResize);
+    window.removeEventListener('resize', onScrollOrResize);
     document.removeEventListener('visibilitychange', onHide);
     document.removeEventListener('keydown', onKey);
     window.removeEventListener('pagehide', saveSoon.flush);

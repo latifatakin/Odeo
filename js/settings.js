@@ -20,7 +20,10 @@ const save = debounce((values) => repo.saveSettings(values).catch(() => {}), 400
 // Bring settings saved by older versions of the app into today's options.
 function normalize(s) {
   const out = { ...DEFAULT_SETTINGS, ...s };
-  const fontMap = { opendyslexic: 'dyslexic', serif: 'body', system: 'body' };
+  // 'opendyslexic' was the first versions' default (saved for everyone who changed any
+  // setting), so it maps to today's default, Atkinson Hyperlegible. Choosing OpenDyslexic
+  // now saves 'dyslexic', which is kept.
+  const fontMap = { opendyslexic: 'body', serif: 'body', system: 'body' };
   out.font = fontMap[out.font] || out.font;
   if (!['body', 'dyslexic', 'comic'].includes(out.font)) out.font = 'body';
   if (!['cream', 'sand'].includes(out.readingTheme)) out.readingTheme = out.readingTheme === 'paper' ? 'sand' : 'cream';

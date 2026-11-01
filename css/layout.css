@@ -90,7 +90,7 @@
 .nav-link:hover { background: var(--odeo-surface-sunken); color: var(--odeo-text); }
 .nav-items a[aria-current='page'],
 .nav-link[aria-current='page'],
-.nav-items a.is-section { background: var(--odeo-primary-soft); color: var(--odeo-primary); font-weight: 700; }
+.nav-items a.is-section { background: var(--ui-active); color: var(--odeo-text); font-weight: 700; }
 .nav-icon { display: grid; place-items: center; flex: none; }
 /* Outline icon normally, filled icon on the current tab */
 .nav-icon .icon-on { display: none; }
@@ -140,10 +140,10 @@
 :root[data-nav='rail'] .nav-link:hover .nav-icon { background: var(--odeo-surface-sunken); }
 :root[data-nav='rail'] .nav-items a[aria-current='page'],
 :root[data-nav='rail'] .nav-link[aria-current='page'],
-:root[data-nav='rail'] .nav-items a.is-section { background: transparent; color: var(--odeo-primary); font-weight: 700; }
+:root[data-nav='rail'] .nav-items a.is-section { background: transparent; color: var(--odeo-text); font-weight: 700; }
 :root[data-nav='rail'] .nav-items a[aria-current='page'] .nav-icon,
 :root[data-nav='rail'] .nav-link[aria-current='page'] .nav-icon,
-:root[data-nav='rail'] .nav-items a.is-section .nav-icon { background: var(--odeo-primary-soft); }
+:root[data-nav='rail'] .nav-items a.is-section .nav-icon { background: var(--ui-active); }
 :root[data-nav-forced='rail'] .nav-toggle { display: none; }
 
 @media (max-width: 1023.98px) {
@@ -194,9 +194,9 @@
 :root[data-nav='bar'] .nav-icon { width: 56px; height: 32px; border-radius: var(--odeo-radius-full); }
 :root[data-nav='bar'] .nav-items a:hover { background: transparent; color: var(--odeo-text); }
 :root[data-nav='bar'] .nav-items a[aria-current='page'],
-:root[data-nav='bar'] .nav-items a.is-section { background: transparent; color: var(--odeo-primary); font-weight: 700; }
+:root[data-nav='bar'] .nav-items a.is-section { background: transparent; color: var(--odeo-text); font-weight: 700; }
 :root[data-nav='bar'] .nav-items a[aria-current='page'] .nav-icon,
-:root[data-nav='bar'] .nav-items a.is-section .nav-icon { background: var(--odeo-primary-soft); }
+:root[data-nav='bar'] .nav-items a.is-section .nav-icon { background: var(--ui-active); }
 
 /* ---------- Offline notice ---------- */
 .offline-banner {

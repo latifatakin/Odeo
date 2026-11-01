@@ -122,7 +122,8 @@ export class Reader {
       if (endSpan && range.endContainer === endSpan.querySelector('.wt')?.firstChild) end--;
     }
     if (start > end) [start, end] = [end, start];
-    return { start, end, rect: range.getBoundingClientRect() };
+    const rects = [...range.getClientRects()].filter((r) => r.width > 0 && r.height > 0);
+    return { start, end, rect: range.getBoundingClientRect(), endRect: rects[rects.length - 1] || range.getBoundingClientRect() };
   }
 
   quote(start, end) {

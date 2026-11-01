@@ -27,15 +27,16 @@ are built from brand tokens:
   flips to point right) and the choice is remembered. The circle is 32px and its tap
   area 48px. `js/theme-boot.js` sets
   `<html data-nav="side|rail|bar">` before first paint. There's no top navigation bar.
-- **Reading highlight:** sentence in `--odeo-primary-soft` with `--odeo-radius-sm`
+- **Reading highlight:** sentence in `--odeo-primary-soft` (kept purple by user decision, 30 Oct 2026) with `--odeo-radius-sm`
   ends; current word in `--odeo-secondary`. The word's text uses `--odeo-on-secondary`,
   which equals `--odeo-text` in light mode and keeps contrast in dark mode, where
   `--odeo-text` is light. Saved notes use `--odeo-secondary-soft`.
 - **Fonts** (user decision, 30 Oct 2026, replacing the guide's Comic Sans headings and
   Arial body): headings in Helvetica (`--odeo-font-heading`: Helvetica Neue, Helvetica,
-  then Arial on devices without it). Everything else in Atkinson Hyperlegible
-  (`--odeo-font-body`), self-hosted in `fonts/` (regular and bold, Latin and extended
-  Latin, SIL OFL). It is also the reader's default, shown as "Atkinson Hyperlegible" in
+  then Arial on devices without it). Everything else in Atkinson Hyperlegible Next
+  (`--odeo-font-body`), self-hosted in `fonts/` (Latin and extended
+  Latin, SIL OFL) in regular 400, medium 500 and bold 700. Button text is medium (user
+  decision, 30 Oct 2026). It is also the reader's default, shown as "Atkinson Hyperlegible" in
   Reading settings. The "Comic" reading option keeps its own `--font-comic`.
 - **Type:** headings in `--odeo-font-heading`, everything else in `--odeo-font-body`.
   Sizes (user decision, 30 Oct 2026): H1 28/36, H2 22/30, H3 20/28, H4 18/26,
@@ -63,12 +64,35 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   floating notes panel) use `--odeo-shadow-float`. Everything else is flat on
   `--odeo-surface` with a 1px `--odeo-border` edge: settings groups, add tiles, empty
   states, the reading page and the docked notes panel.
-- **Purple stays near 10%:** the Add button, the play button, links, the current nav item
-  and progress. The small play dot on each listening card is `--odeo-surface` with a
-  `--odeo-primary` icon, not a solid purple circle.
+- **Purple is only for calls to action** (user rule, 30 Oct 2026). Purple appears on
+  primary buttons (`.btn--primary`), the player's play button, the phone bar's + button,
+  "Choose a file" in the upload area, the skip link, and the logo. Nothing else.
+  Everything that shows "current", "chosen" or "active" uses neutral tones instead:
+  `--ui-active` (#ECEAEF light, #352F47 dark) for the current tab, chosen chips, chosen
+  voice, tiles and pill buttons; `--odeo-text` for links (always underlined), icons,
+  progress fills, switched-on toggles and the focus ring (`--ui-focus`). Text selection
+  is `--odeo-border`. When adding UI, reach for these, not `--odeo-primary`. The one
+  exception is the reader's sentence highlight, which stays soft purple (user decision).
+- **Quiet buttons: grey, purple on hover** (user rule, 30 Oct 2026). Any button that is
+  not the main call to action, or not needed to move to the next step, uses
+  `--ui-quiet` (`--odeo-text-muted`) and turns `--ui-quiet-hover` (`--odeo-primary`) on
+  hover, with a `--ui-active` background: Back, secondary and ghost buttons, icon and
+  close buttons, Paste text / Paste link pills, "See all", menu items, and the player's
+  skip, voice and speed buttons.
+- **Reader** (30 Oct 2026): no rename pencil by the title (rename lives in My library's
+  More menu). The page box ends above the floating player; the room for the player is
+  padding on `.reader`, not inside `.page-sheet`, so the player never sits on the box
+  whatever the font. **Save note** is `position: fixed`, placed just below where the
+  selection ends (above that line if there's no room), kept on screen and never over
+  the player; it follows the text on scroll.
+- **Player** (30 Oct 2026): no title. One row: elapsed time, the track, time left.
+  Then voice, back 10s, play, forward 10s, speed. Everything is grey (`--ui-quiet`)
+  except the purple play button.
+- **Default font:** Atkinson Hyperlegible. Settings saved by the first versions, whose
+  default was OpenDyslexic, move to Atkinson; choosing OpenDyslexic now is kept.
 - **Neutral list badges:** file-type tiles in lists use `--odeo-surface-sunken` with
-  `--odeo-text-muted`. The tinted tiles (`primary-soft` for files, `secondary-soft` for
-  pasted text) stay only on the Continue listening cards.
+  `--odeo-text-muted`. The tinted tiles (`--ui-active` for files and links,
+  `secondary-soft` for pasted text) stay only on the Continue listening cards.
 - **Weight marks the current place:** side-nav items and library titles are regular
   weight, and only the current page is bold.
 - **Notes are a list, not cards:** hairline dividers, with the quote on
@@ -101,10 +125,11 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
 - **Home follows the user's reference** (30 Oct 2026): a centred H1 ("Make any text
   accessible with Ôdēō") and supporting line, then one large upload area (white, 2px
   border, radius lg, 320px tall; 220px on phones). The whole area is a button that
-  opens the file picker, and files can be dropped on it (dashed purple while dragging).
+  opens the file picker, and files can be dropped on it (dashed dark border while dragging).
   Phones say only "Choose a file". Two soft pill buttons sit under it, "Paste text" (T
   icon) and "Paste link" (chain icon), on `--odeo-surface-sunken`, 48px tall, radius
-  full, bold 16px, purple icon, purple on hover (user's reference, 30 Oct 2026). Then
+  full, medium 16px, icon in the text colour, `--ui-active` background (user's reference
+  and rule, 30 Oct 2026). Then
   Continue listening and My library, all in one 800px centred column. The greeting is
   gone.
 - **Edge toggle instead of a "Collapse menu" row** (user decision, 27 Oct 2026): a round
@@ -139,5 +164,5 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   linkedom, listed in `package.json`). It accepts public http(s) links only, checks
   every redirect, refuses private network addresses, and limits pages to 5 MB and
   10 seconds. Nothing is stored.
-- **Library:** saved links show the type word "Web" on the purple-tint tile.
+- **Library:** saved links show the type word "Web" on the neutral tile.
 

@@ -422,7 +422,7 @@ mark { background: var(--odeo-secondary); color: var(--odeo-on-secondary); borde
 
 .menu--tool { min-width: 240px; padding: var(--odeo-space-2); }
 .menu-label { padding: var(--odeo-space-2) var(--odeo-space-3) var(--odeo-space-1); font-size: 14px; line-height: 20px; color: var(--odeo-text-muted); }
-.menu--tool [role='menuitemradio'][aria-checked='true'] { background: var(--ui-active); }
+.menu--tool [role='menuitemradio'][aria-checked='true'] { background: var(--odeo-primary-soft); }
 .menu-check { margin-left: auto; display: inline-flex; visibility: hidden; }
 [aria-checked='true'] > .menu-check { visibility: visible; }
 
@@ -461,7 +461,7 @@ mark { background: var(--odeo-secondary); color: var(--odeo-on-secondary); borde
   text-align: left;
 }
 .menu button:hover,
-.menu button:focus-visible { background: var(--ui-active); color: var(--ui-quiet-hover); }
+.menu button:focus-visible { background: var(--odeo-primary-soft); color: var(--ui-quiet-hover); } /* light purple on hover (user decision) */
 .menu button.danger { color: var(--odeo-error); }
 
 /* ---------- Empty states ---------- */

@@ -88,12 +88,13 @@
 /* ---------- Brand guide tokens ----------
    Verbatim from the guide, except four light-mode values the user set on
    30 Oct 2026: surface #FCFAFF (pages and side navigation), a matching
-   lavender sunken tone, text #090018 and muted grey #4E4E4E. */
+   lavender sunken tone, text #090018 and muted grey #4E4E4E. On 1 Nov 2026:
+   raised surfaces (menus, the upload box) are light purple #F6F3FF, never white. */
 :root {
   --odeo-bg: #FBF9F4;
   --odeo-surface: #FCFAFF;
   --odeo-surface-sunken: #F2EEF9;
-  --odeo-surface-raised: #FFFFFF;
+  --odeo-surface-raised: #F6F3FF; /* light purple, not white (user rule, 1 Nov 2026); was #FFFFFF */
   --odeo-text: #090018;
   --odeo-text-muted: #4E4E4E;
   --odeo-border: #D9D5E0;

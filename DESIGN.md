@@ -185,7 +185,7 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
 - **Sort button** shows the current sort ("Recents", "Date added" or "Name") with a
   down arrow. Its menu has "Sort by" (Recents, Date added, Name, each with an icon) and
   "Order" (New to old / Old to new, or A to Z / Z to A for Name). The chosen options
-  get a `--ui-active` background and a tick. Picking a sort resets the order to its
+  get a light purple `--odeo-primary-soft` background and a tick. Picking a sort resets the order to its
   natural one (newest first, or A to Z). Sort and order are remembered on the device.
   On phones under 420px the button shows the sort's icon instead of the word.
 - **Filter button** is a funnel icon. Its menu: All, Unread (not started yet), Uploads
@@ -195,4 +195,14 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
 - Both are quiet buttons: grey on `--ui-active`, light purple background and purple
   text on hover or while open. Menus use menu-button keyboard behaviour (arrows,
   Home/End, Escape returns to the button, Tab closes) and `menuitemradio` items.
+
+## No white surfaces (1 Nov 2026, user rule)
+
+- Light mode never uses pure white. Raised surfaces (dropdown menus, the Home upload
+  box, a library row on hover, the sidebar toggle) use `--odeo-surface-raised`
+  #F6F3FF, a light purple; pages and cards use `--odeo-surface` #FCFAFF.
+- Menu items (row More menus, Sort, Filter) get a light purple `--odeo-primary-soft`
+  background on hover, keyboard focus and when chosen, with purple text on hover.
+- Opening a menu with a mouse or touch moves focus into it without drawing the focus
+  ring; opening it from the keyboard shows the ring as usual.
 

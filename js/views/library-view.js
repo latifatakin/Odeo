@@ -230,14 +230,18 @@ export async function render(main) {
       btn.setAttribute('aria-expanded', 'false');
       if (focusBtn) btn.focus();
     };
+    let byPointer = false;
     const open = () => {
       toolMenus.forEach((m) => m.close());
       closeMenus();
       menu.hidden = false;
       btn.setAttribute('aria-expanded', 'true');
       const list = items();
-      (list.find((i) => i.getAttribute('aria-checked') === 'true') || list[0]).focus();
+      // Show the focus ring only for keyboard users; a mouse or touch open stays clean.
+      (list.find((i) => i.getAttribute('aria-checked') === 'true') || list[0]).focus({ focusVisible: !byPointer });
+      byPointer = false;
     };
+    btn.addEventListener('pointerdown', () => (byPointer = true));
     btn.addEventListener('click', () => (menu.hidden ? open() : close()));
     btn.addEventListener('keydown', (e) => {
       if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {

@@ -13,19 +13,22 @@
 //   schema     record format version, for migrations
 //
 // Collections:
-//   documents  { title, text, source: { type, fileName?, pages? }, wordCount }
+//   documents  { title, text, source: { type, fileName?, pages? }, wordCount, noteColor }
+//              noteColor: 0 to 5, the colour of this document's notes. Given once, in
+//              the order documents were added, and never changed.
 //   progress   id = documentId. { documentId, wordIndex, completed, lastOpenedAt }
 //              Kept apart from documents so saving the reading position
 //              often never re-uploads a long text.
 //   notes      { documentId, quote, startWord, endWord, comment }
 //   settings   id = "user". Reading preferences.
-//   meta       id = "device". { userId, lastSyncedAt } — local only, never synced.
+//   meta       id = "device". { userId, lastSyncedAt, noteColorNext } — local only, never synced.
 
 import { LocalAdapter, StorageFullError } from './local-adapter.js';
 
 export { StorageFullError };
 
 export const SCHEMA_VERSION = 1;
+export const NOTE_COLORS = 6;
 const SYNCED_COLLECTIONS = ['documents', 'progress', 'notes', 'settings'];
 
 const now = () => new Date().toISOString();
@@ -50,6 +53,7 @@ export const DEFAULT_SETTINGS = {
   voiceURI: null,
   recentVoices: [],
   autoScroll: true,
+  noteColors: true, // Notes page: colour each note by its document
 };
 
 class Repository extends EventTarget {
@@ -67,6 +71,7 @@ class Repository extends EventTarget {
     }
     this.meta = meta;
     await this.#migrate(meta.schema || 1);
+    await this.#assignNoteColors();
 
     // Keep other open tabs in step.
     window.addEventListener('storage', (e) => {
@@ -126,6 +131,27 @@ class Repository extends EventTarget {
     }
   }
 
+  // ---------- Note colours ----------
+  // Each document gets the next colour in turn (looping after the sixth) and keeps
+  // it for good, even when other documents are deleted.
+
+  async #nextNoteColor() {
+    const n = this.meta.noteColorNext || 0;
+    this.meta = { ...this.meta, noteColorNext: n + 1 };
+    await this.adapter.put('meta', this.meta);
+    return n % NOTE_COLORS;
+  }
+
+  // Documents saved before note colours existed get theirs, oldest first.
+  async #assignNoteColors() {
+    const missing = (await this.#live('documents'))
+      .filter((d) => !Number.isInteger(d.noteColor))
+      .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    for (const d of missing) {
+      await this.adapter.put('documents', this.#touch(d, { noteColor: await this.#nextNoteColor() }));
+    }
+  }
+
   async #migrate(fromVersion) {
     if (fromVersion === SCHEMA_VERSION) return;
     // Future: transform records from older schema versions here.
@@ -163,6 +189,7 @@ class Repository extends EventTarget {
       text,
       source: source || { type: 'paste' },
       wordCount: (text.match(/\S+/g) || []).length,
+      noteColor: await this.#nextNoteColor(),
     });
     await this.adapter.put('documents', doc);
     this.#emit('documents', doc.id);

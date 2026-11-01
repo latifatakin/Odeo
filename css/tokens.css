@@ -106,6 +106,13 @@
   --odeo-secondary: #FFC94D;
   --odeo-on-secondary: #211B30;
   --odeo-secondary-soft: #FFF4D6;
+  /* Note colours, one per document (Notes page spec): peach, sun, lavender, mint, sky, rose */
+  --note-0: #FCE3CC;
+  --note-1: #FFF4D6;
+  --note-2: #ECE6FD;
+  --note-3: #DDF1E4;
+  --note-4: #DDEBF8;
+  --note-5: #FBE1E6;
   --odeo-success: #1E7A4F;
   --odeo-warning: #8A5300;
   --odeo-error: #B42335;
@@ -177,6 +184,12 @@
     --odeo-secondary: #FFD46B;
     --odeo-on-secondary: #16121F;
     --odeo-secondary-soft: #3A3120;
+    --note-0: #3D2A1E;
+    --note-1: #3A3120;
+    --note-2: #2E2550;
+    --note-3: #1E3328;
+    --note-4: #1C2D3D;
+    --note-5: #3B2229;
     --odeo-success: #6FD39F;
     --odeo-warning: #FFC94D;
     --odeo-error: #FF8A96;
@@ -202,6 +215,12 @@
   --odeo-secondary: #FFD46B;
   --odeo-on-secondary: #16121F;
   --odeo-secondary-soft: #3A3120;
+  --note-0: #3D2A1E;
+  --note-1: #3A3120;
+  --note-2: #2E2550;
+  --note-3: #1E3328;
+  --note-4: #1C2D3D;
+  --note-5: #3B2229;
   --odeo-success: #6FD39F;
   --odeo-warning: #FFC94D;
   --odeo-error: #FF8A96;

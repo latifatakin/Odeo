@@ -519,6 +519,163 @@ mark { background: var(--odeo-primary-soft); color: var(--odeo-text); font-weigh
 .note-actions { display: flex; flex-wrap: wrap; gap: var(--odeo-space-2); }
 .note textarea { min-height: 72px; }
 
+/* ---------- Notes page (spec: notes-page-design.md, 1 Nov 2026) ----------
+   One colour per document, always with the document name. Every card has a
+   visible border. Long notes fade after 6 lines with Show more. Colours can be
+   turned off in Settings (data-note-colors="off"). */
+.notes-tools { display: grid; gap: var(--odeo-space-4); }
+.doc-chips { display: flex; flex-wrap: wrap; gap: var(--odeo-space-2); }
+/* Phones: one row of chips that scrolls sideways, so the notes stay near the top */
+@media (max-width: 599.98px) {
+  .doc-chips { flex-wrap: nowrap; overflow-x: auto; margin-inline: calc(var(--odeo-space-4) * -1); padding: 2px var(--odeo-space-4); scrollbar-width: none; }
+  .doc-chip { flex: none; max-width: 80vw; }
+}
+.doc-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--odeo-space-2);
+  min-height: var(--odeo-tap-min);
+  max-width: 100%;
+  padding: 0 var(--odeo-space-4);
+  border: 1px solid var(--odeo-border-strong);
+  border-radius: var(--odeo-radius-full);
+  background: transparent;
+  color: var(--ui-quiet);
+  font-size: 16px;
+  font-weight: 500;
+}
+.doc-chip > span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.doc-chip:hover { background: var(--odeo-primary-soft); color: var(--ui-quiet-hover); }
+/* Selected: a check, bold text and a darker border, not just colour */
+.doc-chip[aria-pressed='true'] { border: 2px solid var(--odeo-text); color: var(--odeo-text); font-weight: 700; padding-inline: calc(var(--odeo-space-4) - 1px); }
+.doc-chip .icon { width: 20px; height: 20px; }
+.doc-dot { width: 14px; height: 14px; flex: none; border-radius: 50%; border: 1px solid var(--odeo-border-strong); background: var(--note-bg); }
+:root[data-note-colors='off'] .doc-dot { display: none; }
+
+[data-color='0'] { --note-bg: var(--note-0); }
+[data-color='1'] { --note-bg: var(--note-1); }
+[data-color='2'] { --note-bg: var(--note-2); }
+[data-color='3'] { --note-bg: var(--note-3); }
+[data-color='4'] { --note-bg: var(--note-4); }
+[data-color='5'] { --note-bg: var(--note-5); }
+
+.sticky-board { container-type: inline-size; }
+.sticky-grid {
+  list-style: none;
+  margin: 0;
+  padding: var(--odeo-space-3) 0 0; /* room for the tape */
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--odeo-space-6);
+}
+@container (min-width: 440px) { .sticky-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@container (min-width: 740px) { .sticky-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@container (min-width: 960px) { .sticky-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+.sticky {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--odeo-space-3);
+  min-width: 0;
+  padding: var(--odeo-space-5);
+  border: 1px solid var(--odeo-border-strong); /* passes 3:1 on every note colour */
+  border-radius: var(--odeo-radius-lg);
+  background: var(--note-bg, var(--odeo-surface-raised));
+  color: var(--odeo-text);
+  box-shadow: 0 1px 2px #211b300f;
+  transition: box-shadow 0.18s ease-out;
+}
+:root[data-note-colors='off'] .sticky { background: var(--odeo-surface-raised); }
+.sticky:hover { box-shadow: 0 2px 4px #211b301a, 0 10px 22px -10px #211b3047; }
+.sticky.has-menu { z-index: 30; }
+/* Decoration only: a strip of tape (no text, not read out) */
+.sticky::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  width: 64px;
+  height: 20px;
+  margin-left: -32px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--odeo-text) 12%, var(--note-bg, var(--odeo-surface-raised)));
+  opacity: 0.8;
+  transform: rotate(-3deg);
+  pointer-events: none;
+}
+:root[data-note-colors='off'] .sticky::before { background: color-mix(in srgb, var(--odeo-text) 12%, var(--odeo-surface-raised)); }
+
+/* The whole card is one button: it sits underneath and covers the card */
+.sticky-play {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+.sticky-play:focus-visible { outline: none; }
+.sticky:has(.sticky-play:focus-visible) { outline: 3px solid var(--ui-focus); outline-offset: 2px; }
+.sticky > :not(.sticky-play) { position: relative; z-index: 1; pointer-events: none; }
+.sticky button:not(.sticky-play),
+.sticky .menu,
+.sticky .sticky-source,
+.sticky-confirm { pointer-events: auto; }
+
+.sticky-text {
+  max-height: calc(6 * 28px); /* 6 lines */
+  overflow: hidden;
+  font-family: var(--read-font);
+  font-size: 18px;
+  line-height: 28px;
+  text-align: left;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.sticky-text p { margin: 0; white-space: pre-line; }
+.sticky-text p + p { margin-top: var(--odeo-space-3); }
+.sticky.is-clamped:not(.is-open) .sticky-text {
+  -webkit-mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  mask-image: linear-gradient(to bottom, #000 55%, transparent);
+}
+.sticky.is-open .sticky-text { max-height: none; }
+.sticky-more-text {
+  align-self: flex-start;
+  min-height: var(--odeo-tap-min);
+  margin: calc(var(--odeo-space-2) * -1) 0 0 calc(var(--odeo-space-3) * -1);
+  padding: 0 var(--odeo-space-3);
+  border: 0;
+  border-radius: var(--odeo-radius-full);
+  background: transparent;
+  color: var(--odeo-text);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.sticky-more-text:hover { background: var(--odeo-primary-soft); color: var(--ui-quiet-hover); }
+.sticky-comment { font-size: 16px; line-height: 24px; color: var(--odeo-text-muted); white-space: pre-line; overflow-wrap: anywhere; }
+.sticky-foot { margin-top: auto; display: flex; align-items: flex-end; gap: var(--odeo-space-2); }
+.sticky-meta { flex: 1 1 auto; min-width: 0; display: grid; gap: 2px; color: var(--odeo-text-muted); }
+.sticky-source { font-size: 16px; line-height: 24px; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.sticky-date { font-size: 14px; line-height: 20px; }
+.sticky-actions { position: relative; flex: none; margin: 0 calc(var(--odeo-space-2) * -1) calc(var(--odeo-space-2) * -1) 0; }
+.sticky-actions .menu { top: auto; bottom: calc(100% + var(--odeo-space-1)); min-width: 260px; }
+.sticky-confirm { display: grid; gap: var(--odeo-space-3); padding-top: var(--odeo-space-3); border-top: 1px solid var(--odeo-border-strong); }
+.sticky-confirm-actions { display: flex; flex-wrap: wrap; gap: var(--odeo-space-2); }
+.sticky .w { cursor: inherit; }
+
+/* Player for a note, at the bottom like the reader's */
+.note-player-row { display: flex; align-items: center; gap: var(--odeo-space-3); }
+.note-player-title { flex: 1 1 auto; min-width: 0; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.page.has-player { padding-bottom: calc(var(--odeo-play-button) + var(--odeo-space-12)); }
+
+@media (prefers-reduced-motion: reduce) { .sticky { transition: none; } }
+
 /* ---------- Sheets (dialogs) ---------- */
 .sheet {
   padding: 0;

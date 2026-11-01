@@ -78,6 +78,8 @@ function apply() {
   const root = document.documentElement;
   root.dataset.font = current.font;
   root.dataset.reading = current.readingTheme;
+  if (current.noteColors) root.removeAttribute('data-note-colors');
+  else root.dataset.noteColors = 'off';
   if (current.theme === 'system') root.removeAttribute('data-theme');
   else root.dataset.theme = current.theme;
   if (current.motion === 'system') root.removeAttribute('data-motion');

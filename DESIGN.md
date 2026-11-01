@@ -103,8 +103,31 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   search matches are marked in light purple too. The toolbar has 32px of space below it. The Notes page uses the same tile at 48px.
 - **Weight marks the current place:** side-nav items are regular
   weight, and only the current page is bold.
-- **Notes are a list, not cards:** hairline dividers, with the quote on
-  `--odeo-secondary-soft`.
+- **Notes page** (1 Nov 2026, from the user's spec `notes-page-design.md`, which wins on
+  this page): a board of note cards, newest first, 24px gaps; 1 column on phones, 2 on
+  tablets, 3 or 4 on desktop.
+  - **One colour per document**, given once in the order documents were added and saved
+    on the document (`noteColor` 0 to 5, looping): peach, sun, lavender, mint, sky, rose
+    (`--note-0` to `--note-5`, light and dark). All text and border pairs were checked
+    against Ôdēō's text colours. Text colour never changes between cards.
+  - **The document name is always on the card** (16px bold, grey; full name in a tooltip
+    and in the spoken label). Colour is never the only clue.
+  - **Every card has a 1px `--odeo-border-strong` border** (3:1 on every note colour).
+    A tape strip is the only decoration, with no text on it.
+  - Note text 18px / 28px in the reading font; comment 16px grey; date 14px grey.
+  - **Long notes** fade after 6 lines with a "Show more" / "Show less" button.
+  - **Each card is one button**: it plays the note right on the page, with the reader's
+    sentence and word highlight and a small player at the bottom. Spoken label: "Note
+    from …, saved …: full text. comment. Press to play." 3px focus ring, 2px gap.
+  - **More menu** (48px): Play, Go to this part of the document, Copy, Delete. Delete
+    asks for confirmation inside the card.
+  - Visible search label "Search your notes" (this page only). Document chips under the
+    search: dot in the note colour + name; selected chip has a check, bold text and a
+    2px dark border. On phones the chips are one sideways-scrolling row.
+  - **Settings → Display → "Color notes by document"** (on by default, saved). Off: cards
+    use `--odeo-surface-raised` with the same border.
+  - Inside the reader, notes are still a plain list with the quote on
+    `--odeo-secondary-soft`.
 - **Motion:** sheets rise 8px over 0.24s with ease-out-quart; nothing else animates.
 
 ## Deliberate differences from the guide

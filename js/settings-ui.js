@@ -100,7 +100,7 @@ export function readingSettingsHTML(prefix) {
 }
 
 export function displaySettingsHTML(prefix) {
-  return `${chipGroup('theme', prefix)}${chipGroup('motion', prefix)}`;
+  return `${chipGroup('theme', prefix)}${chipGroup('motion', prefix)}${toggleRow('noteColors', 'Color notes by document', 'On the Notes page, each document’s notes share one color. The document name is always shown too.', prefix)}`;
 }
 
 export function listeningToggleHTML(prefix) {

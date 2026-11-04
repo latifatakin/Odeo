@@ -156,6 +156,11 @@
 :root[data-nav='bar'] .mobile-brand .logo-full { width: 96px; height: 34px; }
 :root[data-nav='bar'] .main { min-height: auto; padding: var(--odeo-space-4) var(--odeo-space-4) calc(var(--mobile-bar) + var(--odeo-space-12)); }
 :root[data-nav='bar'] .appnav {
+  /* Above every page layer (menus, notes, player), below popups and toasts.
+     Raised surface and an upward shadow so the page clearly scrolls under it. */
+  z-index: 50;
+  background: var(--odeo-surface-raised);
+  box-shadow: 0 -4px 16px rgb(9 0 24 / 0.08);
   inset: auto 0 0 0;
   width: auto;
   height: var(--mobile-bar);

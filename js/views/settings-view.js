@@ -3,6 +3,10 @@
 // control (dropdown, switch or button) on the right. Inspired by the user's
 // Speechify reference for layout only; colours and hover follow Ôdēō.
 // Changes apply right away and save.
+//
+// Phones and tablets (under 900px) get a grouped list menu instead
+// (#/settings), and each section opens as its own screen (#/settings/reading)
+// with a Back link, so the phone's own Back button works too.
 
 import { repo } from '../storage/repo.js';
 import { speech } from '../speech.js';
@@ -22,19 +26,41 @@ const SECTIONS = [
   { id: 'data', label: 'Your data', icon: 'lock' },
 ];
 
-export async function render(main) {
+// Phone menu groups
+const MENU = [
+  { label: 'Preferences', items: ['general', 'reading', 'listening'] },
+  { label: 'Privacy and help', items: ['data', 'help'] },
+];
+const HELP = { id: 'help', label: 'Help', icon: 'help', href: '#/help' };
+
+export async function render(main, params = []) {
   const p = nextPrefix();
+  const sub = SECTIONS.some((s) => s.id === params[0]) ? params[0] : null;
   let tab = 'general';
   try {
     tab = SECTIONS.some((s) => s.id === sessionStorage.getItem(TAB_KEY)) ? sessionStorage.getItem(TAB_KEY) : 'general';
   } catch {}
+  if (sub) tab = sub;
+
+  const menuRow = (id) => {
+    const s = SECTIONS.find((x) => x.id === id) || HELP;
+    return `<li><a class="settings-menu-row" href="${s.href || `#/settings/${s.id}`}">${icon(s.icon)}<span>${s.label}</span>${icon('chevron-right')}</a></li>`;
+  };
 
   main.innerHTML = `
-  <div class="page">
+  <div class="page settings-page" ${sub ? `data-sub="${sub}"` : ''}>
+    <a class="back-link settings-back" href="#/settings">${icon('chevron-left')}Back to settings</a>
     <header class="page-head">
       <h1>Settings</h1>
       <p>Make Ôdēō comfortable for you. Changes save straight away.</p>
     </header>
+
+    <nav class="settings-menu" aria-label="Settings sections">
+      ${MENU.map(
+        (g, i) => `<h2 class="settings-menu-label" id="sm-${i}">${g.label}</h2>
+        <ul class="settings-menu-group" aria-labelledby="sm-${i}">${g.items.map(menuRow).join('')}</ul>`
+      ).join('')}
+    </nav>
 
     <div class="settings-layout" id="settings-root">
       <nav class="settings-nav" aria-label="Settings sections">

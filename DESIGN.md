@@ -292,3 +292,10 @@ Voices come from each device, so `js/voice-quality.js` rates every voice by its 
 - **Never shown:** macOS novelty and old voices (Bad News, Bubbles, Whisper, Zarvox, Albert, Fred, Junior…), the Eloquence voices (Eddy, Flo, Grandma, Grandpa, Reed, Rocko, Sandy, Shelley), and eSpeak, Pico, Festival and Flite.
 
 Repeats of the same voice keep only the best version (an enhanced Samantha hides the compact one). The voice picker says "Only clear, natural-sounding voices are shown." On a Mac in Chrome this goes from 180 voices to 50 (6 in English).
+
+## Phone Settings and the phone bar (4 Nov 2026)
+
+- **Phone and tablet Settings (under 900px)** follow the user's grouped-list reference. `#/settings` shows the title, then grey group labels ("Preferences": General, Reading, Listening; "Privacy and help": Your data, Help) over light purple cards (`surface-sunken`). Each row is icon, name and a chevron, 56px tall, 18px medium text. Each section opens as its own screen at `#/settings/<section>` with "Back to settings" at the top and the section name as a 28px title, so the phone's Back button works. The sideways-scrolling pill tabs are gone.
+- Desktop keeps the side list and also accepts `#/settings/<section>`.
+- **Hover only with a mouse:** dropdowns, Settings tabs and menu rows only turn purple on hover under `@media (hover: hover)`. On phones a tap used to leave them stuck purple.
+- **Phone bar sits on top:** z-index 50 (above menus, notes and the player; below popups and toasts), a raised surface and a soft upward shadow, so the page clearly scrolls under it.

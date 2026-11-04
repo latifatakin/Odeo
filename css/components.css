@@ -235,7 +235,9 @@
   text-decoration: none;
   white-space: nowrap;
 }
-.settings-tab:hover { background: var(--odeo-primary-soft); color: var(--odeo-primary); }
+@media (hover: hover) {
+  .settings-tab:hover { background: var(--odeo-primary-soft); color: var(--odeo-primary); }
+}
 /* Chosen section: the same as the chosen page in the side navigation */
 .settings-tab[aria-current='true'] { background: var(--odeo-primary-soft); color: var(--odeo-primary); font-weight: 700; }
 .settings-panel { min-width: 0; }
@@ -275,16 +277,49 @@
   cursor: pointer;
 }
 .select-wrap > .icon { position: absolute; right: var(--odeo-space-4); top: 50%; width: 20px; height: 20px; margin-top: -10px; pointer-events: none; color: var(--odeo-text); }
-.select:hover { background: var(--odeo-primary-soft); color: var(--odeo-primary); }
-.select-wrap:hover > .icon { color: var(--odeo-primary); }
+/* Hover only on devices with a mouse: on phones a tap left it stuck purple */
+@media (hover: hover) {
+  .select:hover { background: var(--odeo-primary-soft); color: var(--odeo-primary); }
+  .select-wrap:hover > .icon { color: var(--odeo-primary); }
+}
 .select:focus-visible { outline: 3px solid var(--ui-focus); outline-offset: 2px; }
 .select option { background: var(--odeo-surface-raised); color: var(--odeo-text); }
+/* Phone and tablet menu (4 Nov 2026, the user's grouped-list reference):
+   group labels in grey, rows on one light purple card, icon, name, chevron. */
+.settings-menu,
+.page > .settings-back { display: none; }
+.settings-menu-label { margin: 0 0 var(--odeo-space-2) var(--odeo-space-1); font-family: var(--odeo-font-body); font-size: 16px; line-height: 24px; font-weight: 500; color: var(--odeo-text-muted); }
+.settings-menu-group { list-style: none; margin: 0 0 var(--odeo-space-8); padding: var(--odeo-space-2); border-radius: var(--odeo-radius-lg); background: var(--odeo-surface-sunken); }
+.settings-menu-row {
+  display: flex;
+  align-items: center;
+  gap: var(--odeo-space-4);
+  min-height: 56px;
+  padding: var(--odeo-space-3);
+  border-radius: var(--odeo-radius-md);
+  color: var(--odeo-text);
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 500;
+  text-decoration: none;
+}
+.settings-menu-row > span { flex: 1; min-width: 0; }
+.settings-menu-row > .icon { flex: none; color: var(--odeo-text-muted); }
+@media (hover: hover) {
+  .settings-menu-row:hover { background: var(--odeo-primary-soft); color: var(--odeo-primary); }
+  .settings-menu-row:hover > .icon { color: var(--odeo-primary); }
+}
+.settings-menu-row:active { background: var(--odeo-primary-soft); }
 @media (max-width: 899.98px) {
-  .settings-layout { grid-template-columns: minmax(0, 1fr); gap: var(--odeo-space-6); }
-  /* Sections become one row of tabs that scrolls sideways */
-  .settings-nav { position: static; margin-inline: calc(var(--odeo-space-4) * -1); }
-  .settings-nav ul { display: flex; overflow-x: auto; gap: var(--odeo-space-2); padding: 2px var(--odeo-space-4); scrollbar-width: none; }
-  .settings-tab { width: auto; padding-inline: var(--odeo-space-4); border-radius: var(--odeo-radius-full); background: var(--ui-active); }
+  .settings-nav { display: none; }
+  .settings-layout { display: block; }
+  /* The menu screen: list only */
+  .settings-page:not([data-sub]) .settings-menu { display: block; }
+  .settings-page:not([data-sub]) .settings-layout { display: none; }
+  /* A section screen: Back link, then the section name as the page title */
+  .settings-page[data-sub] > .settings-back { display: inline-flex; margin-bottom: var(--odeo-space-4); }
+  .settings-page[data-sub] .page-head { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0; }
+  .settings-page[data-sub] .settings-panel-title { font-size: 28px; line-height: 36px; margin-bottom: var(--odeo-space-2); }
 }
 @media (max-width: 599.98px) {
   .set-row { flex-wrap: wrap; gap: var(--odeo-space-3); min-height: 0; }

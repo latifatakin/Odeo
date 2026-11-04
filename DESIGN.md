@@ -299,3 +299,11 @@ Repeats of the same voice keep only the best version (an enhanced Samantha hides
 - Desktop keeps the side list and also accepts `#/settings/<section>`.
 - **Hover only with a mouse:** dropdowns, Settings tabs and menu rows only turn purple on hover under `@media (hover: hover)`. On phones a tap used to leave them stuck purple.
 - **Phone bar sits on top:** z-index 50 (above menus, notes and the player; below popups and toasts), a raised surface and a soft upward shadow, so the page clearly scrolls under it.
+
+## Bottom bar and Listening dropdowns (4 Nov 2026)
+
+- **Phone bar:** the purple Add button is gone (user request). The bar has four equal items: Home, Library, Notes, Settings. Adding stays on Home and at the top of My library (the upload box with Paste text and Paste link).
+- **Listening settings:** Voice and Speed are dropdowns like every other setting, not buttons.
+  - Voice: native select, your language's group first, then other languages A to Z. Options read "Daniel · United Kingdom" (the group names the language). The line under the label says "Works offline." or "Needs internet." Fixed 280px wide on desktop, full width on phones.
+  - Speed: 0.8× to 2.0× in steps of 0.1, with "1.0× (normal)".
+  - The player in the reader still opens the voice sheet (with samples) and the speed sheet.

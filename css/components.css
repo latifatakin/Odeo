@@ -261,6 +261,8 @@
 .set-row > .btn { flex: none; }
 /* Dropdown: a grey pill with a chevron; light purple and purple text on hover */
 .select-wrap { position: relative; flex: none; min-width: 200px; }
+/* Voice names are long: a fixed width, the select cuts the name off itself */
+.select-wrap--voice { width: 280px; }
 .select {
   appearance: none;
   -webkit-appearance: none;
@@ -324,6 +326,7 @@
 @media (max-width: 599.98px) {
   .set-row { flex-wrap: wrap; gap: var(--odeo-space-3); min-height: 0; }
   .select-wrap { flex: 1 1 100%; min-width: 0; }
+  .select-wrap--voice { width: auto; }
 }
 
 /* ---------- Settings groups ---------- */

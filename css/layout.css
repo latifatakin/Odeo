@@ -2,7 +2,7 @@
    js/theme-boot.js and js/main.js set <html data-nav>:
    - "side": desktop (≥ 1024px), left side navigation 248px
    - "rail": tablet (600–1023px), or desktop when collapsed, 88px icon rail
-   - "bar":  phone (< 600px), bottom bar with Add in the middle */
+   - "bar":  phone (< 600px), bottom bar: Home, Library, Notes, Settings */
 
 :root { --content-left: var(--odeo-sidenav-width); }
 :root[data-nav='rail'] { --content-left: var(--odeo-nav-rail); }
@@ -66,7 +66,6 @@
 .nav-items,
 .nav-bottom { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--odeo-space-1); }
 .nav-bottom { margin-top: auto; padding-top: var(--odeo-space-4); border-top: 1px solid var(--odeo-border); }
-.nav-add-slot { display: none; }
 
 .nav-items a,
 .nav-link {
@@ -172,21 +171,7 @@
 }
 :root[data-nav='bar'] .nav-top,
 :root[data-nav='bar'] .nav-bottom { display: none; }
-:root[data-nav='bar'] .nav-items { flex: 1; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; gap: 0; }
-:root[data-nav='bar'] .nav-add-slot { display: grid; place-items: center; }
-.bar-add {
-  width: 56px;
-  height: 56px;
-  margin-top: -28px;
-  display: grid;
-  place-items: center;
-  border: 0;
-  border-radius: var(--odeo-radius-full);
-  background: var(--odeo-primary);
-  color: var(--odeo-on-primary);
-  box-shadow: var(--odeo-shadow-float);
-}
-.bar-add:hover { background: var(--odeo-primary-hover); }
+:root[data-nav='bar'] .nav-items { flex: 1; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: center; gap: 0; }
 :root[data-nav='bar'] .nav-items a {
   flex-direction: column;
   gap: var(--odeo-space-1);

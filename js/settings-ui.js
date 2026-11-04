@@ -46,6 +46,13 @@ const GROUPS = {
       { value: 'dark', label: 'Dark' },
     ],
   },
+  rate: {
+    legend: 'Speed',
+    options: [0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2].map((r) => ({
+      value: r,
+      label: r === 1 ? '1.0× (normal)' : `${r.toFixed(1)}×`,
+    })),
+  },
   motion: {
     legend: 'Motion',
     options: [
@@ -179,7 +186,7 @@ export function bindSettings(container) {
     const key = el.dataset.setting;
     let value;
     if (el.type === 'checkbox') value = el.checked;
-    else value = ['lineHeight', 'letterSpacing'].includes(key) ? Number(el.value) : el.value;
+    else value = ['lineHeight', 'letterSpacing', 'rate'].includes(key) ? Number(el.value) : el.value;
     updateSettings({ [key]: value });
   };
   const onClick = (e) => {

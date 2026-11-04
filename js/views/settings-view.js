@@ -10,11 +10,10 @@
 
 import { repo } from '../storage/repo.js';
 import { speech } from '../speech.js';
-import { getSettings, settingsEvents } from '../settings.js';
+import { getSettings, updateSettings, settingsEvents } from '../settings.js';
 import { selectRow, switchRow, sizeRow, bindSettings, nextPrefix } from '../settings-ui.js';
-import { openSpeedSheet, openVoiceSheet } from '../player-sheets.js';
 import { voiceShortName, languageName } from '../covers.js';
-import { $, $$, icon, plural } from '../ui.js';
+import { $, $$, esc, icon, plural } from '../ui.js';
 
 const TAB_KEY = 'odeo:settings-tab';
 const formatMB = (bytes) => `${(bytes / 1024 / 1024).toFixed(bytes < 1024 * 1024 ? 2 : 1)} MB`;
@@ -99,18 +98,15 @@ export async function render(main, params = []) {
           <h2 class="settings-panel-title" id="set-listening-h">Listening</h2>
           <div class="set-row">
             <div class="set-text">
-              <span class="set-label">Voice</span>
+              <label class="set-label" for="${p}-voice">Voice</label>
               <p class="set-hint" id="voice-current"></p>
             </div>
-            <button type="button" class="btn btn--secondary" id="choose-voice" aria-haspopup="dialog">Choose voice</button>
-          </div>
-          <div class="set-row">
-            <div class="set-text">
-              <span class="set-label">Speed</span>
-              <p class="set-hint" id="speed-current"></p>
+            <div class="select-wrap select-wrap--voice">
+              <select class="select" id="${p}-voice" aria-describedby="voice-current"></select>
+              ${icon('chevron-down')}
             </div>
-            <button type="button" class="btn btn--secondary" id="choose-speed" aria-haspopup="dialog">Change speed</button>
           </div>
+          ${selectRow('rate', 'Speed', 'How fast the voice reads.', p)}
           ${switchRow('autoSpeed', 'Speed up gradually', 'Adds 0.1× every 600 words, up to 2.0×.', p)}
         </section>
 
@@ -157,25 +153,65 @@ export async function render(main, params = []) {
   show(tab);
 
   // ---------- Listening ----------
-  const drawListening = () => {
-    const v = speech.currentVoice();
-    $('#voice-current', main).textContent = v
-      ? `${voiceShortName(v)} · ${languageName(v.lang)} · ${v.localService ? 'Works offline' : 'Needs internet'}`
-      : 'Voices are still loading.';
-    $('#speed-current', main).textContent = `${getSettings().rate.toFixed(1)}× speed`;
+  // Voice dropdown: your language first, then the others, each in its own group.
+  const voiceSelect = $(`#${p}-voice`, main);
+  const drawVoices = () => {
+    const current = speech.currentVoice();
+    if (!speech.supported || !speech.voices.length) {
+      voiceSelect.innerHTML = `<option value="">${speech.supported ? 'Voices are still loading…' : 'Not available in this browser'}</option>`;
+      voiceSelect.disabled = true;
+    } else {
+      const userLang = (navigator.language || 'en').split('-')[0];
+      const byLang = new Map();
+      for (const v of speech.voices) {
+        const l = v.lang.replace('_', '-').split('-')[0];
+        if (!byLang.has(l)) byLang.set(l, []);
+        byLang.get(l).push(v);
+      }
+      const langs = [...byLang.keys()].sort((a, b) =>
+        a === userLang ? -1 : b === userLang ? 1 : languageName(a).localeCompare(languageName(b))
+      );
+      voiceSelect.innerHTML = langs
+        .map(
+          (l) => `<optgroup label="${esc(languageName(l))}">${byLang
+            .get(l)
+            .map((v) => {
+              // The group already names the language, so show the country only
+              const region = languageName(v.lang).match(/\((.*)\)$/)?.[1];
+              return `<option value="${esc(v.voiceURI)}">${esc(voiceShortName(v))}${region && !/^\d+$/.test(region) ? ` · ${esc(region)}` : ''}</option>`;
+            })
+            .join('')}</optgroup>`
+        )
+        .join('');
+      voiceSelect.disabled = false;
+      if (current) voiceSelect.value = current.voiceURI;
+    }
+    $('#voice-current', main).textContent = current
+      ? current.localService
+        ? 'Works offline.'
+        : 'Needs internet.'
+      : 'Voices come from your device.';
   };
-  drawListening();
-  $('#choose-voice', main).addEventListener('click', openVoiceSheet);
-  $('#choose-speed', main).addEventListener('click', () => openSpeedSheet({ wordsLeft: () => 1000 }));
-  settingsEvents.addEventListener('change', drawListening);
-  speech.addEventListener('voices', drawListening);
+  voiceSelect.addEventListener('change', () => {
+    const uri = voiceSelect.value;
+    const recent = [uri, ...(getSettings().recentVoices || []).filter((u) => u !== uri)].slice(0, 4);
+    updateSettings({ voiceURI: uri, recentVoices: recent });
+    document.dispatchEvent(new CustomEvent('odeo:voice'));
+  });
+  drawVoices();
+  const onSettings = () => {
+    const c = speech.currentVoice();
+    if (c && voiceSelect.value !== c.voiceURI) drawVoices();
+  };
+  settingsEvents.addEventListener('change', onSettings);
+  speech.addEventListener('voices', drawVoices);
 
   const [docs, usage] = await Promise.all([repo.listDocuments(), repo.usage()]);
   $('#storage-line', main).textContent = `${plural(docs.length, 'item')} saved. Using ${formatMB(usage.bytes)} of about ${formatMB(usage.quota)}.`;
 
   return () => {
     unbind();
-    settingsEvents.removeEventListener('change', drawListening);
-    speech.removeEventListener('voices', drawListening);
+    settingsEvents.removeEventListener('change', onSettings);
+    speech.removeEventListener('voices', drawVoices);
   };
 }

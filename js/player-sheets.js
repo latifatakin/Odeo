@@ -105,6 +105,7 @@ export function openVoiceSheet() {
         <input type="checkbox" class="toggle" role="switch" id="voice-offline" />
       </label>
     </div>
+    <p class="voice-note">Only clear, natural-sounding voices are shown.</p>
     <div id="voice-results"></div>`
   );
 

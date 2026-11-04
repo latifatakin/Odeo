@@ -279,3 +279,16 @@ The app is a tool for long listening sessions, so it keeps visual noise low. On 
   #1E1E1E with a 1px #2E2E2E edge (`--odeo-popup-border`), text #FAFAFA, grey text
   #A3A3A3, strong border #8A8A8A. Purple stays for calls to action and the chosen
   item. All pairs checked for contrast, including on the note colours.
+
+## Voices: only clear, human-sounding (4 Nov 2026)
+
+User rule: keep only clear, audible, human-like voices. Remove distorted, muffled, inaudible and machine-like ones.
+
+Voices come from each device, so `js/voice-quality.js` rates every voice by its family and `speech.js` only loads the ones that pass:
+
+- **Natural (best, listed first):** names or IDs with Natural, Neural, Premium, Enhanced or Siri (Edge and Windows 11 natural voices, Apple's downloadable voices).
+- **Clear:** standard Apple, Google and Android voices (Samantha, Daniel, Google UK English…).
+- **Robotic (hidden unless a language has nothing better):** old Windows desktop voices (David, Zira, Mark…), Linux system voices.
+- **Never shown:** macOS novelty and old voices (Bad News, Bubbles, Whisper, Zarvox, Albert, Fred, Junior…), the Eloquence voices (Eddy, Flo, Grandma, Grandpa, Reed, Rocko, Sandy, Shelley), and eSpeak, Pico, Festival and Flite.
+
+Repeats of the same voice keep only the best version (an enhanced Samantha hides the compact one). The voice picker says "Only clear, natural-sounding voices are shown." On a Mac in Chrome this goes from 180 voices to 50 (6 in English).

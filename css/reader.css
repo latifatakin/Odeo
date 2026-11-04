@@ -267,6 +267,7 @@
 .voice-check { color: var(--odeo-text); }
 .voice-row .icon-btn { border: 2px solid var(--odeo-border-strong); }
 .voice-empty { color: var(--odeo-text-muted); }
+.voice-note { margin: calc(var(--odeo-space-2) * -1) 0 var(--odeo-space-3); color: var(--odeo-text-muted); font-size: 14px; }
 
 @media (max-width: 599.98px) {
   .page-sheet { padding: var(--odeo-space-6) var(--odeo-space-4); border-radius: var(--odeo-radius-md); }

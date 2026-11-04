@@ -13,6 +13,7 @@
 // States: 'idle' | 'playing' | 'paused' | 'ended'
 
 import { chunk, chunkIndexForWord, wordAtChar, tokenize } from './text.js';
+import { filterVoices } from './voice-quality.js';
 
 const synth = typeof window !== 'undefined' ? window.speechSynthesis : undefined;
 
@@ -48,17 +49,21 @@ class SpeechEngine extends EventTarget {
   #loadVoices() {
     const lang = (navigator.language || 'en').toLowerCase();
     const base = lang.split('-')[0];
-    const score = (v) => {
+    // Your language first, then the most natural-sounding, then on-device.
+    const score = ({ v, q }) => {
       const l = v.lang.toLowerCase().replace('_', '-');
       let s = 0;
-      if (l === lang) s += 4;
-      else if (l.split('-')[0] === base) s += 3;
+      if (l === lang) s += 40;
+      else if (l.split('-')[0] === base) s += 30;
+      s += q * 4;
       if (v.localService) s += 1;
       if (v.default) s += 0.5;
       return s;
     };
-    const list = synth.getVoices().slice();
-    list.sort((a, b) => score(b) - score(a) || a.name.localeCompare(b.name));
+    // Only clear, human-sounding voices (see voice-quality.js).
+    const rated = filterVoices(synth.getVoices());
+    rated.sort((a, b) => score(b) - score(a) || a.v.name.localeCompare(b.v.name));
+    const list = rated.map((x) => x.v);
     const changed = list.length !== this.voices.length;
     this.voices = list;
     if (changed) this.dispatchEvent(new CustomEvent('voices'));

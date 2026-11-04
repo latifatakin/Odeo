@@ -307,3 +307,7 @@ Repeats of the same voice keep only the best version (an enhanced Samantha hides
   - Voice: native select, your language's group first, then other languages A to Z. Options read "Daniel · United Kingdom" (the group names the language). The line under the label says "Works offline." or "Needs internet." Fixed 280px wide on desktop, full width on phones.
   - Speed: 0.8× to 2.0× in steps of 0.1, with "1.0× (normal)".
   - The player in the reader still opens the voice sheet (with samples) and the speed sheet.
+
+## Motion setting removed (4 Nov 2026)
+
+User decision: the Motion dropdown is gone from Settings → General. Odeo only follows the device's own Reduce motion setting (`prefers-reduced-motion`), which turns off popup animations and smooth scrolling while following along. Saved `motion` values are dropped when settings load.

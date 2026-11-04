@@ -75,7 +75,6 @@ export async function render(main, params = []) {
         <section class="settings-panel" id="set-general" aria-labelledby="set-general-h" tabindex="-1">
           <h2 class="settings-panel-title" id="set-general-h">General</h2>
           ${selectRow('theme', 'App theme', 'Light, dark, or the same as your device.', p)}
-          ${selectRow('motion', 'Motion', 'Turn off moving effects if they bother you.', p)}
           ${switchRow('noteColors', 'Color notes by document', 'On the Notes page, each document’s notes share one color.', p)}
         </section>
 

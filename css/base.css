@@ -127,24 +127,16 @@ h2[tabindex='-1']:focus-visible { outline: 3px solid var(--ui-focus); outline-of
 [hidden] { display: none !important; }
 .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
 
-/* Reduced motion: from the device, or chosen in Settings */
+/* Reduced motion: follows the device's own setting */
 @media (prefers-reduced-motion: reduce) {
-  :root:not([data-motion='allow']) *,
-  :root:not([data-motion='allow']) *::before,
-  :root:not([data-motion='allow']) *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-:root[data-motion='reduce'] *,
-:root[data-motion='reduce'] *::before,
-:root[data-motion='reduce'] *::after {
-  animation-duration: 0.01ms !important;
-  animation-iteration-count: 1 !important;
-  transition-duration: 0.01ms !important;
-  scroll-behavior: auto !important;
 }
 
 @media (forced-colors: active) {

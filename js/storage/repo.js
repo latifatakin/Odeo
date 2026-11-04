@@ -47,7 +47,6 @@ export const DEFAULT_SETTINGS = {
   letterSpacing: 0, // em
   theme: 'system', // 'system' | 'light' | 'dark'
   readingTheme: 'cream', // 'cream' | 'sand'
-  motion: 'system', // 'system' | 'reduce' | 'allow'
   rate: 1, // 0.8 to 2.0
   autoSpeed: false, // speed up gradually while listening
   voiceURI: null,

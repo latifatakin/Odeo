@@ -8,7 +8,6 @@
     if (v.theme === 'light' || v.theme === 'dark') root.setAttribute('data-theme', v.theme);
     if (v.font === 'dyslexic' || v.font === 'comic' || v.font === 'body') root.setAttribute('data-font', v.font);
     if (v.readingTheme === 'sand') root.setAttribute('data-reading', 'sand');
-    if (v.motion === 'reduce' || v.motion === 'allow') root.setAttribute('data-motion', v.motion);
   } catch (e) {}
 
   // Navigation: bar (phone), rail (tablet or collapsed desktop), side (desktop).

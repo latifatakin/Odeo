@@ -53,14 +53,6 @@ const GROUPS = {
       label: r === 1 ? '1.0× (normal)' : `${r.toFixed(1)}×`,
     })),
   },
-  motion: {
-    legend: 'Motion',
-    options: [
-      { value: 'system', label: 'Match device' },
-      { value: 'reduce', label: 'Reduce motion' },
-      { value: 'allow', label: 'Allow motion' },
-    ],
-  },
 };
 
 function chipGroup(key, prefix) {
@@ -153,7 +145,7 @@ export function readingSettingsHTML(prefix) {
 }
 
 export function displaySettingsHTML(prefix) {
-  return `${chipGroup('theme', prefix)}${chipGroup('motion', prefix)}${toggleRow('noteColors', 'Color notes by document', 'On the Notes page, each document’s notes share one color. The document name is always shown too.', prefix)}`;
+  return `${chipGroup('theme', prefix)}${toggleRow('noteColors', 'Color notes by document', 'On the Notes page, each document’s notes share one color. The document name is always shown too.', prefix)}`;
 }
 
 export function listeningToggleHTML(prefix) {

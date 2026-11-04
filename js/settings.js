@@ -28,7 +28,7 @@ function normalize(s) {
   if (!['body', 'dyslexic', 'comic'].includes(out.font)) out.font = 'body';
   if (!['cream', 'sand'].includes(out.readingTheme)) out.readingTheme = out.readingTheme === 'paper' ? 'sand' : 'cream';
   if (!['system', 'light', 'dark'].includes(out.theme)) out.theme = 'system';
-  if (!['system', 'reduce', 'allow'].includes(out.motion)) out.motion = 'system';
+  delete out.motion; // the Motion setting was removed (4 Nov 2026); Odeo follows the device
   out.fontSize = Math.min(MAX_SIZE, Math.max(MIN_SIZE, Math.round(out.fontSize / 2) * 2));
   out.lineHeight = Math.max(1.5, Number(out.lineHeight) || 1.7);
   out.rate = Math.min(MAX_RATE, Math.max(MIN_RATE, Math.round(out.rate * 10) / 10));
@@ -68,9 +68,8 @@ export function resetReading() {
   updateSettings({ font, fontSize, lineHeight, letterSpacing, readingTheme, autoScroll });
 }
 
+// Follows the device's own Reduce motion setting.
 export function prefersReducedMotion() {
-  if (current.motion === 'reduce') return true;
-  if (current.motion === 'allow') return false;
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
 
@@ -82,8 +81,7 @@ function apply() {
   else root.dataset.noteColors = 'off';
   if (current.theme === 'system') root.removeAttribute('data-theme');
   else root.dataset.theme = current.theme;
-  if (current.motion === 'system') root.removeAttribute('data-motion');
-  else root.dataset.motion = current.motion;
+  root.removeAttribute('data-motion');
   root.style.setProperty('--read-size', `${current.fontSize}px`);
   root.style.setProperty('--read-line', String(current.lineHeight));
   root.style.setProperty('--read-letter', `${current.letterSpacing}em`);
